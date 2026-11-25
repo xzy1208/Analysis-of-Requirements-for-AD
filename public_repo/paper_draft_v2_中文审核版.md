@@ -542,7 +542,7 @@ LLM 扮演两个角色：**生成者**（M2–M5）与**评审者**（第 V-B �
 
 ## 附录 A — 复现说明
 
-下列所有产物均随论文提交，不提供公开仓库 URL。本地文件采用表中所示的英文名（`NL-RQ-ADAS-v1_spec.md`、`score_table_v2.md`）。M1 的 SOFL 工具产物（`System.cdfd`、`System.fModule`、`BehaviorPlanning.cdfd/.fModule`）位于 `models/M1_manual_human/`，并已与 SOFL 工具工程中的终版核对：模块与 Level-1 文件逐字节相同，Level-0 CDFD 仅在一个 GUI 连线坐标值上不同，端点、连接点与类型均无变化。人工模型的阈值表修订版 M1.1（第 V-A2 节）位于 `models/M1_1_manual_plus_thresholds/`，含同样的四个工具文件及其 MES 转换，且通过与 M1 相同的三部分检查器。
+下列所有产物均已公开于仓库 <https://github.com/xzy1208/Analysis-of-Requirements-for-AD>。本地文件采用表中所示的英文名（`NL-RQ-ADAS-v1_spec.md`、`score_table_v2.md`）。M1 的 SOFL 工具产物（`System.cdfd`、`System.fModule`、`BehaviorPlanning.cdfd/.fModule`）位于 `models/M1_manual_human/`，并已与 SOFL 工具工程中的终版核对：模块与 Level-1 文件逐字节相同，Level-0 CDFD 仅在一个 GUI 连线坐标值上不同，端点、连接点与类型均无变化。人工模型的阈值表修订版 M1.1（第 V-A2 节）位于 `models/M1_1_manual_plus_thresholds/`，含同样的四个工具文件及其 MES 转换，且通过与 M1 相同的三部分检查器。
 
 **插图。** 论文中的插图要么是本文自身规格的示意（图 1），要么是本文自身产物的渲染——由对应表示法的标准工具生成（M3 的 DOT 源用 Graphviz，M4 与 M5 的 UML 源用 PlantUML）——因此与这些产物本身适用相同的条款。本文不复现任何第三方图。M3 与 M4 的 Level-0 视图、以及 M5 未经删减的渲染，在 `figures/final/` 中提供供查验，但不在正文中复现。
 

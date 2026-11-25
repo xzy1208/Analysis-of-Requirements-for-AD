@@ -24,7 +24,10 @@ or renderings of the study's own artefacts; no third-party figure is reproduced.
 The double-annotation kit was executed in this study: an independent second
 rater re-labelled the 30 discriminating judgements (Cohen's kappa = 0.650
 unweighted, 0.723 linearly weighted, 80.0% exact agreement). The blank workbook
-and form are provided so that the procedure can be repeated; the completed forms
-and the primary labels are not included.
+and form are provided so that the procedure can be repeated; the completed
+second-rater forms and their results are deliberately excluded, so that a fresh
+replication can recruit a new rater without seeing any prior judgements. The
+primary labels themselves are public in `coverage_manual.json`, as required to
+reproduce the reported scores.
 
 See `MANIFEST.md` for the full file list with SHA-256 checksums.
