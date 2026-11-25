@@ -1,0 +1,148 @@
+{
+  "reviewer": "DeepSeek-v4-pro",
+  "reviewer_label": "B",
+  "mode": "anchored",
+  "note": "评审者已看过评审模型 A (Tencent Hunyuan Hy) 的三轮 findings (review_round1/2/3.json)，在此锚定下重评一轮，用于度量锚定效应（与盲评检出集合的差异）。",
+  "round": "anchored",
+  "reviews": [
+    {
+      "model": "M1",
+      "level": "L0",
+      "findings": [
+        {
+          "type": "omission",
+          "location": "元素列表 / Safety_Shield",
+          "detail": "缺 F7 Safety_Shield，追溯 F-Safety_Shield 悬空。"
+        },
+        {
+          "type": "contradiction",
+          "location": "Behavior_Planning decel_req==2.0",
+          "detail": "紧急减速度 2.0 违反 A-1=6.0。"
+        },
+        {
+          "type": "condition",
+          "location": "多处 ==0 与 min_ttc<1.5",
+          "detail": "状态字段恒等于 0，风险阈值开区间，边界算子错误。"
+        },
+        {
+          "type": "flow",
+          "location": "route -> Behavior_Planning",
+          "detail": "前置引用 route 但无输入流。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "Perception_Localization pre",
+          "detail": "「输入应在适当时刻有效」模糊前置条件。"
+        },
+        {
+          "type": "omission",
+          "location": "追溯条目（锚定后补充）",
+          "detail": "经对照评审模型 A 的 findings，补充确认：追溯表仅 6 条 F-xx，缺失 R-SCOPE/R-E/R-D/R-G 等跨切面条款的映射，违反 R-G-2。此为锚定后新增检出，盲评阶段仅部分覆盖。"
+        }
+      ]
+    },
+    {
+      "model": "M3",
+      "level": "L0",
+      "findings": [
+        {
+          "type": "omission",
+          "location": "元素列表 / F4",
+          "detail": "缺 F4 Route Planning。"
+        },
+        {
+          "type": "flow",
+          "location": "actuator_cmd F6->E9 无 E9->F7",
+          "detail": "F6 原始命令绕过 F7 仲裁，违反 R-E-2。"
+        },
+        {
+          "type": "condition",
+          "location": "F6/F7 steering == -1.0；F1/F2 ==0",
+          "detail": "保留条件压缩到单点，状态字段恒等于 0，边界/量词错误。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "F1 pre",
+          "detail": "「输入应在适当时刻有效」模糊前置条件。"
+        },
+        {
+          "type": "contradiction",
+          "location": "F3/F5 减速度与阈值（锚定后审视）",
+          "detail": "经对照评审模型 A，审视 M3 是否含减速度 2.0 与 A-1=6.0 的冲突：M3-L0 的 F3 将数值阈值下放至子模型 MES_M3_L1.json，L0 层未写死 2.0，故 L0 无直接冲突；但 F5 post 的 required_decel == manoeuvre.required_decel 未在 L0 校验其下界，属潜在未约束项，记录为低置信度观察，不计入强检出。"
+        }
+      ]
+    },
+    {
+      "model": "M4",
+      "level": "L0",
+      "findings": [
+        {
+          "type": "omission",
+          "location": "元素列表 / F4",
+          "detail": "缺 F4 Route Planning。"
+        },
+        {
+          "type": "flow",
+          "location": "ego_state: D3 -> F6",
+          "detail": "F6 无 ego_state 输入流，违反 R-G-4。"
+        },
+        {
+          "type": "contradiction",
+          "location": "F3 critical required_decel_ms2 == 2.0",
+          "detail": "紧急减速度 2.0 违反 A-1=6.0。"
+        },
+        {
+          "type": "condition",
+          "location": "F6/F7 accel==-2.0、steering==-1.0",
+          "detail": "包络约束压缩到单点，A-3/A-6 语义错误。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "F1 pre",
+          "detail": "「输入应在适当时刻有效」模糊前置条件。"
+        },
+        {
+          "type": "omission",
+          "location": "追溯 R-G-3/R-G-4 空数组（锚定后确认）",
+          "detail": "经对照评审模型 A，确认 R-G-3、R-G-4 的 elements 为空数组，未映射任何元素，违反 R-G-2。盲评阶段已部分覆盖。"
+        }
+      ]
+    },
+    {
+      "model": "M5",
+      "level": "L1",
+      "findings": [
+        {
+          "type": "contradiction",
+          "location": "EmergencyBrake / T3/T13/T20/T27 ==2.0",
+          "detail": "紧急减速度 2.0 违反 A-1=6.0。"
+        },
+        {
+          "type": "condition",
+          "location": "T17 pre",
+          "detail": "未排除 critical，紧急机动可被驾驶员加速覆盖，违反 F3.3。"
+        },
+        {
+          "type": "condition",
+          "location": "T12 caution 下 driver_accel",
+          "detail": "caution 级别驾驶员加速未优先，与 F3.3 矛盾。"
+        },
+        {
+          "type": "omission",
+          "location": "FaultDegraded / Deactivated",
+          "detail": "规格未要求的合成状态被引入，违反 R-G-3。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "T1 pre",
+          "detail": "「输入应在适当时刻有效」模糊前置条件。"
+        },
+        {
+          "type": "flow",
+          "location": "route/D1/risk level 流缺失（锚定后确认）",
+          "detail": "经对照评审模型 A，确认状态机缺 route、D1 读流及 F3.2->F3.3 显式 risk level 流，输入依赖缺失，违反 R-G-4。盲评阶段已部分覆盖。"
+        }
+      ]
+    }
+  ]
+}

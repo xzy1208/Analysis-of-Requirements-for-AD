@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CDFD module="ADAS_System">
+  <componentList>
+    <process name="Perception_Localisation" inputPorts="4" outputPorts="8" x="60" y="260" width="150" height="100" shapeIndex="0" />
+    <process name="Prediction" inputPorts="3" outputPorts="2" x="320" y="100" width="150" height="100" shapeIndex="1" />
+    <process name="Route_Planning" inputPorts="3" outputPorts="2" x="320" y="460" width="150" height="100" shapeIndex="2" />
+    <process name="Behaviour_Planning" inputPorts="6" outputPorts="2" x="600" y="260" width="150" height="100" shapeIndex="3" />
+    <process name="Motion_Planning" inputPorts="7" outputPorts="2" x="880" y="260" width="150" height="100" shapeIndex="4" />
+    <process name="Control" inputPorts="2" outputPorts="1" x="1140" y="260" width="150" height="100" shapeIndex="5" />
+    <process name="Safety_Shield" inputPorts="3" outputPorts="1" x="1400" y="260" width="150" height="100" shapeIndex="6" />
+    <dataStore name="HD_Map_DB" no="1" x="180" y="650" width="145" height="24" shapeIndex="7" />
+    <dataStore name="Object_Track_DB" no="2" x="60" y="560" width="145" height="24" shapeIndex="8" />
+    <dataStore name="Ego_State_DB" no="3" x="700" y="650" width="145" height="24" shapeIndex="9" />
+    <dataStore name="Traffic_Rules_DB" no="4" x="920" y="650" width="145" height="24" shapeIndex="10" />
+  </componentList>
+  <connectionList>
+    <activeDataFlow name="raw_sensor_data" type="" fromX="-60" fromY="230" toX="60" toY="280">
+      <from belongToName="" no="" belongToType="outSide" belongToConnector="-1" shapeIndex="-1" />
+      <to belongToName="Perception_Localisation" no="" belongToType="Process" belongToConnector="0" shapeIndex="0" />
+    </activeDataFlow>
+    <activeDataFlow name="gnss_imu" type="" fromX="-60" fromY="300" toX="60" toY="310">
+      <from belongToName="" no="" belongToType="outSide" belongToConnector="-1" shapeIndex="-1" />
+      <to belongToName="Perception_Localisation" no="" belongToType="Process" belongToConnector="1" shapeIndex="0" />
+    </activeDataFlow>
+    <activeDataFlow name="map_data" type="" fromX="-60" fromY="370" toX="60" toY="340">
+      <from belongToName="" no="" belongToType="outSide" belongToConnector="-1" shapeIndex="-1" />
+      <to belongToName="Perception_Localisation" no="" belongToType="Process" belongToConnector="2" shapeIndex="0" />
+    </activeDataFlow>
+    <activeDataFlow name="driver_intent" type="" fromX="-60" fromY="170" toX="600" toY="270">
+      <from belongToName="" no="" belongToType="outSide" belongToConnector="-1" shapeIndex="-1" />
+      <to belongToName="Behaviour_Planning" no="" belongToType="Process" belongToConnector="2" shapeIndex="3" />
+    </activeDataFlow>
+    <activeDataFlow name="destination" type="" fromX="-60" fromY="480" toX="320" toY="490">
+      <from belongToName="" no="" belongToType="outSide" belongToConnector="-1" shapeIndex="-1" />
+      <to belongToName="Route_Planning" no="" belongToType="Process" belongToConnector="0" shapeIndex="2" />
+    </activeDataFlow>
+    <activeDataFlow name="traffic_rules" type="" fromX="940" fromY="120" toX="940" toY="260">
+      <from belongToName="" no="" belongToType="outSide" belongToConnector="-1" shapeIndex="-1" />
+      <to belongToName="Motion_Planning" no="" belongToType="Process" belongToConnector="4" shapeIndex="4" />
+    </activeDataFlow>
+    <activeDataFlow name="ego_pose" type="" fromX="210" fromY="280" toX="320" toY="130">
+      <from belongToName="Perception_Localisation" no="" belongToType="Process" belongToConnector="0" shapeIndex="0" />
+      <to belongToName="Prediction" no="" belongToType="Process" belongToConnector="0" shapeIndex="1" />
+    </activeDataFlow>
+    <activeDataFlow name="object_table" type="" fromX="210" fromY="320" toX="320" toY="170">
+      <from belongToName="Perception_Localisation" no="" belongToType="Process" belongToConnector="1" shapeIndex="0" />
+      <to belongToName="Prediction" no="" belongToType="Process" belongToConnector="1" shapeIndex="1" />
+    </activeDataFlow>
+    <activeDataFlow name="ego_pose_for_route" type="" fromX="210" fromY="350" toX="320" toY="520">
+      <from belongToName="Perception_Localisation" no="" belongToType="Process" belongToConnector="2" shapeIndex="0" />
+      <to belongToName="Route_Planning" no="" belongToType="Process" belongToConnector="1" shapeIndex="2" />
+    </activeDataFlow>
+    <activeDataFlow name="ego_state" type="" fromX="210" fromY="295" toX="600" toY="280">
+      <from belongToName="Perception_Localisation" no="" belongToType="Process" belongToConnector="3" shapeIndex="0" />
+      <to belongToName="Behaviour_Planning" no="" belongToType="Process" belongToConnector="0" shapeIndex="3" />
+    </activeDataFlow>
+    <activeDataFlow name="ego_state_for_motion" type="" fromX="210" fromY="345" toX="880" toY="275">
+      <from belongToName="Perception_Localisation" no="" belongToType="Process" belongToConnector="4" shapeIndex="0" />
+      <to belongToName="Motion_Planning" no="" belongToType="Process" belongToConnector="2" shapeIndex="4" />
+    </activeDataFlow>
+    <activeDataFlow name="predicted_trajectories" type="" fromX="470" fromY="150" toX="600" toY="300">
+      <from belongToName="Prediction" no="" belongToType="Process" belongToConnector="0" shapeIndex="1" />
+      <to belongToName="Behaviour_Planning" no="" belongToType="Process" belongToConnector="1" shapeIndex="3" />
+    </activeDataFlow>
+    <activeDataFlow name="predicted_trajectories_for_motion" type="" fromX="470" fromY="190" toX="880" toY="340">
+      <from belongToName="Prediction" no="" belongToType="Process" belongToConnector="1" shapeIndex="1" />
+      <to belongToName="Motion_Planning" no="" belongToType="Process" belongToConnector="3" shapeIndex="4" />
+    </activeDataFlow>
+    <activeDataFlow name="route" type="" fromX="470" fromY="490" toX="600" toY="340">
+      <from belongToName="Route_Planning" no="" belongToType="Process" belongToConnector="0" shapeIndex="2" />
+      <to belongToName="Behaviour_Planning" no="" belongToType="Process" belongToConnector="3" shapeIndex="3" />
+    </activeDataFlow>
+    <activeDataFlow name="route_for_motion" type="" fromX="470" fromY="520" toX="880" toY="320">
+      <from belongToName="Route_Planning" no="" belongToType="Process" belongToConnector="1" shapeIndex="2" />
+      <to belongToName="Motion_Planning" no="" belongToType="Process" belongToConnector="1" shapeIndex="4" />
+    </activeDataFlow>
+    <activeDataFlow name="manoeuvre" type="" fromX="750" fromY="290" toX="880" toY="300">
+      <from belongToName="Behaviour_Planning" no="" belongToType="Process" belongToConnector="0" shapeIndex="3" />
+      <to belongToName="Motion_Planning" no="" belongToType="Process" belongToConnector="0" shapeIndex="4" />
+    </activeDataFlow>
+    <activeDataFlow name="trajectory" type="" fromX="1030" fromY="300" toX="1140" toY="300">
+      <from belongToName="Motion_Planning" no="" belongToType="Process" belongToConnector="0" shapeIndex="4" />
+      <to belongToName="Control" no="" belongToType="Process" belongToConnector="0" shapeIndex="5" />
+    </activeDataFlow>
+    <activeDataFlow name="actuator_cmd" type="" fromX="1290" fromY="300" toX="1400" toY="300">
+      <from belongToName="Control" no="" belongToType="Process" belongToConnector="0" shapeIndex="5" />
+      <to belongToName="Safety_Shield" no="" belongToType="Process" belongToConnector="0" shapeIndex="6" />
+    </activeDataFlow>
+    <activeDataFlow name="warning" type="" fromX="675" fromY="260" toX="675" toY="140">
+      <from belongToName="Behaviour_Planning" no="" belongToType="Process" belongToConnector="1" shapeIndex="3" />
+      <to belongToName="" no="" belongToType="outSide" belongToConnector="-1" shapeIndex="-1" />
+    </activeDataFlow>
+    <activeDataFlow name="checked_cmd" type="" fromX="1550" fromY="310" toX="1700" toY="310">
+      <from belongToName="Safety_Shield" no="" belongToType="Process" belongToConnector="0" shapeIndex="6" />
+      <to belongToName="" no="" belongToType="outSide" belongToConnector="-1" shapeIndex="-1" />
+    </activeDataFlow>
+    <dataFlow fromX="252" fromY="674" toX="135" toY="360">
+      <from belongToName="HD_Map_DB" no="1" belongToType="DataStore" belongToConnector="Bottom" connectorIndex="0" shapeIndex="7" />
+      <to belongToName="Perception_Localisation" no="" belongToType="ProcessTopBottom" belongToConnector="Top" connectorIndex="1" shapeIndex="0" />
+    </dataFlow>
+    <dataFlow fromX="252" fromY="674" toX="395" toY="200">
+      <from belongToName="HD_Map_DB" no="1" belongToType="DataStore" belongToConnector="Bottom" connectorIndex="0" shapeIndex="7" />
+      <to belongToName="Prediction" no="" belongToType="ProcessTopBottom" belongToConnector="Top" connectorIndex="1" shapeIndex="1" />
+    </dataFlow>
+    <dataFlow fromX="252" fromY="674" toX="675" toY="360">
+      <from belongToName="HD_Map_DB" no="1" belongToType="DataStore" belongToConnector="Bottom" connectorIndex="0" shapeIndex="7" />
+      <to belongToName="Behaviour_Planning" no="" belongToType="ProcessTopBottom" belongToConnector="Top" connectorIndex="1" shapeIndex="3" />
+    </dataFlow>
+    <dataFlow fromX="252" fromY="674" toX="395" toY="560">
+      <from belongToName="HD_Map_DB" no="1" belongToType="DataStore" belongToConnector="Bottom" connectorIndex="0" shapeIndex="7" />
+      <to belongToName="Route_Planning" no="" belongToType="ProcessTopBottom" belongToConnector="Top" connectorIndex="1" shapeIndex="2" />
+    </dataFlow>
+    <dataFlow fromX="252" fromY="674" toX="955" toY="360">
+      <from belongToName="HD_Map_DB" no="1" belongToType="DataStore" belongToConnector="Bottom" connectorIndex="0" shapeIndex="7" />
+      <to belongToName="Motion_Planning" no="" belongToType="ProcessTopBottom" belongToConnector="Top" connectorIndex="1" shapeIndex="4" />
+    </dataFlow>
+    <dataFlow fromX="992" fromY="674" toX="700" toY="360">
+      <from belongToName="Traffic_Rules_DB" no="4" belongToType="DataStore" belongToConnector="Bottom" connectorIndex="0" shapeIndex="10" />
+      <to belongToName="Behaviour_Planning" no="" belongToType="ProcessTopBottom" belongToConnector="Top" connectorIndex="2" shapeIndex="3" />
+    </dataFlow>
+    <dataFlow fromX="992" fromY="674" toX="930" toY="360">
+      <from belongToName="Traffic_Rules_DB" no="4" belongToType="DataStore" belongToConnector="Bottom" connectorIndex="0" shapeIndex="10" />
+      <to belongToName="Motion_Planning" no="" belongToType="ProcessTopBottom" belongToConnector="Top" connectorIndex="2" shapeIndex="4" />
+    </dataFlow>
+    <dataFlow fromX="992" fromY="674" toX="1510" toY="360">
+      <from belongToName="Traffic_Rules_DB" no="4" belongToType="DataStore" belongToConnector="Bottom" connectorIndex="0" shapeIndex="10" />
+      <to belongToName="Safety_Shield" no="" belongToType="ProcessTopBottom" belongToConnector="Top" connectorIndex="2" shapeIndex="6" />
+    </dataFlow>
+    <dataFlow fromX="772" fromY="674" toX="1215" toY="360">
+      <from belongToName="Ego_State_DB" no="3" belongToType="DataStore" belongToConnector="Bottom" connectorIndex="0" shapeIndex="9" />
+      <to belongToName="Control" no="" belongToType="ProcessTopBottom" belongToConnector="Top" connectorIndex="1" shapeIndex="5" />
+    </dataFlow>
+    <dataFlow fromX="772" fromY="674" toX="1475" toY="360">
+      <from belongToName="Ego_State_DB" no="3" belongToType="DataStore" belongToConnector="Bottom" connectorIndex="0" shapeIndex="9" />
+      <to belongToName="Safety_Shield" no="" belongToType="ProcessTopBottom" belongToConnector="Top" connectorIndex="1" shapeIndex="6" />
+    </dataFlow>
+    <dataFlow fromX="90" fromY="360" toX="252" toY="674">
+      <from belongToName="Perception_Localisation" no="" belongToType="ProcessTopBottom" belongToConnector="Bottom" connectorIndex="0" shapeIndex="0" />
+      <to belongToName="HD_Map_DB" no="1" belongToType="DataStore" belongToConnector="Bottom" connectorIndex="0" shapeIndex="7" />
+    </dataFlow>
+    <dataFlow fromX="135" fromY="360" toX="132" toY="584">
+      <from belongToName="Perception_Localisation" no="" belongToType="ProcessTopBottom" belongToConnector="Bottom" connectorIndex="0" shapeIndex="0" />
+      <to belongToName="Object_Track_DB" no="2" belongToType="DataStore" belongToConnector="Bottom" connectorIndex="0" shapeIndex="8" />
+    </dataFlow>
+    <dataFlow fromX="180" fromY="360" toX="772" toY="674">
+      <from belongToName="Perception_Localisation" no="" belongToType="ProcessTopBottom" belongToConnector="Bottom" connectorIndex="0" shapeIndex="0" />
+      <to belongToName="Ego_State_DB" no="3" belongToType="DataStore" belongToConnector="Bottom" connectorIndex="0" shapeIndex="9" />
+    </dataFlow>
+    <dataFlow fromX="1050" fromY="360" toX="992" toY="674">
+      <from belongToName="Motion_Planning" no="" belongToType="ProcessTopBottom" belongToConnector="Bottom" connectorIndex="0" shapeIndex="4" />
+      <to belongToName="Traffic_Rules_DB" no="4" belongToType="DataStore" belongToConnector="Bottom" connectorIndex="0" shapeIndex="10" />
+    </dataFlow>
+  </connectionList>
+</CDFD>

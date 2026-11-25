@@ -1,0 +1,97 @@
+@startuml
+' M5 - Vehicle-level ADAS AEB branch: UML state machine
+' Single source: NL-RQ-ADAS-v1 6 (F3.1/F3.2/F3.3), 7 (N-2/N-3/N-4), 8 (A-1/A-5)
+' Thresholds: T_risk_high = 3.0 s, T_fcw = 1.5 s, A_emergency = 6.0 m/s^2
+' Boolean operators restricted to = <> > >= < <= and.
+' Transition IDs T1..T27 are shared with M5_constraints.md and MES_M5_L1.json
+
+title M5 AEB State Machine - F3 Behaviour Planning (Level 1 refinement)
+
+' ---------- top-level states ----------
+state "Normal\n(no risk: cruise / keep-lane)" as Normal
+state "Caution\n(caution: FCW + deceleration)" as Caution
+state "DriverOverride\n(driver accel takes precedence)" as DriverOverride
+state "FaultDegraded\n(sensor validity lost)" as FaultDegraded
+state "Deactivated\n(ODD exit / AEB off)" as Deactivated
+
+' ---------- hierarchical composite state ----------
+state EmergencyBrake {
+  [*] --> BrakeRamp
+  state "BrakeRamp\n(decel >= 6.0 m/s2, target speed 0)" as BrakeRamp
+  state "Standstill\n(target speed = 0 held)" as Standstill
+  ' T27
+  BrakeRamp --> Standstill : [ego_speed = 0] / checked_cmd(hold_brake, target_speed = 0)
+}
+
+[*] --> Normal
+
+' ---------- risk-level transitions (F3.2 / A-5) ----------
+' T1
+Normal --> Caution : [min_ttc <= 3.0 and min_ttc > 1.5]
+' T2
+Caution --> Normal : [min_ttc > 3.0]
+' T3
+Caution --> EmergencyBrake : [min_ttc <= 1.5]
+' T4
+EmergencyBrake --> Caution : [min_ttc > 1.5 and min_ttc <= 3.0]
+' T5
+EmergencyBrake --> Normal : [min_ttc > 3.0]
+
+' ---------- empty object set (F3.1: obj_count = 0) ----------
+' T6
+Caution --> Normal : [obj_count = 0]
+' T7
+EmergencyBrake --> Normal : [obj_count = 0]
+' T8
+DriverOverride --> Normal : [obj_count = 0]
+
+' ---------- driver override (F3.3: accel precedence, except in critical) ----------
+' T9
+Normal --> DriverOverride : [driver_accel_request = true and min_ttc > 3.0]
+' T10
+Caution --> DriverOverride : [driver_accel_request = true and min_ttc <= 3.0 and min_ttc > 1.5]
+' T11
+DriverOverride --> Normal : [driver_accel_request = false and min_ttc > 3.0]
+' T12
+DriverOverride --> Caution : [driver_accel_request = false and min_ttc <= 3.0 and min_ttc > 1.5]
+' T13
+DriverOverride --> EmergencyBrake : [min_ttc <= 1.5]
+' NOTE: there is deliberately NO EmergencyBrake --> DriverOverride transition (F3.3 forbids it).
+
+' ---------- fault / deactivation (synthetic states, declared in README OI-5) ----------
+' T14
+Normal --> FaultDegraded : [sensor_validity = false]
+' T15
+Caution --> FaultDegraded : [sensor_validity = false]
+' T16
+EmergencyBrake --> FaultDegraded : [sensor_validity = false]
+' T17
+DriverOverride --> FaultDegraded : [sensor_validity = false]
+' T18
+FaultDegraded --> Normal : [sensor_validity = true and min_ttc > 3.0]
+' T19
+FaultDegraded --> Caution : [sensor_validity = true and min_ttc <= 3.0 and min_ttc > 1.5]
+' T20
+FaultDegraded --> EmergencyBrake : [sensor_validity = true and min_ttc <= 1.5]
+
+' T21
+Normal --> Deactivated : [odd_active = false]
+' T22
+Caution --> Deactivated : [odd_active = false]
+' T23
+EmergencyBrake --> Deactivated : [odd_active = false]
+' T24
+DriverOverride --> Deactivated : [odd_active = false]
+' T25
+FaultDegraded --> Deactivated : [odd_active = false]
+' T26
+Deactivated --> Normal : [odd_active = true]
+
+note right of EmergencyBrake
+  A-1: A_emergency = 6.0 m/s2
+  F3.3: target speed = 0
+  N-2: warning no later than TTC = 2.0 s
+  F3.3: driver accel cannot override critical
+end note
+
+@enduml

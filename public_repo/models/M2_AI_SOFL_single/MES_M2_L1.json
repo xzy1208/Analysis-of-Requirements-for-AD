@@ -1,0 +1,195 @@
+{
+  "model_id": "M2",
+  "model_title": "LLM-generated SOFL replica (single pass)",
+  "level": "L1",
+  "parent_module": "ADAS_System",
+  "provenance": {
+    "producer": "llm",
+    "llm_family": "MiniMax-M3.1-Flash",
+    "generation_date": "2026-11-17",
+    "passes": 1,
+    "prompt_summary": "Generate the Level-1 child module refining the F3 AEB branch of the vehicle-level ADAS SOFL model from NL-RQ-ADAS-v1; single pass, no self-review.",
+    "self_review_performed": false
+  },
+  "parent_elements": [
+    {"id": "F1", "name": "Perception_Localisation", "level": "parent"},
+    {"id": "F2", "name": "Prediction", "level": "parent"},
+    {"id": "F3", "name": "Behaviour_Planning", "level": "parent"},
+    {"id": "F4", "name": "Route_Planning", "level": "parent"},
+    {"id": "F5", "name": "Motion_Planning", "level": "parent"},
+    {"id": "D1", "name": "HD_Map_DB", "level": "parent"},
+    {"id": "D4", "name": "Traffic_Rules_DB", "level": "parent"},
+    {"id": "E3", "name": "driver_intent", "level": "parent"}
+  ],
+  "elements": [
+    {
+      "id": "F3.1",
+      "kind": "function",
+      "name": "TTC_Computation",
+      "responsibility": "Compute, for each predicted object, the TTC to the ego vehicle and report the minimum TTC over the object set together with the number of objects considered.",
+      "inputs": [
+        {"name": "predicted_trajectories", "source": "F2", "level": "parent"},
+        {"name": "ego_state", "source": "F1", "level": "parent"}
+      ],
+      "outputs": [
+        {"name": "ttc_set", "consumers": ["F3.2"]}
+      ],
+      "stores_read": [],
+      "stores_written": [],
+      "preconditions": [
+        "predicted_trajectories <> null and ego_state <> null"
+      ],
+      "postconditions": [
+        {"guard": "true", "effect": "ttc_set <> null"},
+        {"guard": "true", "effect": "ttc_set.obj_count >= 0"},
+        {"guard": "ego_state.speed <= 130.0", "effect": "ttc_set <> null"},
+        {"guard": "ttc_set.obj_count > 0", "effect": "ttc_set.min_ttc >= 0"}
+      ],
+      "quantified": true,
+      "invariants": [
+        "The AEB capability is guaranteed for ego_state.speed <= 130.0 km/h (N-1)."
+      ],
+      "notes": "The empty object set is reported with a count of 0 as required by section 6; no sentinel value for min_ttc in that case is specified by the spec and is therefore left unconstrained (see OI-16). Section 5 also gives F2 the TTC duty (see OI-7)."
+    },
+    {
+      "id": "F3.2",
+      "kind": "function",
+      "name": "Risk_Classification",
+      "responsibility": "Classify the situation into a risk level as a function of the minimum TTC and raise the driver warning for caution and critical.",
+      "inputs": [
+        {"name": "ttc_set", "source": "F3.1"},
+        {"name": "Traffic_Rules_DB", "source": "D4", "level": "parent"}
+      ],
+      "outputs": [
+        {"name": "risk_level", "consumers": ["F3.3"]},
+        {"name": "warning", "consumers": ["E7"]}
+      ],
+      "stores_read": ["D4"],
+      "stores_written": [],
+      "preconditions": [
+        "ttc_set <> null and Traffic_Rules_DB <> null"
+      ],
+      "postconditions": [
+        {"guard": "true", "effect": "risk_level <> null and warning <> null"},
+        {"guard": "ttc_set.obj_count = 0", "effect": "risk_level.risk_code = 0 and warning.warning_type = 0 and warning.active = 0"},
+        {"guard": "ttc_set.obj_count > 0 and ttc_set.min_ttc <= 1.5", "effect": "risk_level.risk_code = 2 and warning.warning_type = 2 and warning.active = 1"},
+        {"guard": "ttc_set.obj_count > 0 and ttc_set.min_ttc > 1.5 and ttc_set.min_ttc <= 3.0", "effect": "risk_level.risk_code = 1 and warning.warning_type = 1 and warning.active = 1"},
+        {"guard": "ttc_set.obj_count > 0 and ttc_set.min_ttc > 3.0", "effect": "risk_level.risk_code = 0 and warning.warning_type = 0 and warning.active = 0"},
+        {"guard": "ttc_set.obj_count > 0 and ttc_set.min_ttc <= 2.0", "effect": "warning.active = 1"}
+      ],
+      "quantified": true,
+      "invariants": [
+        "warning.active = 1 whenever ttc_set.min_ttc <= 2.0 s (N-2 warning present no later than the 2.0 s staging point)"
+      ],
+      "notes": "Risk codes: 0 = no risk, 1 = caution, 2 = critical. Warning codes: 0 = none, 1 = caution, 2 = imminent collision. The traffic rules are read from the parent store D4 (logical reference, no store element in the child CDFD)."
+    },
+    {
+      "id": "F3.3",
+      "kind": "function",
+      "name": "Maneuver_Planning",
+      "responsibility": "Produce the cruise/keep-lane, deceleration or emergency deceleration manoeuvre from the risk level, respecting the driver intent without overriding the emergency manoeuvre.",
+      "inputs": [
+        {"name": "risk_level", "source": "F3.2"},
+        {"name": "ego_state", "source": "F1", "level": "parent"},
+        {"name": "driver_intent", "source": "E3", "level": "parent"},
+        {"name": "route", "source": "F4", "level": "parent"},
+        {"name": "HD_Map_DB", "source": "D1", "level": "parent"}
+      ],
+      "outputs": [
+        {"name": "manoeuvre", "consumers": ["F5"]}
+      ],
+      "stores_read": ["D1"],
+      "stores_written": [],
+      "preconditions": [
+        "risk_level <> null and ego_state <> null and driver_intent <> null and route <> null and HD_Map_DB <> null"
+      ],
+      "postconditions": [
+        {"guard": "true", "effect": "manoeuvre <> null"},
+        {"guard": "risk_level.risk_code = 0", "effect": "manoeuvre.manoeuvre_type = 0"},
+        {"guard": "risk_level.risk_code = 1", "effect": "manoeuvre.manoeuvre_type = 3 and manoeuvre.required_decel > 0"},
+        {"guard": "risk_level.risk_code = 2", "effect": "manoeuvre.manoeuvre_type = 4 and manoeuvre.required_decel >= 6.0 and manoeuvre.target_speed = 0"},
+        {"guard": "risk_level.risk_code = 0 and driver_intent.accel_request = 1", "effect": "manoeuvre.required_decel <= 0"},
+        {"guard": "risk_level.risk_code = 2 and driver_intent.accel_request = 1", "effect": "manoeuvre.manoeuvre_type = 4"}
+      ],
+      "quantified": true,
+      "invariants": [
+        "For the critical risk level the required deceleration is at least 6.0 m/s^2 and the target speed is 0 (A-1)."
+      ],
+      "notes": "Manoeuvre codes: 0 = cruise / keep-lane, 3 = lane-keeping-with-deceleration, 4 = emergency deceleration. The caution case with a driver acceleration request is ambiguous in the spec and the explicit caution rule is modelled (see OI-8)."
+    }
+  ],
+  "stores": [
+    {
+      "id": "D1",
+      "name": "HD_Map_DB",
+      "content": ["road_id", "lane_id", "posted_speed_limit", "curvature"],
+      "owner": "F1",
+      "writers": ["F1"],
+      "readers": ["F3.3"],
+      "persistent": true,
+      "level": "parent"
+    },
+    {
+      "id": "D4",
+      "name": "Traffic_Rules_DB",
+      "content": ["posted_speed_limit", "signal_state"],
+      "owner": "F5",
+      "writers": ["F5"],
+      "readers": ["F3.2"],
+      "persistent": true,
+      "level": "parent"
+    }
+  ],
+  "externals": [
+    {"id": "E3", "name": "driver_intent", "direction": "in", "content": ["requested cruise speed", "accelerate override", "brake override", "steer override", "driver-attention state", "ODD status"], "consumers": ["F3.3"], "level": "parent"},
+    {"id": "E7", "name": "warning", "direction": "out", "content": ["warning type (none/caution/imminent collision)", "active flag"], "consumers": ["F3.2"]}
+  ],
+  "flows": [
+    {"name": "predicted_trajectories", "producer": "F2", "consumer": "F3.1", "kind": "active", "carries": ["predicted_trajectories"]},
+    {"name": "ego_state", "producer": "F1", "consumer": "F3.1", "kind": "active", "carries": ["ego_state"]},
+    {"name": "ttc_set", "producer": "F3.1", "consumer": "F3.2", "kind": "active", "carries": ["ttc_set"]},
+    {"name": "risk_level", "producer": "F3.2", "consumer": "F3.3", "kind": "active", "carries": ["risk_level"]},
+    {"name": "ego_state", "producer": "F1", "consumer": "F3.3", "kind": "active", "carries": ["ego_state"]},
+    {"name": "driver_intent", "producer": "E3", "consumer": "F3.3", "kind": "boundary_in", "carries": ["driver_intent"]},
+    {"name": "route", "producer": "F4", "consumer": "F3.3", "kind": "active", "carries": ["route"]},
+    {"name": "warning", "producer": "F3.2", "consumer": "E7", "kind": "boundary_out", "carries": ["warning"]},
+    {"name": "manoeuvre", "producer": "F3.3", "consumer": "F5", "kind": "active", "carries": ["manoeuvre"]},
+    {"name": "HD_Map_DB", "producer": "D1", "consumer": "F3.3", "kind": "store_read", "carries": ["map_segment"]},
+    {"name": "Traffic_Rules_DB", "producer": "D4", "consumer": "F3.2", "kind": "store_read", "carries": ["traffic_rule_state"]}
+  ],
+  "traceability": [
+    {"requirement": "R-L1-1", "elements": ["F3.1", "F3.2", "F3.3"], "realised_by": "three processes in AEB_Branch", "note": "Exactly three sub-functions refine the emergency-braking capability of F3."},
+    {"requirement": "F3.1", "elements": ["F3.1"], "realised_by": "process + postcondition", "note": "TTC per predicted object, minimum TTC over the set and the number of objects considered; count 0 when no object is considered."},
+    {"requirement": "F3.2", "elements": ["F3.2"], "realised_by": "process + postcondition", "note": "Risk classification by minimum TTC and the driver warning for caution and critical."},
+    {"requirement": "F3.3", "elements": ["F3.3"], "realised_by": "process + postcondition", "note": "Cruise/keep-lane, deceleration and emergency deceleration manoeuvres; the emergency manoeuvre is not overridden by a driver acceleration request."},
+    {"requirement": "N-1", "elements": ["F3.1"], "realised_by": "postcondition ego_state.speed <= 130.0", "note": "The AEB branch is guaranteed up to 130 km/h."},
+    {"requirement": "N-2", "elements": ["F3.2"], "realised_by": "postconditions on warning.active", "note": "Warning raised at TTC <= 2.0 s and at latest at the 2.0 s staging point; T_fcw = 1.5 s."},
+    {"requirement": "N-3", "elements": ["F3.3"], "realised_by": "postcondition manoeuvre.required_decel >= 6.0", "note": "The 6.0 m/s^2 emergency deceleration is sized from the N-3 impact-speed yardstick."},
+    {"requirement": "N-4", "elements": ["F3.3"], "realised_by": "postcondition manoeuvre.required_decel >= 6.0", "note": "Sizing basis only; the 60-130 km/h VUT window and the 20 km/h target speed are assessment parameters without a runtime element (see OI-14)."},
+    {"requirement": "N-5", "elements": ["F3.3"], "realised_by": "qualitative postcondition on the manoeuvre", "note": "The RSS safe distance has no closed form in the spec; the emergency deceleration covers the dangerous case, the formal distance bound remains open (see OI-9)."},
+    {"requirement": "N-6", "elements": ["F3.3"], "realised_by": "postcondition manoeuvre.required_decel >= 6.0", "note": "The braking profile is covered by A-1 >= a_min,brake = 4.0; the response time rho = 0.1 s is not formalised (see OI-13)."},
+    {"requirement": "A-1", "elements": ["F3.3"], "realised_by": "postcondition manoeuvre.required_decel >= 6.0", "note": "Emergency deceleration of at least 6.0 m/s^2 with target speed 0 for the critical risk level."},
+    {"requirement": "A-5", "elements": ["F3.2"], "realised_by": "risk classification guards", "note": "T_risk_high = 3.0 s and T_fcw = 1.5 s."},
+    {"requirement": "A-7", "elements": ["F3.1"], "realised_by": "input predicted_trajectories from F2", "note": "The branch consumes the 3.0 s prediction horizon produced by F2; A-7 is realised in the parent module."},
+    {"requirement": "R-G-1", "elements": ["F3.1", "F3.2", "F3.3"], "realised_by": "pre / post sections", "note": "Each sub-function has a precondition, a postcondition and a quantified constraint where a threshold exists."},
+    {"requirement": "R-G-2", "elements": ["F3.1", "F3.2", "F3.3"], "realised_by": "README.md traceability matrix", "note": "Level-1 clauses are traced to the child elements."},
+    {"requirement": "R-G-3", "elements": ["F3.2", "F3.3"], "realised_by": "open_issues list", "note": "The nat code tables and the parent-store logical references are declared as modelling conveniences."},
+    {"requirement": "R-G-4", "elements": ["F3.1", "F3.2", "F3.3"], "realised_by": "all 11 flows", "note": "Each flow is named, directed and has a single producer and a single consumer."},
+    {"requirement": "R-G-5", "elements": ["F3.1", "F3.2", "F3.3"], "realised_by": "outputs[] and flows", "note": "ttc_set is consumed by F3.2, risk_level by F3.3, warning by E7 and manoeuvre by the parent F5."},
+    {"requirement": "R-G-6", "elements": ["F3.1", "F3.2", "F3.3"], "realised_by": "pre conditions", "note": "Every datum read in a postcondition is guarded by an explicit <> null precondition."}
+  ],
+  "open_issues": [
+    {"id": "OI-1", "issue": "The seven-function split of section 5 is sufficient for the stated ODD only if driver monitoring stays an external input: no separate driver-monitoring function is added because R-L0-1 forbids extra elements, but a full SAE L2 handover would need one.", "related_requirement": "R-L0-1", "impact": "medium"},
+    {"id": "OI-2", "issue": "D3 ownership is accepted as specified (written by F1, read by F6/F7) because section 5.1 assigns those reads explicitly and R-L0-1 forbids a dedicated ego-state function, so F1's update rate becomes a safety dependency of the shield.", "related_requirement": "R-D-1", "impact": "medium"},
+    {"id": "OI-3", "issue": "A timing requirement is needed for the emergency branch to be meaningful: the spec fixes thresholds but no cycle time, and SOFL has no timing construct, so rho = 0.1 s (A-2) and the derived 1.39 s braking duration are not formalised.", "related_requirement": "A-2", "impact": "high"},
+    {"id": "OI-4", "issue": "The AEB branch of F3 is a defensible Level-1 refinement, but refining the F6/F7 actuation chain would cover N-7 and R-E-2 better, because the numeric lateral-acceleration capability and the response time are both missing there.", "related_requirement": "R-L1-1", "impact": "medium"},
+    {"id": "OI-7", "issue": "Section 5 makes F2 the only TTC-computing function while section 6 has F3.1 compute a TTC set, so TTC is computed twice and the responsibility split between F2 and F3.1 is left unresolved.", "related_requirement": "F3.1", "impact": "medium"},
+    {"id": "OI-8", "issue": "Section 6 requires a non-zero deceleration manoeuvre for caution but also gives a driver acceleration request precedence for every non-critical risk level, so the caution case with an acceleration request has no consistent rule and the explicit caution rule is modelled.", "related_requirement": "F3.3", "impact": "medium"},
+    {"id": "OI-9", "issue": "N-5 does not restate the RSS minimum-safe-distance formula and fixes no unit convention, so the safe-distance requirement is modelled qualitatively instead of as a numeric distance bound.", "related_requirement": "N-5", "impact": "medium"},
+    {"id": "OI-10", "issue": "N-7 has no numeric lateral-acceleration capability in section 7/8, so the branch cannot check the commanded lateral acceleration of a trajectory it does not receive.", "related_requirement": "N-7", "impact": "medium"},
+    {"id": "OI-13", "issue": "The RSS response time rho = 0.1 s cannot be expressed because the SOFL expression grammar and the CDFD have no timing construct.", "related_requirement": "N-6", "impact": "medium"},
+    {"id": "OI-14", "issue": "The N-4 assessment parameters (VUT 60-130 km/h, target 20 km/h) describe the test scenario rather than a runtime constraint, so they have no model element.", "related_requirement": "N-4", "impact": "low"},
+    {"id": "OI-15", "issue": "Enumerated values (risk level, warning type, manoeuvre type) are encoded as nat codes because the permitted expression grammar contains no string literals; the code tables are listed in README.md.", "related_requirement": "R-G-1", "impact": "low"},
+    {"id": "OI-16", "issue": "The spec fixes the object count 0 for an empty object set but no sentinel value for the minimum TTC in that case, so ttc_set.min_ttc is left unconstrained whenever the count is 0.", "related_requirement": "F3.1", "impact": "low"}
+  ]
+}

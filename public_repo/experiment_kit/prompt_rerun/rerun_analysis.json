@@ -1,0 +1,501 @@
+[
+  {
+    "label": "A1 MiniMax+禁令",
+    "file": "MiniMax-M3.1-Flash-1.md",
+    "processes": 10,
+    "pre": 36,
+    "post": 144,
+    "effective_pre": 10,
+    "clauses": 180,
+    "guards": {
+      "null_guard": 0,
+      "selfeq_guard": 0,
+      "nat_ge0_guard": 5,
+      "empty_guard": 0,
+      "true_guard": 13,
+      "other": 162
+    },
+    "vacuous": 18,
+    "vacuous_rate": 0.1,
+    "quantified": 4,
+    "types": 20,
+    "thresholds_hit": [
+      "N-1 130 km/h",
+      "N-2 TTC 2.0",
+      "A-1 6.0",
+      "A-2 brake 4.0",
+      "A-4 yaw 3.5",
+      "A-5 3.0",
+      "A-5 1.5",
+      "A-6 ±1.0"
+    ],
+    "banned_ops": [
+      "or",
+      "not",
+      "=>",
+      "list of"
+    ],
+    "const_block": true,
+    "valid_field": false,
+    "literal_null_in_doc": 2,
+    "modules": {
+      "ADAS_System": {
+        "processes": 7,
+        "pre": 29,
+        "post": 90,
+        "vacuous": 15
+      },
+      "AEB_Branch": {
+        "processes": 3,
+        "pre": 7,
+        "post": 54,
+        "vacuous": 3
+      }
+    }
+  },
+  {
+    "label": "A2 MiniMax+禁令",
+    "file": "MiniMax-M3.1-Flash-2.md",
+    "processes": 10,
+    "pre": 44,
+    "post": 127,
+    "effective_pre": 10,
+    "clauses": 171,
+    "guards": {
+      "null_guard": 0,
+      "selfeq_guard": 0,
+      "nat_ge0_guard": 4,
+      "empty_guard": 0,
+      "true_guard": 0,
+      "other": 167
+    },
+    "vacuous": 4,
+    "vacuous_rate": 0.023,
+    "quantified": 4,
+    "types": 16,
+    "thresholds_hit": [
+      "N-1 130 km/h",
+      "N-2 TTC 2.0",
+      "A-1 6.0",
+      "A-2 brake 4.0",
+      "A-4 yaw 3.5",
+      "A-5 3.0",
+      "A-5 1.5",
+      "A-6 ±1.0"
+    ],
+    "banned_ops": [
+      "or",
+      "not",
+      "=>",
+      "seq of"
+    ],
+    "const_block": true,
+    "valid_field": false,
+    "literal_null_in_doc": 3,
+    "modules": {
+      "ADAS_System": {
+        "processes": 7,
+        "pre": 34,
+        "post": 66,
+        "vacuous": 2
+      },
+      "AEB_Branch": {
+        "processes": 3,
+        "pre": 10,
+        "post": 61,
+        "vacuous": 2
+      }
+    }
+  },
+  {
+    "label": "B1 Hunyuan 无禁令",
+    "file": "Tencent Hunyuan Hy-1.md",
+    "processes": 10,
+    "pre": 34,
+    "post": 156,
+    "effective_pre": 0,
+    "clauses": 190,
+    "guards": {
+      "null_guard": 0,
+      "selfeq_guard": 51,
+      "nat_ge0_guard": 0,
+      "empty_guard": 0,
+      "true_guard": 0,
+      "other": 139
+    },
+    "vacuous": 51,
+    "vacuous_rate": 0.268,
+    "quantified": 44,
+    "types": 18,
+    "thresholds_hit": [
+      "N-1 130 km/h",
+      "N-2 TTC 2.0",
+      "A-1 6.0",
+      "A-2 brake 4.0",
+      "A-4 yaw 3.5",
+      "A-5 3.0",
+      "A-5 1.5",
+      "A-6 ±1.0"
+    ],
+    "banned_ops": [],
+    "const_block": false,
+    "valid_field": false,
+    "literal_null_in_doc": 0,
+    "modules": {
+      "ADAS_System": {
+        "processes": 7,
+        "pre": 25,
+        "post": 104,
+        "vacuous": 41
+      },
+      "AEB_Branch": {
+        "processes": 3,
+        "pre": 9,
+        "post": 52,
+        "vacuous": 10
+      }
+    }
+  },
+  {
+    "label": "B2 Hunyuan 无禁令",
+    "file": "Tencent Hunyuan Hy-2.md",
+    "processes": 10,
+    "pre": 42,
+    "post": 115,
+    "effective_pre": 10,
+    "clauses": 157,
+    "guards": {
+      "null_guard": 0,
+      "selfeq_guard": 0,
+      "nat_ge0_guard": 3,
+      "empty_guard": 6,
+      "true_guard": 0,
+      "other": 148
+    },
+    "vacuous": 9,
+    "vacuous_rate": 0.057,
+    "quantified": 12,
+    "types": 21,
+    "thresholds_hit": [
+      "N-1 130 km/h",
+      "N-2 TTC 2.0",
+      "A-1 6.0",
+      "A-2 brake 4.0",
+      "A-4 yaw 3.5",
+      "A-5 3.0",
+      "A-5 1.5",
+      "A-6 ±1.0"
+    ],
+    "banned_ops": [],
+    "const_block": false,
+    "valid_field": true,
+    "literal_null_in_doc": 0,
+    "modules": {
+      "ADAS_System": {
+        "processes": 7,
+        "pre": 33,
+        "post": 66,
+        "vacuous": 9
+      },
+      "AEB_Branch": {
+        "processes": 3,
+        "pre": 9,
+        "post": 49,
+        "vacuous": 0
+      }
+    }
+  },
+  {
+    "label": "C1 Hunyuan+禁令",
+    "file": "Tencent Hunyuan Hy-3.md",
+    "processes": 10,
+    "pre": 40,
+    "post": 170,
+    "effective_pre": 10,
+    "clauses": 210,
+    "guards": {
+      "null_guard": 0,
+      "selfeq_guard": 0,
+      "nat_ge0_guard": 7,
+      "empty_guard": 6,
+      "true_guard": 0,
+      "other": 197
+    },
+    "vacuous": 13,
+    "vacuous_rate": 0.062,
+    "quantified": 53,
+    "types": 18,
+    "thresholds_hit": [
+      "N-1 130 km/h",
+      "N-2 TTC 2.0",
+      "A-1 6.0",
+      "A-2 brake 4.0",
+      "A-4 yaw 3.5",
+      "A-5 3.0",
+      "A-5 1.5",
+      "A-6 ±1.0"
+    ],
+    "banned_ops": [],
+    "const_block": false,
+    "valid_field": false,
+    "literal_null_in_doc": 3,
+    "modules": {
+      "ADAS_System": {
+        "processes": 7,
+        "pre": 30,
+        "post": 105,
+        "vacuous": 10
+      },
+      "AEB_Branch": {
+        "processes": 3,
+        "pre": 10,
+        "post": 65,
+        "vacuous": 3
+      }
+    }
+  },
+  {
+    "label": "D1 MiniMax+泛禁令",
+    "file": "MiniMax-M3.1-Flash+D.md",
+    "processes": 10,
+    "pre": 38,
+    "post": 130,
+    "effective_pre": 10,
+    "clauses": 168,
+    "guards": {
+      "null_guard": 0,
+      "selfeq_guard": 0,
+      "nat_ge0_guard": 0,
+      "empty_guard": 0,
+      "true_guard": 0,
+      "other": 168
+    },
+    "vacuous": 0,
+    "vacuous_rate": 0.0,
+    "quantified": 29,
+    "types": 19,
+    "thresholds_hit": [
+      "N-1 130 km/h",
+      "N-2 TTC 2.0",
+      "A-1 6.0",
+      "A-2 brake 4.0",
+      "A-4 yaw 3.5",
+      "A-5 3.0",
+      "A-5 1.5",
+      "A-6 ±1.0"
+    ],
+    "banned_ops": [
+      "not"
+    ],
+    "const_block": false,
+    "valid_field": true,
+    "literal_null_in_doc": 2,
+    "modules": {
+      "ADAS_System": {
+        "processes": 7,
+        "pre": 31,
+        "post": 85,
+        "vacuous": 0
+      },
+      "AEB_Branch": {
+        "processes": 3,
+        "pre": 7,
+        "post": 45,
+        "vacuous": 0
+      }
+    }
+  },
+  {
+    "label": "D2 Hunyuan+泛禁令",
+    "file": "D2_hunyuan_family_ban.md",
+    "processes": 10,
+    "pre": 32,
+    "post": 171,
+    "effective_pre": 10,
+    "clauses": 203,
+    "guards": {
+      "null_guard": 0,
+      "selfeq_guard": 0,
+      "nat_ge0_guard": 0,
+      "empty_guard": 0,
+      "true_guard": 0,
+      "other": 203
+    },
+    "vacuous": 0,
+    "vacuous_rate": 0.0,
+    "quantified": 58,
+    "types": 18,
+    "thresholds_hit": [
+      "N-1 130 km/h",
+      "N-2 TTC 2.0",
+      "A-1 6.0",
+      "A-2 brake 4.0",
+      "A-4 yaw 3.5",
+      "A-5 3.0",
+      "A-5 1.5",
+      "A-6 ±1.0"
+    ],
+    "banned_ops": [],
+    "const_block": false,
+    "valid_field": false,
+    "literal_null_in_doc": 1,
+    "modules": {
+      "ADAS_System": {
+        "processes": 7,
+        "pre": 25,
+        "post": 106,
+        "vacuous": 0
+      },
+      "AEB_Branch": {
+        "processes": 3,
+        "pre": 7,
+        "post": 65,
+        "vacuous": 0
+      }
+    }
+  },
+  {
+    "label": "B3 MiniMax无禁令(当前)",
+    "file": "B3_minimax_no_ban_current.md",
+    "processes": 10,
+    "pre": 98,
+    "post": 398,
+    "effective_pre": 1,
+    "clauses": 496,
+    "guards": {
+      "null_guard": 105,
+      "selfeq_guard": 0,
+      "nat_ge0_guard": 4,
+      "empty_guard": 16,
+      "true_guard": 0,
+      "other": 371
+    },
+    "vacuous": 125,
+    "vacuous_rate": 0.252,
+    "quantified": 70,
+    "types": 18,
+    "thresholds_hit": [
+      "N-1 130 km/h",
+      "N-2 TTC 2.0",
+      "A-1 6.0",
+      "A-2 brake 4.0",
+      "A-4 yaw 3.5",
+      "A-5 3.0",
+      "A-5 1.5",
+      "A-6 ±1.0"
+    ],
+    "banned_ops": [
+      "or",
+      "not",
+      "=>",
+      "seq of"
+    ],
+    "const_block": false,
+    "valid_field": true,
+    "literal_null_in_doc": 33,
+    "modules": {
+      "ADAS_System": {
+        "processes": 7,
+        "pre": 80,
+        "post": 275,
+        "vacuous": 101
+      },
+      "AEB_Branch": {
+        "processes": 3,
+        "pre": 18,
+        "post": 123,
+        "vacuous": 24
+      }
+    }
+  },
+  {
+    "label": "B4 MiniMax无禁令(当前)",
+    "file": "B4_minimax_no_ban_current.md",
+    "processes": 10,
+    "pre": 31,
+    "post": 246,
+    "effective_pre": 10,
+    "clauses": 277,
+    "guards": {
+      "null_guard": 0,
+      "selfeq_guard": 0,
+      "nat_ge0_guard": 2,
+      "empty_guard": 5,
+      "true_guard": 0,
+      "other": 270
+    },
+    "vacuous": 7,
+    "vacuous_rate": 0.025,
+    "quantified": 54,
+    "types": 35,
+    "thresholds_hit": [
+      "N-2 TTC 2.0",
+      "A-1 6.0",
+      "A-2 brake 4.0",
+      "A-4 yaw 3.5",
+      "A-5 3.0",
+      "A-5 1.5",
+      "A-6 ±1.0"
+    ],
+    "banned_ops": [],
+    "const_block": false,
+    "valid_field": false,
+    "literal_null_in_doc": 0,
+    "modules": {
+      "ADAS_System": {
+        "processes": 7,
+        "pre": 24,
+        "post": 147,
+        "vacuous": 4
+      },
+      "AEB_Branch": {
+        "processes": 3,
+        "pre": 7,
+        "post": 99,
+        "vacuous": 3
+      }
+    }
+  },
+  {
+    "label": "M2 MiniMax 无禁令",
+    "processes": 10,
+    "pre": 37,
+    "post": 146,
+    "clauses": 183,
+    "guards": {
+      "null_guard": 57,
+      "selfeq_guard": 0,
+      "nat_ge0_guard": 2,
+      "empty_guard": 0,
+      "true_guard": 33,
+      "other": 91
+    },
+    "vacuous": 92,
+    "quantified": 29,
+    "types": 18,
+    "valid_field": false,
+    "literal_null_in_doc": 57,
+    "modules": {
+      "?": {
+        "processes": 3,
+        "pre": 9,
+        "post": 51,
+        "vacuous": 19
+      }
+    },
+    "effective_pre": 0,
+    "thresholds_hit": [
+      "A-1 6.0",
+      "A-2 brake 4.0",
+      "A-4 yaw 3.5",
+      "A-5 1.5",
+      "A-5 3.0",
+      "A-6 ±1.0",
+      "N-1 130 km/h",
+      "N-2 TTC 2.0"
+    ],
+    "banned_ops": [],
+    "const_block": false,
+    "vacuous_rate": 0.503
+  }
+]

@@ -1,0 +1,98 @@
+digraph M3_L0 {
+  graph [
+    label="M3 Level 0 DFD - Vehicle-Level ADAS Onboard System (Yourdon/DeMarco)"
+    labelloc="t"
+    fontsize=16
+    fontname="Helvetica"
+    rankdir=LR
+    splines=true
+    nodesep=0.55
+    ranksep=1.1
+  ];
+  node [fontname="Helvetica", fontsize=10];
+  edge [fontname="Helvetica", fontsize=9];
+
+  /* ---- Processes: box, 1.0..7.0 = F1..F7 ---- */
+  node [shape=box, style="", fillcolor=white, height=0.7, width=1.5];
+  "1.0" [label="1.0  F1\nPerception &\nLocalisation"];
+  "2.0" [label="2.0  F2\nPrediction"];
+  "3.0" [label="3.0  F3\nBehaviour\nPlanning"];
+  "4.0" [label="4.0  F4\nRoute Planning"];
+  "5.0" [label="5.0  F5\nMotion Planning"];
+  "6.0" [label="6.0  F6\nControl"];
+  "7.0" [label="7.0  F7\nSafety Shield\n(monitor/arbitrate)"];
+
+  /* ---- External entities: box + rounded,filled + light grey, E1..E9 ---- */
+  node [shape=box, style="rounded,filled", fillcolor="#E8E8E8", height=0.6, width=1.4];
+  E1 [label="E1\nraw_sensor_data (in)"];
+  E2 [label="E2\ngnss_imu (in)"];
+  E3 [label="E3\ndriver_intent (in)"];
+  E4 [label="E4\ndestination (in)"];
+  E5 [label="E5\nmap_data (in)"];
+  E6 [label="E6\ntraffic_rules (in)"];
+  E7 [label="E7\nwarning (out)"];
+  E8 [label="E8\nchecked_cmd (out)"];
+  E9 [label="E9\nactuator_cmd (in)"];
+
+  /* ---- Data stores: cylinder, D1..D4 ---- */
+  node [shape=cylinder, style=filled, fillcolor="#F7F7F7", height=0.8, width=1.3];
+  D1 [label="D1\nHD Map Store"];
+  D2 [label="D2\nObject Track Store"];
+  D3 [label="D3\nEgo State Store"];
+  D4 [label="D4\nTraffic Rules Store"];
+
+  /* ---- Boundary INPUT flows (solid) ---- */
+  E1 -> "1.0" [label="raw_sensor_data", color=black];
+  E2 -> "1.0" [label="gnss_imu", color=black];
+  E3 -> "3.0" [label="driver_intent", color=black];
+  E4 -> "4.0" [label="destination", color=black];
+  E5 -> D1  [label="map_data (refresh)", color="#2E6DA4"];
+  E6 -> D4  [label="traffic_rules (refresh)", color="#2E6DA4"];
+  E9 -> "7.0" [label="actuator_cmd (E9)", color=black];
+
+  /* ---- Active inter-process flows (solid) ---- */
+  "1.0" -> "2.0" [label="ego_pose", color=black];
+  "1.0" -> "2.0" [label="object_table", color=black];
+  "1.0" -> "3.0" [label="ego_state", color=black];
+  "1.0" -> "4.0" [label="ego_pose", color=black];
+  "2.0" -> "3.0" [label="predicted_trajectories", color=black];
+  "2.0" -> "5.0" [label="predicted_trajectories", color=black];
+  "3.0" -> "5.0" [label="manoeuvre", color=black];
+  "4.0" -> "3.0" [label="route", color=black];
+  "4.0" -> "5.0" [label="route", color=black];
+  "5.0" -> "6.0" [label="trajectory", color=black];
+  "6.0" -> E9  [label="actuator_cmd (E9)", color=black];
+
+  /* ---- Store WRITE flows (solid, blue) ---- */
+  "1.0" -> D2 [label="object_table (write)", color="#2E6DA4", style=solid];
+  "1.0" -> D3 [label="ego_state (write)", color="#2E6DA4", style=solid];
+
+  /* ---- Store READ flows (dashed, grey) ---- */
+  D1 -> "1.0" [label="hd_map_segment", color="#666666", style=dashed];
+  D1 -> "2.0" [label="hd_map_segment", color="#666666", style=dashed];
+  D1 -> "3.0" [label="hd_map_segment", color="#666666", style=dashed];
+  D1 -> "4.0" [label="hd_map_segment", color="#666666", style=dashed];
+  D1 -> "5.0" [label="hd_map_segment", color="#666666", style=dashed];
+  D4 -> "3.0" [label="traffic_rules", color="#666666", style=dashed];
+  D4 -> "5.0" [label="traffic_rules", color="#666666", style=dashed];
+  D4 -> "7.0" [label="traffic_rules", color="#666666", style=dashed];
+  D3 -> "6.0" [label="ego_state", color="#666666", style=dashed];
+  D3 -> "7.0" [label="ego_state", color="#666666", style=dashed];
+
+  /* ---- Boundary OUTPUT flows (solid) ---- */
+  "3.0" -> E7 [label="warning", color=black];
+  "7.0" -> E8 [label="checked_cmd", color=black];
+
+  /* ---- Legend ---- */
+  subgraph cluster_legend {
+    label="Legend";
+    style=dotted;
+    color="#999999";
+    "lg_proc"  [label="box = process F1..F7", shape=box, style="", fontsize=8];
+    "lg_ext"   [label="rounded grey = external E1..E9", shape=box, style="rounded,filled", fillcolor="#E8E8E8", fontsize=8];
+    "lg_store" [label="cylinder = data store D1..D4", shape=cylinder, style=filled, fillcolor="#F7F7F7", fontsize=8];
+  }
+  "lg_proc"  -> "lg_ext"   [label="solid = active / boundary flow", color=black, fontsize=8, constraint=false];
+  "lg_ext"   -> "lg_store" [label="blue solid = store WRITE", color="#2E6DA4", fontsize=8, constraint=false];
+  "lg_store" -> "lg_proc"  [label="grey dashed = store READ", color="#666666", style=dashed, fontsize=8, constraint=false];
+}

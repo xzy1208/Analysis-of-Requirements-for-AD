@@ -1,0 +1,97 @@
+@startuml
+' M5 - Vehicle-level ADAS AEB branch: UML state machine
+' Single source: NL-RQ-ADAS-v1 6 (F3.1/F3.2/F3.3), 7 (N-2/N-3/N-4), 8 (A-1/A-5)
+' Thresholds: T_risk_high = 3.0 s, T_fcw = 1.5 s, A_emergency = 6.0 m/s^2
+' Boolean operators restricted to = <> > >= < <= and.
+' Transition IDs T1..T27 are shared with M5_constraints.md and MES_M5_L1.json
+
+title M5 AEB State Machine - F3 Behaviour Planning (Level 1 refinement)
+
+' ---------- top-level states ----------
+state "Normal\n(no risk: cruise / keep-lane)" as Normal
+state "Caution\n(caution: FCW + deceleration)" as Caution
+state "DriverOverride\n(driver accel takes precedence)" as DriverOverride
+state "FaultDegraded\n(sensor validity lost)" as FaultDegraded
+state "Deactivated\n(ODD exit / AEB off)" as Deactivated
+
+' ---------- hierarchical composite state ----------
+state EmergencyBrake {
+  [*] --> BrakeRamp
+  state "BrakeRamp\n(decel >= 6.0 m/s2, target speed 0)" as BrakeRamp
+  state "Standstill\n(target speed = 0 held)" as Standstill
+  ' T27
+  BrakeRamp --> Standstill : [ego_speed = 0] / checked_cmd(hold_brake, target_speed = 0)
+}
+
+[*] --> Normal
+
+' ---------- risk-level transitions (F3.2 / A-5) ----------
+' T1
+Normal --> Caution : [min_ttc <= 3.0 and min_ttc > 1.5] / warning(caution), maneuver(deceleration)
+' T2
+Caution --> Normal : [min_ttc > 3.0] / warning(none), maneuver(cruise)
+' T3
+Caution --> EmergencyBrake : [min_ttc <= 1.5] / warning(imminent_collision), maneuver(emergency_deceleration), checked_cmd(decel >= 6.0, target_speed = 0)
+' T4
+EmergencyBrake --> Caution : [min_ttc > 1.5 and min_ttc <= 3.0] / warning(caution), maneuver(deceleration)
+' T5
+EmergencyBrake --> Normal : [min_ttc > 3.0] / warning(none), maneuver(cruise)
+
+' ---------- empty object set (F3.1: obj_count = 0) ----------
+' T6
+Caution --> Normal : [obj_count = 0] / warning(none), maneuver(cruise)
+' T7
+EmergencyBrake --> Normal : [obj_count = 0] / warning(none), maneuver(cruise)
+' T8
+DriverOverride --> Normal : [obj_count = 0] / warning(none), maneuver(cruise)
+
+' ---------- driver override (F3.3: accel precedence, except in critical) ----------
+' T9
+Normal --> DriverOverride : [driver_accel_request = true and min_ttc > 3.0] / maneuver(driver_accelerate), warning(none)
+' T10
+Caution --> DriverOverride : [driver_accel_request = true and min_ttc <= 3.0 and min_ttc > 1.5] / maneuver(driver_accelerate), warning(caution)
+' T11
+DriverOverride --> Normal : [driver_accel_request = false and min_ttc > 3.0] / maneuver(cruise), warning(none)
+' T12
+DriverOverride --> Caution : [driver_accel_request = false and min_ttc <= 3.0 and min_ttc > 1.5] / maneuver(deceleration), warning(caution)
+' T13
+DriverOverride --> EmergencyBrake : [min_ttc <= 1.5] / warning(imminent_collision), maneuver(emergency_deceleration), checked_cmd(decel >= 6.0, target_speed = 0)
+' NOTE: there is deliberately NO EmergencyBrake --> DriverOverride transition (F3.3 forbids it).
+
+' ---------- fault / deactivation (synthetic states, declared in README OI-5) ----------
+' T14
+Normal --> FaultDegraded : [sensor_validity = false] / warning(none), maneuver(cruise)
+' T15
+Caution --> FaultDegraded : [sensor_validity = false] / warning(caution), maneuver(deceleration)
+' T16
+EmergencyBrake --> FaultDegraded : [sensor_validity = false] / warning(imminent_collision), maneuver(emergency_deceleration)
+' T17
+DriverOverride --> FaultDegraded : [sensor_validity = false] / warning(none), maneuver(driver_accelerate)
+' T18
+FaultDegraded --> Normal : [sensor_validity = true and min_ttc > 3.0] / warning(none), maneuver(cruise)
+' T19
+FaultDegraded --> Caution : [sensor_validity = true and min_ttc <= 3.0 and min_ttc > 1.5] / warning(caution), maneuver(deceleration)
+' T20
+FaultDegraded --> EmergencyBrake : [sensor_validity = true and min_ttc <= 1.5] / warning(imminent_collision), maneuver(emergency_deceleration), checked_cmd(decel >= 6.0, target_speed = 0)
+
+' T21
+Normal --> Deactivated : [odd_active = false] / warning(none), maneuver(cruise)
+' T22
+Caution --> Deactivated : [odd_active = false] / warning(none), maneuver(cruise)
+' T23
+EmergencyBrake --> Deactivated : [odd_active = false] / warning(none), maneuver(cruise)
+' T24
+DriverOverride --> Deactivated : [odd_active = false] / warning(none), maneuver(cruise)
+' T25
+FaultDegraded --> Deactivated : [odd_active = false] / warning(none), maneuver(cruise)
+' T26
+Deactivated --> Normal : [odd_active = true] / warning(none), maneuver(cruise)
+
+note right of EmergencyBrake
+  A-1: A_emergency = 6.0 m/s2
+  F3.3: target speed = 0
+  N-2: warning no later than TTC = 2.0 s
+  F3.3: driver accel cannot override critical
+end note
+
+@enduml

@@ -1,0 +1,75 @@
+{
+  "L0": {
+    "contracts_before": 21,
+    "contracts_after": 30,
+    "contracts_added": 9,
+    "contracts_removed": 0,
+    "contracts_modified": 9,
+    "contract_edits": 18,
+    "new_type_fields": 5,
+    "new_field_detail": [
+      [
+        "TrajectorySet",
+        [
+          "min_gap",
+          "decel_limit",
+          "lateral_accel"
+        ]
+      ],
+      [
+        "PredictedTrajectory",
+        [
+          "lead_gap",
+          "lead_speed"
+        ]
+      ]
+    ],
+    "added_detail": [
+      "Control | post | if actuator_cmd.accel_cmd&gt;0 => actuator_cmd.accel_cmd&lt;=2.0",
+      "Control | post | if true => actuator_cmd.brake_cmd&gt;=trajectory.decel_limit",
+      "Motion_Planning | post | if predicted_trajectories.lead_gap&gt;=0 => trajectory.min_gap&lt;=predicted_trajectories.lead_gap",
+      "Motion_Planning | post | if true => trajectory.decel_limit&gt;=4.0",
+      "Motion_Planning | post | if true => trajectory.lateral_accel&gt;=0",
+      "Motion_Planning | post | if true => trajectory.min_gap&gt;=0",
+      "Prediction | post | if true => predicted_trajectories.lead_gap&gt;=0 and predicted_trajectories.lead_speed&gt;=0",
+      "Safety_Shield | post | if actuator_cmd.accel_cmd&gt;0 => checked_cmd.accel_cmd&lt;=2.0",
+      "Safety_Shield | post | if actuator_cmd.brake_cmd&gt;0 => checked_cmd.brake_cmd&gt;=4.0"
+    ]
+  },
+  "L1": {
+    "contracts_before": 15,
+    "contracts_after": 15,
+    "contracts_added": 1,
+    "contracts_removed": 1,
+    "contracts_modified": 1,
+    "contract_edits": 3,
+    "new_type_fields": 0,
+    "new_field_detail": [],
+    "added_detail": [
+      "PlanManeuver | pre | risk_level.risk_value&gt;=0 and ego_state.speed&gt;=0 and ego_state.speed&lt;=130.0 and driver_intent.cruise_speed&gt;=0 and route.path_length&gt;0 and map_data.speed_limit&gt;=0"
+    ]
+  },
+  "traceability": {
+    "m1_rows": 13,
+    "m11_rows": 21,
+    "added": [
+      "A-2",
+      "A-6",
+      "A-7",
+      "N-1",
+      "N-3",
+      "N-4",
+      "N-5",
+      "N-7"
+    ],
+    "removed": []
+  },
+  "summary": {
+    "contract_edits": 21,
+    "contracts_after": 45,
+    "contract_edit_ratio": 0.4667,
+    "new_type_fields": 5,
+    "traceability_rows_added": 8,
+    "total_edits": 34
+  }
+}

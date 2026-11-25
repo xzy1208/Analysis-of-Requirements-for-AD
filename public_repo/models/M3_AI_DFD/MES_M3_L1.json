@@ -1,0 +1,573 @@
+﻿{
+  "model_id": "M3",
+  "model_title": "LLM-generated structured DFD (Yourdon/DeMarco) - Level 1, F3 AEB branch",
+  "level": "L1",
+  "parent_module": "M3_L0",
+  "provenance": {
+    "producer": "llm",
+    "llm_family": "Tencent Hunyuan 4 Flash",
+    "generation_date": "2026-11-18",
+    "passes": 1,
+    "prompt_summary": "Generate a single-pass Level 1 DFD refining the AEB branch of F3 (F3.1/F3.2/F3.3), balanced with the Level 0 parent, thresholds only from spec sections 7 and 8.",
+    "self_review_performed": false
+  },
+  "elements": [
+    {
+      "id": "F3.1",
+      "kind": "function",
+      "name": "TTC_Computation",
+      "responsibility": "Compute per-object TTC and report the minimum TTC with the number of objects considered.",
+      "inputs": [
+        {
+          "name": "predicted_trajectories",
+          "source": "F2"
+        },
+        {
+          "name": "ego_state",
+          "source": "F1"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "ttc_set",
+          "consumers": [
+            "F3.2"
+          ]
+        }
+      ],
+      "stores_read": [],
+      "stores_written": [],
+      "preconditions": [
+        "predicted_trajectories.horizon >= 3.0",
+        "ego_state.speed >= 0"
+      ],
+      "postconditions": [
+        {
+          "guard": "true",
+          "effect": "ttc_set.min_ttc >= 0 and ttc_set.min_ttc <= 3.0"
+        },
+        {
+          "guard": "ttc_set.count = 0",
+          "effect": "ttc_set.min_ttc = 0"
+        }
+      ],
+      "quantified": true,
+      "invariants": [],
+      "notes": "Inputs F2/F1 resolve in parent MES_M3_L0.json."
+    },
+    {
+      "id": "F3.2",
+      "kind": "function",
+      "name": "Risk_Classification",
+      "responsibility": "Classify the situation into no-risk, caution and critical from the minimum TTC and raise the driver warning.",
+      "inputs": [
+        {
+          "name": "ttc_set",
+          "source": "F3.1"
+        },
+        {
+          "name": "traffic_rules",
+          "source": "D4"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "risk_level",
+          "consumers": [
+            "F3.3"
+          ]
+        },
+        {
+          "name": "warning",
+          "consumers": [
+            "E7"
+          ]
+        }
+      ],
+      "stores_read": [
+        "D4"
+      ],
+      "stores_written": [],
+      "preconditions": [
+        "ttc_set.min_ttc >= 0",
+        "traffic_rules.speed_limit >= 0"
+      ],
+      "postconditions": [
+        {
+          "guard": "ttc_set.min_ttc > 3.0",
+          "effect": "risk_level = 0 and warning.active = 0 and warning.type = 0"
+        },
+        {
+          "guard": "ttc_set.min_ttc <= 3.0 and ttc_set.min_ttc > 1.5",
+          "effect": "risk_level = 1 and warning.active = 1 and warning.type = 1"
+        },
+        {
+          "guard": "ttc_set.min_ttc <= 1.5",
+          "effect": "risk_level = 2 and warning.active = 1 and warning.type = 2"
+        }
+      ],
+      "quantified": true,
+      "invariants": [],
+      "notes": "Warning type: 0 none, 1 caution, 2 imminent collision; FCW timing N-2."
+    },
+    {
+      "id": "F3.3",
+      "kind": "function",
+      "name": "Maneuver_Planning",
+      "responsibility": "Produce cruise, deceleration and emergency-deceleration manoeuvres from the risk level, respecting driver intent.",
+      "inputs": [
+        {
+          "name": "risk_level",
+          "source": "F3.2"
+        },
+        {
+          "name": "ego_state",
+          "source": "F1"
+        },
+        {
+          "name": "driver_intent",
+          "source": "E3"
+        },
+        {
+          "name": "route",
+          "source": "F4"
+        },
+        {
+          "name": "hd_map_segment",
+          "source": "D1"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "manoeuvre",
+          "consumers": [
+            "F5"
+          ]
+        }
+      ],
+      "stores_read": [
+        "D1"
+      ],
+      "stores_written": [],
+      "preconditions": [
+        "risk_level >= 0 and risk_level <= 2",
+        "driver_intent.requested_speed >= 0",
+        "route.path_length > 0"
+      ],
+      "postconditions": [
+        {
+          "guard": "risk_level = 0",
+          "effect": "manoeuvre.type = 0 and manoeuvre.target_speed >= 0"
+        },
+        {
+          "guard": "risk_level = 1",
+          "effect": "manoeuvre.type = 1 and manoeuvre.required_decel > 0"
+        },
+        {
+          "guard": "risk_level = 2",
+          "effect": "manoeuvre.type = 2 and manoeuvre.required_decel >= 6.0 and manoeuvre.target_speed = 0"
+        },
+        {
+          "guard": "risk_level = 2 and driver_intent.accelerate = 1",
+          "effect": "manoeuvre.required_decel >= 6.0"
+        },
+        {
+          "guard": "risk_level = 0 and driver_intent.accelerate = 1",
+          "effect": "manoeuvre.target_speed >= driver_intent.requested_speed"
+        },
+        {
+          "guard": "risk_level = 1 and driver_intent.accelerate = 1",
+          "effect": "manoeuvre.target_speed >= driver_intent.requested_speed"
+        }
+      ],
+      "quantified": true,
+      "invariants": [],
+      "notes": "A-1 emergency deceleration 6.0 m/s2 sized from N-3/N-4."
+    }
+  ],
+  "stores": [
+    {
+      "id": "D1",
+      "name": "HD_Map_Store",
+      "content": [
+        "road_id",
+        "lane_id",
+        "speed_limit",
+        "curvature",
+        "lane_topology"
+      ],
+      "owner": "F5/F1",
+      "writers": [
+        "E5"
+      ],
+      "readers": [
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5"
+      ],
+      "persistent": true,
+      "level": "parent"
+    },
+    {
+      "id": "D4",
+      "name": "Traffic_Rules_Store",
+      "content": [
+        "speed_limit",
+        "signal_state"
+      ],
+      "owner": "F5",
+      "writers": [
+        "E6"
+      ],
+      "readers": [
+        "F3",
+        "F5",
+        "F7"
+      ],
+      "persistent": true,
+      "level": "parent"
+    }
+  ],
+  "externals": [
+    {
+      "id": "E3",
+      "name": "driver_intent",
+      "direction": "in",
+      "content": [
+        "requested_speed",
+        "override",
+        "driver_attention"
+      ],
+      "consumers": [
+        "F3.3"
+      ],
+      "level": "parent"
+    },
+    {
+      "id": "E7",
+      "name": "warning",
+      "direction": "out",
+      "content": [
+        "warning_type",
+        "active_flag"
+      ],
+      "consumers": [],
+      "level": "parent"
+    }
+  ],
+  "flows": [
+    {
+      "name": "predicted_trajectories",
+      "producer": "F2",
+      "consumer": "F3.1",
+      "kind": "boundary_in",
+      "carries": [
+        "predicted_trajectories"
+      ]
+    },
+    {
+      "name": "ego_state",
+      "producer": "F1",
+      "consumer": "F3.1",
+      "kind": "boundary_in",
+      "carries": [
+        "ego_state"
+      ]
+    },
+    {
+      "name": "ttc_set",
+      "producer": "F3.1",
+      "consumer": "F3.2",
+      "kind": "active",
+      "carries": [
+        "ttc_set"
+      ]
+    },
+    {
+      "name": "traffic_rules",
+      "producer": "D4",
+      "consumer": "F3.2",
+      "kind": "store_read",
+      "carries": [
+        "traffic_rules"
+      ]
+    },
+    {
+      "name": "risk_level",
+      "producer": "F3.2",
+      "consumer": "F3.3",
+      "kind": "active",
+      "carries": [
+        "risk_level"
+      ]
+    },
+    {
+      "name": "warning",
+      "producer": "F3.2",
+      "consumer": "E7",
+      "kind": "boundary_out",
+      "carries": [
+        "warning"
+      ]
+    },
+    {
+      "name": "ego_state",
+      "producer": "F1",
+      "consumer": "F3.3",
+      "kind": "boundary_in",
+      "carries": [
+        "ego_state"
+      ]
+    },
+    {
+      "name": "driver_intent",
+      "producer": "E3",
+      "consumer": "F3.3",
+      "kind": "boundary_in",
+      "carries": [
+        "driver_intent"
+      ]
+    },
+    {
+      "name": "route",
+      "producer": "F4",
+      "consumer": "F3.3",
+      "kind": "boundary_in",
+      "carries": [
+        "route"
+      ]
+    },
+    {
+      "name": "hd_map_segment",
+      "producer": "D1",
+      "consumer": "F3.3",
+      "kind": "store_read",
+      "carries": [
+        "hd_map_segment"
+      ]
+    },
+    {
+      "name": "manoeuvre",
+      "producer": "F3.3",
+      "consumer": "F5",
+      "kind": "boundary_out",
+      "carries": [
+        "manoeuvre"
+      ]
+    }
+  ],
+  "traceability": [
+    {
+      "requirement": "R-SCOPE-4",
+      "elements": [
+        "F3.1",
+        "F3.2",
+        "F3.3"
+      ],
+      "realised_by": "level split",
+      "note": "Exactly one Level-0 function refined."
+    },
+    {
+      "requirement": "R-L1-1",
+      "elements": [
+        "F3.1",
+        "F3.2",
+        "F3.3"
+      ],
+      "realised_by": "processes",
+      "note": "Exactly three sub-functions."
+    },
+    {
+      "requirement": "R-E-1",
+      "elements": [
+        "E7",
+        "F3.2"
+      ],
+      "realised_by": "boundary_out flow",
+      "note": "Warning is one of the two system outputs."
+    },
+    {
+      "requirement": "R-G-1",
+      "elements": [
+        "F3.1",
+        "F3.2",
+        "F3.3"
+      ],
+      "realised_by": "preconditions and postconditions",
+      "note": ""
+    },
+    {
+      "requirement": "R-G-4",
+      "elements": [
+        "F3.1",
+        "F3.2",
+        "F3.3"
+      ],
+      "realised_by": "flows",
+      "note": "ego_state split into two named flows, allowed because spec names both consumers."
+    },
+    {
+      "requirement": "R-G-6",
+      "elements": [
+        "F3.1",
+        "F3.2",
+        "F3.3"
+      ],
+      "realised_by": "field-level guards",
+      "note": "Field-level guards only; disjunction and negation are excluded."
+    },
+    {
+      "requirement": "F3.1",
+      "elements": [
+        "F3.1"
+      ],
+      "realised_by": "process",
+      "note": ""
+    },
+    {
+      "requirement": "F3.2",
+      "elements": [
+        "F3.2"
+      ],
+      "realised_by": "process",
+      "note": ""
+    },
+    {
+      "requirement": "F3.3",
+      "elements": [
+        "F3.3"
+      ],
+      "realised_by": "process",
+      "note": ""
+    },
+    {
+      "requirement": "D1",
+      "elements": [
+        "D1"
+      ],
+      "realised_by": "store",
+      "note": "parent-owned"
+    },
+    {
+      "requirement": "D4",
+      "elements": [
+        "D4"
+      ],
+      "realised_by": "store",
+      "note": "parent-owned"
+    },
+    {
+      "requirement": "E3",
+      "elements": [
+        "E3"
+      ],
+      "realised_by": "external entity",
+      "note": "parent-owned"
+    },
+    {
+      "requirement": "E7",
+      "elements": [
+        "E7"
+      ],
+      "realised_by": "external entity",
+      "note": "parent-owned"
+    },
+    {
+      "requirement": "N-1",
+      "elements": [
+        "F3.3"
+      ],
+      "realised_by": "postcondition",
+      "note": "AEB operational up to 130 km/h (sizing context for A-1)."
+    },
+    {
+      "requirement": "N-2",
+      "elements": [
+        "F3.2"
+      ],
+      "realised_by": "postcondition",
+      "note": "Warning no later than TTC = 2.0 s."
+    },
+    {
+      "requirement": "N-3",
+      "elements": [
+        "F3.3"
+      ],
+      "realised_by": "postcondition",
+      "note": "Impact-speed reduction sizing A-1."
+    },
+    {
+      "requirement": "N-4",
+      "elements": [
+        "F3.3"
+      ],
+      "realised_by": "postcondition",
+      "note": "CCRm envelope sizing A-1."
+    },
+    {
+      "requirement": "A-1",
+      "elements": [
+        "F3.3"
+      ],
+      "realised_by": "postcondition",
+      "note": "Emergency deceleration 6.0 m/s2."
+    },
+    {
+      "requirement": "A-5",
+      "elements": [
+        "F3.2"
+      ],
+      "realised_by": "postcondition",
+      "note": "Risk thresholds 3.0 / 1.5 s."
+    },
+    {
+      "requirement": "A-7",
+      "elements": [
+        "F3.1",
+        "F2"
+      ],
+      "realised_by": "postcondition",
+      "note": "Prediction horizon 3.0 s."
+    }
+  ],
+  "open_issues": [
+    {
+      "id": "OI-1",
+      "issue": "Whether seven functions suffice for the L2 ODD; a separate driver-monitoring function may be needed.",
+      "related_requirement": "R-SCOPE-1",
+      "impact": "medium"
+    },
+    {
+      "id": "OI-2",
+      "issue": "D3 is written by F1 but read by F6/F7; ownership under R-D-1 is questionable.",
+      "related_requirement": "R-D-1",
+      "impact": "medium"
+    },
+    {
+      "id": "OI-3",
+      "issue": "The specification fixes thresholds yet gives no timing; a cycle-time requirement is needed for the emergency branch to be meaningful.",
+      "related_requirement": "F3.3",
+      "impact": "high"
+    },
+    {
+      "id": "OI-4",
+      "issue": "Whether the AEB branch of F3 is the right Level-1 refinement instead of the F6/F7 actuation chain.",
+      "related_requirement": "R-SCOPE-4",
+      "impact": "medium"
+    },
+    {
+      "id": "OI-5",
+      "issue": "F3's single ego_state input at Level 0 is split into two flows (to F3.1 and F3.3) at Level 1 to preserve parent/child balance.",
+      "related_requirement": "R-G-4",
+      "impact": "low"
+    },
+    {
+      "id": "OI-6",
+      "issue": "Section 5 makes F2 the only TTC-computing function while section 6 makes F3.1 compute the TTC set; both are modelled as written.",
+      "related_requirement": "F3.1",
+      "impact": "low"
+    }
+  ]
+}

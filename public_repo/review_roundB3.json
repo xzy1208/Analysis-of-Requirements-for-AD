@@ -1,0 +1,127 @@
+{
+  "reviewer": "DeepSeek-v4-pro",
+  "reviewer_label": "B",
+  "mode": "blind",
+  "round": 3,
+  "reviews": [
+    {
+      "model": "M1",
+      "level": "L0",
+      "findings": [
+        {
+          "type": "omission",
+          "location": "元素列表 / Safety_Shield；追溯 F-Safety_Shield",
+          "detail": "缺 F7 Safety_Shield，追溯表 F-Safety_Shield -> ['Safety_Shield'] 悬空指向不存在元素。"
+        },
+        {
+          "type": "contradiction",
+          "location": "Behavior_Planning post decel_req==2.0",
+          "detail": "紧急减速度 2.0 违反 A-1=6.0。"
+        },
+        {
+          "type": "condition",
+          "location": "多处 post 的 ==0 与 min_ttc<1.5",
+          "detail": "状态字段写成恒等于 0（==0），风险阈值用开区间 <1.5 而非 ≤1.5，边界算子错误。"
+        },
+        {
+          "type": "flow",
+          "location": "route -> Behavior_Planning",
+          "detail": "前置引用 route.path_length 但无 route 流。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "Perception_Localization pre",
+          "detail": "「输入应在适当时刻有效」模糊前置条件。"
+        }
+      ]
+    },
+    {
+      "model": "M3",
+      "level": "L0",
+      "findings": [
+        {
+          "type": "omission",
+          "location": "元素列表 / F4",
+          "detail": "缺 F4 Route Planning，route 无生产者。"
+        },
+        {
+          "type": "flow",
+          "location": "actuator_cmd F6->E9，无 E9->F7",
+          "detail": "F6 原始命令绕过 F7 仲裁，违反 R-E-2。"
+        },
+        {
+          "type": "condition",
+          "location": "F6/F7 steering == -1.0；F1/F2 ==0",
+          "detail": "保留条件压缩到单点，状态字段恒等于 0，边界/量词错误。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "F1 pre",
+          "detail": "「输入应在适当时刻有效」模糊前置条件。"
+        }
+      ]
+    },
+    {
+      "model": "M4",
+      "level": "L0",
+      "findings": [
+        {
+          "type": "omission",
+          "location": "元素列表 / F4",
+          "detail": "缺 F4 Route Planning。"
+        },
+        {
+          "type": "flow",
+          "location": "ego_state: D3 -> F6",
+          "detail": "F6 无 ego_state 输入流，违反 R-G-4。"
+        },
+        {
+          "type": "contradiction",
+          "location": "F3 critical required_decel_ms2 == 2.0",
+          "detail": "紧急减速度 2.0 违反 A-1=6.0。"
+        },
+        {
+          "type": "condition",
+          "location": "F6/F7 accel==-2.0、steering==-1.0",
+          "detail": "包络约束压缩到单点，A-3/A-6 语义错误。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "F1 pre",
+          "detail": "「输入应在适当时刻有效」模糊前置条件。"
+        }
+      ]
+    },
+    {
+      "model": "M5",
+      "level": "L1",
+      "findings": [
+        {
+          "type": "contradiction",
+          "location": "EmergencyBrake / T3/T13/T20/T27 ==2.0",
+          "detail": "紧急减速度 2.0 违反 A-1=6.0。"
+        },
+        {
+          "type": "condition",
+          "location": "T17 pre",
+          "detail": "未排除 critical，紧急机动可被驾驶员加速覆盖，违反 F3.3。"
+        },
+        {
+          "type": "condition",
+          "location": "T12 caution 下 driver_accel",
+          "detail": "caution 级别驾驶员加速未优先，与 F3.3 矛盾。"
+        },
+        {
+          "type": "omission",
+          "location": "FaultDegraded / Deactivated",
+          "detail": "规格未要求的合成状态被引入。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "T1 pre",
+          "detail": "「输入应在适当时刻有效」模糊前置条件。"
+        }
+      ]
+    }
+  ]
+}

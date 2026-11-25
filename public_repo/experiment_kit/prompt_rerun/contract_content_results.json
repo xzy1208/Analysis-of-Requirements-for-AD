@@ -1,0 +1,352 @@
+[
+  {
+    "label": "D2 Hunyuan family ban",
+    "pre": {
+      "T1": 0,
+      "T2": 5,
+      "T3": 24,
+      "T4": 3
+    },
+    "pre_rate": 0.094,
+    "pre_n": 32,
+    "post_strict": {
+      "T1": 0,
+      "T2": 0,
+      "T3": 19,
+      "T4": 58
+    },
+    "post_strict_rate": 0.753,
+    "post_strict_n": 77,
+    "post_guard": {
+      "T1": 0,
+      "T2": 9,
+      "T3": 30,
+      "T4": 55
+    },
+    "post_guard_rate": 0.585,
+    "post_guard_n": 94,
+    "post_all": {
+      "T1": 0,
+      "T2": 9,
+      "T3": 49,
+      "T4": 113
+    },
+    "post_all_rate": 0.661,
+    "post_all_n": 171
+  },
+  {
+    "label": "B3 MiniMax no ban (current)",
+    "pre": {
+      "T1": 95,
+      "T2": 3,
+      "T3": 0,
+      "T4": 0
+    },
+    "pre_rate": 0.0,
+    "pre_n": 98,
+    "post_strict": {
+      "T1": 20,
+      "T2": 0,
+      "T3": 54,
+      "T4": 176
+    },
+    "post_strict_rate": 0.704,
+    "post_strict_n": 250,
+    "post_guard": {
+      "T1": 10,
+      "T2": 0,
+      "T3": 20,
+      "T4": 118
+    },
+    "post_guard_rate": 0.797,
+    "post_guard_n": 148,
+    "post_all": {
+      "T1": 30,
+      "T2": 0,
+      "T3": 74,
+      "T4": 294
+    },
+    "post_all_rate": 0.739,
+    "post_all_n": 398
+  },
+  {
+    "label": "B4 MiniMax no ban (current)",
+    "pre": {
+      "T1": 1,
+      "T2": 0,
+      "T3": 30,
+      "T4": 0
+    },
+    "pre_rate": 0.0,
+    "pre_n": 31,
+    "post_strict": {
+      "T1": 5,
+      "T2": 0,
+      "T3": 36,
+      "T4": 71
+    },
+    "post_strict_rate": 0.634,
+    "post_strict_n": 112,
+    "post_guard": {
+      "T1": 1,
+      "T2": 0,
+      "T3": 69,
+      "T4": 64
+    },
+    "post_guard_rate": 0.478,
+    "post_guard_n": 134,
+    "post_all": {
+      "T1": 6,
+      "T2": 0,
+      "T3": 105,
+      "T4": 135
+    },
+    "post_all_rate": 0.549,
+    "post_all_n": 246
+  },
+  {
+    "label": "D1 MiniMax family ban",
+    "pre": {
+      "T1": 0,
+      "T2": 33,
+      "T3": 5,
+      "T4": 0
+    },
+    "pre_rate": 0.0,
+    "pre_n": 38,
+    "post_strict": {
+      "T1": 0,
+      "T2": 12,
+      "T3": 15,
+      "T4": 51
+    },
+    "post_strict_rate": 0.654,
+    "post_strict_n": 78,
+    "post_guard": {
+      "T1": 0,
+      "T2": 16,
+      "T3": 8,
+      "T4": 28
+    },
+    "post_guard_rate": 0.538,
+    "post_guard_n": 52,
+    "post_all": {
+      "T1": 0,
+      "T2": 28,
+      "T3": 23,
+      "T4": 79
+    },
+    "post_all_rate": 0.608,
+    "post_all_n": 130
+  },
+  {
+    "label": "A2 MiniMax single ban",
+    "pre": {
+      "T1": 3,
+      "T2": 8,
+      "T3": 29,
+      "T4": 4
+    },
+    "pre_rate": 0.091,
+    "pre_n": 44,
+    "post_strict": {
+      "T1": 1,
+      "T2": 5,
+      "T3": 18,
+      "T4": 50
+    },
+    "post_strict_rate": 0.676,
+    "post_strict_n": 74,
+    "post_guard": {
+      "T1": 0,
+      "T2": 4,
+      "T3": 15,
+      "T4": 34
+    },
+    "post_guard_rate": 0.642,
+    "post_guard_n": 53,
+    "post_all": {
+      "T1": 1,
+      "T2": 9,
+      "T3": 33,
+      "T4": 84
+    },
+    "post_all_rate": 0.661,
+    "post_all_n": 127
+  },
+  {
+    "label": "C1 Hunyuan single ban",
+    "pre": {
+      "T1": 9,
+      "T2": 5,
+      "T3": 23,
+      "T4": 3
+    },
+    "pre_rate": 0.075,
+    "pre_n": 40,
+    "post_strict": {
+      "T1": 2,
+      "T2": 0,
+      "T3": 20,
+      "T4": 56
+    },
+    "post_strict_rate": 0.718,
+    "post_strict_n": 78,
+    "post_guard": {
+      "T1": 3,
+      "T2": 7,
+      "T3": 27,
+      "T4": 55
+    },
+    "post_guard_rate": 0.598,
+    "post_guard_n": 92,
+    "post_all": {
+      "T1": 5,
+      "T2": 7,
+      "T3": 47,
+      "T4": 111
+    },
+    "post_all_rate": 0.653,
+    "post_all_n": 170
+  },
+  {
+    "label": "B2 Hunyuan no ban",
+    "pre": {
+      "T1": 2,
+      "T2": 39,
+      "T3": 1,
+      "T4": 0
+    },
+    "pre_rate": 0.0,
+    "pre_n": 42,
+    "post_strict": {
+      "T1": 8,
+      "T2": 20,
+      "T3": 13,
+      "T4": 35
+    },
+    "post_strict_rate": 0.461,
+    "post_strict_n": 76,
+    "post_guard": {
+      "T1": 0,
+      "T2": 15,
+      "T3": 8,
+      "T4": 16
+    },
+    "post_guard_rate": 0.41,
+    "post_guard_n": 39,
+    "post_all": {
+      "T1": 8,
+      "T2": 35,
+      "T3": 21,
+      "T4": 51
+    },
+    "post_all_rate": 0.443,
+    "post_all_n": 115
+  },
+  {
+    "label": "B1 Hunyuan no ban",
+    "pre": {
+      "T1": 34,
+      "T2": 0,
+      "T3": 0,
+      "T4": 0
+    },
+    "pre_rate": 0.0,
+    "pre_n": 34,
+    "post_strict": {
+      "T1": 3,
+      "T2": 0,
+      "T3": 16,
+      "T4": 53
+    },
+    "post_strict_rate": 0.736,
+    "post_strict_n": 72,
+    "post_guard": {
+      "T1": 14,
+      "T2": 3,
+      "T3": 18,
+      "T4": 49
+    },
+    "post_guard_rate": 0.583,
+    "post_guard_n": 84,
+    "post_all": {
+      "T1": 17,
+      "T2": 3,
+      "T3": 34,
+      "T4": 102
+    },
+    "post_all_rate": 0.654,
+    "post_all_n": 156
+  },
+  {
+    "label": "M1 manual",
+    "pre": {
+      "T1": 0,
+      "T2": 2,
+      "T3": 26,
+      "T4": 1
+    },
+    "pre_rate": 0.034,
+    "pre_n": 29,
+    "post_strict": {
+      "T1": 0,
+      "T2": 0,
+      "T3": 24,
+      "T4": 27
+    },
+    "post_strict_rate": 0.529,
+    "post_strict_n": 51,
+    "post_guard": {
+      "T1": 10,
+      "T2": 0,
+      "T3": 7,
+      "T4": 11
+    },
+    "post_guard_rate": 0.393,
+    "post_guard_n": 28,
+    "post_all": {
+      "T1": 10,
+      "T2": 0,
+      "T3": 31,
+      "T4": 38
+    },
+    "post_all_rate": 0.481,
+    "post_all_n": 79
+  },
+  {
+    "label": "M2 MiniMax no ban",
+    "pre": {
+      "T1": 37,
+      "T2": 0,
+      "T3": 0,
+      "T4": 0
+    },
+    "pre_rate": 0.0,
+    "pre_n": 37,
+    "post_strict": {
+      "T1": 20,
+      "T2": 0,
+      "T3": 24,
+      "T4": 37
+    },
+    "post_strict_rate": 0.457,
+    "post_strict_n": 81,
+    "post_guard": {
+      "T1": 33,
+      "T2": 0,
+      "T3": 14,
+      "T4": 18
+    },
+    "post_guard_rate": 0.277,
+    "post_guard_n": 65,
+    "post_all": {
+      "T1": 53,
+      "T2": 0,
+      "T3": 38,
+      "T4": 55
+    },
+    "post_all_rate": 0.377,
+    "post_all_n": 146
+  }
+]

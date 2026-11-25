@@ -1,0 +1,1111 @@
+{
+  "model_id": "M1.1",
+  "model_title": "Human-modelled SOFL baseline",
+  "level": "L0",
+  "parent_module": null,
+  "provenance": {
+    "producer": "human",
+    "llm_family": null,
+    "generation_date": "2026-11-24",
+    "passes": 1,
+    "prompt_summary": "manual modelling with SOFL supporting tool from NL-RQ-ADAS-v1",
+    "self_review_performed": false
+  },
+  "elements": [
+    {
+      "id": "Perception_Localization",
+      "kind": "function",
+      "name": "Perception_Localization",
+      "responsibility": "Fuse sensor frames into a tracked-object table, identify the lead object, and compute ego state (pose, speed, yaw rate, acceleration); write D2 and D3.",
+      "inputs": [
+        {
+          "name": "map_data",
+          "source": ""
+        },
+        {
+          "name": "raw_sensor_data",
+          "source": ""
+        },
+        {
+          "name": "gnss_imu",
+          "source": ""
+        }
+      ],
+      "outputs": [
+        {
+          "name": "objects",
+          "consumers": []
+        },
+        {
+          "name": "ego_pose",
+          "consumers": []
+        },
+        {
+          "name": "ego_pose",
+          "consumers": []
+        }
+      ],
+      "stores_read": [
+        "HD_Map_DB"
+      ],
+      "stores_written": [
+        "Object_Track_DB"
+      ],
+      "preconditions": [
+        "raw_sensor_data.valid=1 and gnss_imu.valid=1 and map_data.speed_limit>=0"
+      ],
+      "postconditions": [
+        {
+          "guard": "true",
+          "effect": "objects.lead_speed>=0 and ego_pose.yaw_rate>-3.5 and ego_pose.yaw_rate<3.5"
+        }
+      ],
+      "quantified": true,
+      "invariants": [],
+      "notes": "extracted from validated SOFL artifacts"
+    },
+    {
+      "id": "Prediction",
+      "kind": "function",
+      "name": "Prediction",
+      "responsibility": "Predict each relevant object's future motion over at least 3 s and derive the minimum TTC; the only TTC producer; writes no store.",
+      "inputs": [
+        {
+          "name": "map_data",
+          "source": ""
+        },
+        {
+          "name": "objects",
+          "source": ""
+        },
+        {
+          "name": "ego_pose",
+          "source": ""
+        }
+      ],
+      "outputs": [
+        {
+          "name": "predicted_trajectories",
+          "consumers": []
+        },
+        {
+          "name": "predicted_trajectories",
+          "consumers": []
+        }
+      ],
+      "stores_read": [
+        "HD_Map_DB",
+        "Object_Track_DB"
+      ],
+      "stores_written": [],
+      "preconditions": [
+        "objects.lead_speed>=0 and ego_pose.speed>=0 and map_data.speed_limit>=0"
+      ],
+      "postconditions": [
+        {
+          "guard": "true",
+          "effect": "predicted_trajectories.count>=0 and predicted_trajectories.min_ttc>=0"
+        },
+        {
+          "guard": "true",
+          "effect": "predicted_trajectories.lead_gap>=0 and predicted_trajectories.lead_speed>=0"
+        }
+      ],
+      "quantified": false,
+      "invariants": [],
+      "notes": "extracted from validated SOFL artifacts"
+    },
+    {
+      "id": "Behavior_Planning",
+      "kind": "function",
+      "name": "Behavior_Planning",
+      "responsibility": "Decide the target manoeuvre (cruise, keep lane, lane change, deceleration, emergency braking), target speed and required deceleration; issue driver warning; respect traffic rules and driver intent.",
+      "inputs": [
+        {
+          "name": "map_data",
+          "source": ""
+        },
+        {
+          "name": "ego_state",
+          "source": ""
+        },
+        {
+          "name": "traffic_rules",
+          "source": ""
+        },
+        {
+          "name": "predicted_trajectories",
+          "source": ""
+        },
+        {
+          "name": "driver_intent",
+          "source": ""
+        },
+        {
+          "name": "route",
+          "source": ""
+        }
+      ],
+      "outputs": [
+        {
+          "name": "maneuver",
+          "consumers": []
+        },
+        {
+          "name": "warning",
+          "consumers": []
+        }
+      ],
+      "stores_read": [
+        "Ego_State_DB",
+        "HD_Map_DB",
+        "Traffic_Rules_DB"
+      ],
+      "stores_written": [],
+      "preconditions": [
+        "ego_state.speed>=0 and driver_intent.cruise_speed>=0 and route.path_length>0 and traffic_rules.speed_limit>0"
+      ],
+      "postconditions": [
+        {
+          "guard": "true",
+          "effect": "maneuver.target_speed>=0 and maneuver.decel_req>=0"
+        },
+        {
+          "guard": "predicted_trajectories.min_ttc<1.5",
+          "effect": "maneuver.maneuver_type=3 and maneuver.decel_req>=6.0 and warning.warn_active=1"
+        },
+        {
+          "guard": "predicted_trajectories.min_ttc>=1.5",
+          "effect": "maneuver.maneuver_type<>3"
+        },
+        {
+          "guard": "traffic_rules.speed_limit>0",
+          "effect": "maneuver.target_speed<=traffic_rules.speed_limit"
+        }
+      ],
+      "quantified": true,
+      "invariants": [],
+      "notes": "extracted from validated SOFL artifacts"
+    },
+    {
+      "id": "Safety_Shield",
+      "kind": "function",
+      "name": "Safety_Shield",
+      "responsibility": "Monitor and arbitrate the raw command so the output satisfies the safety envelope even when the input violates it; preserve steering unless it violates the envelope; enforce traffic rules.",
+      "inputs": [
+        {
+          "name": "ego_state",
+          "source": ""
+        },
+        {
+          "name": "traffic_rules",
+          "source": ""
+        },
+        {
+          "name": "actuator_cmd",
+          "source": ""
+        }
+      ],
+      "outputs": [
+        {
+          "name": "checked_cmd",
+          "consumers": []
+        }
+      ],
+      "stores_read": [
+        "Ego_State_DB",
+        "Traffic_Rules_DB"
+      ],
+      "stores_written": [],
+      "preconditions": [
+        "ego_state.speed>=0 and actuator_cmd.brake_cmd>=0"
+      ],
+      "postconditions": [
+        {
+          "guard": "true",
+          "effect": "checked_cmd.steer_cmd=actuator_cmd.steer_cmd and checked_cmd.accel_cmd<=3.0 and checked_cmd.brake_cmd>=0 and checked_cmd.steer_cmd>-1.0 and checked_cmd.steer_cmd<1.0"
+        },
+        {
+          "guard": "actuator_cmd.accel_cmd>3.0",
+          "effect": "checked_cmd.accel_cmd<=3.0"
+        },
+        {
+          "guard": "traffic_rules.red_light=1",
+          "effect": "checked_cmd.brake_cmd>=0.5"
+        },
+        {
+          "guard": "actuator_cmd.brake_cmd>0",
+          "effect": "checked_cmd.brake_cmd>=4.0"
+        },
+        {
+          "guard": "actuator_cmd.accel_cmd>0",
+          "effect": "checked_cmd.accel_cmd<=2.0"
+        }
+      ],
+      "quantified": true,
+      "invariants": [],
+      "notes": "extracted from validated SOFL artifacts"
+    },
+    {
+      "id": "Motion_Planning",
+      "kind": "function",
+      "name": "Motion_Planning",
+      "responsibility": "Convert the manoeuvre into a kinematically feasible trajectory with maximum speed, acceleration and horizon; never exceed the speed limit; honour the required deceleration.",
+      "inputs": [
+        {
+          "name": "map_data",
+          "source": ""
+        },
+        {
+          "name": "ego_state",
+          "source": ""
+        },
+        {
+          "name": "traffic_rules",
+          "source": ""
+        },
+        {
+          "name": "predicted_trajectories",
+          "source": ""
+        },
+        {
+          "name": "maneuver",
+          "source": ""
+        },
+        {
+          "name": "route",
+          "source": ""
+        }
+      ],
+      "outputs": [
+        {
+          "name": "trajectory",
+          "consumers": []
+        }
+      ],
+      "stores_read": [
+        "Ego_State_DB",
+        "HD_Map_DB",
+        "Traffic_Rules_DB"
+      ],
+      "stores_written": [],
+      "preconditions": [
+        "maneuver.target_speed>=0 and ego_state.speed>=0 and map_data.speed_limit>=0"
+      ],
+      "postconditions": [
+        {
+          "guard": "true",
+          "effect": "trajectory.horizon>0 and trajectory.max_speed>=0 and trajectory.max_accel<=3.0"
+        },
+        {
+          "guard": "traffic_rules.speed_limit>0",
+          "effect": "trajectory.max_speed<=traffic_rules.speed_limit"
+        },
+        {
+          "guard": "maneuver.maneuver_type=3",
+          "effect": "trajectory.max_accel<=-6.0"
+        },
+        {
+          "guard": "true",
+          "effect": "trajectory.decel_limit>=4.0"
+        },
+        {
+          "guard": "true",
+          "effect": "trajectory.min_gap>=0"
+        },
+        {
+          "guard": "predicted_trajectories.lead_gap>=0",
+          "effect": "trajectory.min_gap<=predicted_trajectories.lead_gap"
+        },
+        {
+          "guard": "true",
+          "effect": "trajectory.lateral_accel>=0"
+        }
+      ],
+      "quantified": true,
+      "invariants": [],
+      "notes": "extracted from validated SOFL artifacts"
+    },
+    {
+      "id": "Control",
+      "kind": "function",
+      "name": "Control",
+      "responsibility": "Convert the trajectory into actuator commands (longitudinal acceleration, brake, steering) inside the actuator envelope.",
+      "inputs": [
+        {
+          "name": "ego_state",
+          "source": ""
+        },
+        {
+          "name": "trajectory",
+          "source": ""
+        }
+      ],
+      "outputs": [
+        {
+          "name": "actuator_cmd",
+          "consumers": []
+        }
+      ],
+      "stores_read": [
+        "Ego_State_DB"
+      ],
+      "stores_written": [],
+      "preconditions": [
+        "trajectory.horizon>0 and ego_state.speed>=0"
+      ],
+      "postconditions": [
+        {
+          "guard": "true",
+          "effect": "actuator_cmd.accel_cmd<=3.0 and actuator_cmd.brake_cmd>=0 and actuator_cmd.steer_cmd>-1.0 and actuator_cmd.steer_cmd<1.0"
+        },
+        {
+          "guard": "true",
+          "effect": "actuator_cmd.brake_cmd>=trajectory.decel_limit"
+        },
+        {
+          "guard": "actuator_cmd.accel_cmd>0",
+          "effect": "actuator_cmd.accel_cmd<=2.0"
+        }
+      ],
+      "quantified": true,
+      "invariants": [],
+      "notes": "extracted from validated SOFL artifacts"
+    },
+    {
+      "id": "Route_Planning",
+      "kind": "function",
+      "name": "Route_Planning",
+      "responsibility": "Compute the route to the destination: path length and ETA, plus lane geometry needed by F3 and F5.",
+      "inputs": [
+        {
+          "name": "map_data",
+          "source": ""
+        },
+        {
+          "name": "ego_pose",
+          "source": ""
+        },
+        {
+          "name": "destination",
+          "source": ""
+        }
+      ],
+      "outputs": [
+        {
+          "name": "route",
+          "consumers": []
+        },
+        {
+          "name": "route",
+          "consumers": []
+        }
+      ],
+      "stores_read": [
+        "HD_Map_DB"
+      ],
+      "stores_written": [],
+      "preconditions": [
+        "ego_pose.speed>=0 and map_data.speed_limit>=0 and destination.lon>=0"
+      ],
+      "postconditions": [
+        {
+          "guard": "true",
+          "effect": "route.path_length>0 and route.eta>=0"
+        }
+      ],
+      "quantified": false,
+      "invariants": [],
+      "notes": "extracted from validated SOFL artifacts"
+    }
+  ],
+  "stores": [
+    {
+      "id": "D1",
+      "name": "HD_Map_DB",
+      "content": [
+        "road_id",
+        "lane_id",
+        "speed_limit",
+        "curvature"
+      ],
+      "owner": "",
+      "writers": [],
+      "readers": [],
+      "persistent": true
+    },
+    {
+      "id": "D2",
+      "name": "Object_Track_DB",
+      "content": [
+        "obj_count",
+        "lead_id",
+        "lead_pos_x",
+        "lead_pos_y",
+        "lead_speed"
+      ],
+      "owner": "",
+      "writers": [],
+      "readers": [],
+      "persistent": true
+    },
+    {
+      "id": "D3",
+      "name": "Ego_State_DB",
+      "content": [
+        "pos_x",
+        "pos_y",
+        "speed",
+        "yaw_rate",
+        "accel"
+      ],
+      "owner": "",
+      "writers": [],
+      "readers": [],
+      "persistent": true
+    },
+    {
+      "id": "D4",
+      "name": "Traffic_Rules_DB",
+      "content": [
+        "speed_limit",
+        "red_light"
+      ],
+      "owner": "",
+      "writers": [],
+      "readers": [],
+      "persistent": true
+    }
+  ],
+  "externals": [
+    {
+      "id": "E5",
+      "name": "map_data",
+      "direction": "in",
+      "content": [],
+      "consumers": [
+        "HD_Map_DB"
+      ]
+    },
+    {
+      "id": "E2",
+      "name": "ego_state",
+      "direction": "in",
+      "content": [],
+      "consumers": [
+        "Ego_State_DB"
+      ]
+    },
+    {
+      "id": "E6",
+      "name": "traffic_rules",
+      "direction": "in",
+      "content": [],
+      "consumers": [
+        "Traffic_Rules_DB"
+      ]
+    },
+    {
+      "id": "E_OUT_warning",
+      "name": "warning",
+      "direction": "out",
+      "content": [],
+      "consumers": []
+    },
+    {
+      "id": "E_OUT_checked_cmd",
+      "name": "checked_cmd",
+      "direction": "out",
+      "content": [],
+      "consumers": []
+    },
+    {
+      "id": "E1",
+      "name": "raw_sensor_data",
+      "direction": "in",
+      "content": [],
+      "consumers": [
+        "Perception_Localization"
+      ]
+    },
+    {
+      "id": "E2",
+      "name": "gnss_imu",
+      "direction": "in",
+      "content": [],
+      "consumers": [
+        "Perception_Localization"
+      ]
+    },
+    {
+      "id": "E3",
+      "name": "driver_intent",
+      "direction": "in",
+      "content": [],
+      "consumers": [
+        "Behavior_Planning"
+      ]
+    },
+    {
+      "id": "E4",
+      "name": "destination",
+      "direction": "in",
+      "content": [],
+      "consumers": [
+        "Route_Planning"
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "name": "map_data",
+      "producer": "HD_Map_DB",
+      "consumer": "Perception_Localization",
+      "kind": "store_read",
+      "carries": [
+        "map_data"
+      ]
+    },
+    {
+      "name": "raw_sensor_data",
+      "producer": "raw_sensor_data",
+      "consumer": "Perception_Localization",
+      "kind": "active",
+      "carries": [
+        "raw_sensor_data"
+      ]
+    },
+    {
+      "name": "gnss_imu",
+      "producer": "gnss_imu",
+      "consumer": "Perception_Localization",
+      "kind": "active",
+      "carries": [
+        "gnss_imu"
+      ]
+    },
+    {
+      "name": "map_data",
+      "producer": "HD_Map_DB",
+      "consumer": "Prediction",
+      "kind": "store_read",
+      "carries": [
+        "map_data"
+      ]
+    },
+    {
+      "name": "objects",
+      "producer": "Object_Track_DB",
+      "consumer": "Prediction",
+      "kind": "store_read",
+      "carries": [
+        "objects"
+      ]
+    },
+    {
+      "name": "ego_pose",
+      "producer": "ego_pose",
+      "consumer": "Prediction",
+      "kind": "active",
+      "carries": [
+        "ego_pose"
+      ]
+    },
+    {
+      "name": "map_data",
+      "producer": "HD_Map_DB",
+      "consumer": "Behavior_Planning",
+      "kind": "store_read",
+      "carries": [
+        "map_data"
+      ]
+    },
+    {
+      "name": "ego_state",
+      "producer": "Ego_State_DB",
+      "consumer": "Behavior_Planning",
+      "kind": "store_read",
+      "carries": [
+        "ego_state"
+      ]
+    },
+    {
+      "name": "traffic_rules",
+      "producer": "Traffic_Rules_DB",
+      "consumer": "Behavior_Planning",
+      "kind": "store_read",
+      "carries": [
+        "traffic_rules"
+      ]
+    },
+    {
+      "name": "predicted_trajectories",
+      "producer": "predicted_trajectories",
+      "consumer": "Behavior_Planning",
+      "kind": "active",
+      "carries": [
+        "predicted_trajectories"
+      ]
+    },
+    {
+      "name": "route",
+      "producer": "route",
+      "consumer": "Behavior_Planning",
+      "kind": "active",
+      "carries": [
+        "route"
+      ]
+    },
+    {
+      "name": "driver_intent",
+      "producer": "driver_intent",
+      "consumer": "Behavior_Planning",
+      "kind": "active",
+      "carries": [
+        "driver_intent"
+      ]
+    },
+    {
+      "name": "map_data",
+      "producer": "HD_Map_DB",
+      "consumer": "Motion_Planning",
+      "kind": "store_read",
+      "carries": [
+        "map_data"
+      ]
+    },
+    {
+      "name": "ego_state",
+      "producer": "Ego_State_DB",
+      "consumer": "Motion_Planning",
+      "kind": "store_read",
+      "carries": [
+        "ego_state"
+      ]
+    },
+    {
+      "name": "traffic_rules",
+      "producer": "Traffic_Rules_DB",
+      "consumer": "Motion_Planning",
+      "kind": "store_read",
+      "carries": [
+        "traffic_rules"
+      ]
+    },
+    {
+      "name": "predicted_trajectories",
+      "producer": "predicted_trajectories",
+      "consumer": "Motion_Planning",
+      "kind": "active",
+      "carries": [
+        "predicted_trajectories"
+      ]
+    },
+    {
+      "name": "maneuver",
+      "producer": "maneuver",
+      "consumer": "Motion_Planning",
+      "kind": "active",
+      "carries": [
+        "maneuver"
+      ]
+    },
+    {
+      "name": "route",
+      "producer": "route",
+      "consumer": "Motion_Planning",
+      "kind": "active",
+      "carries": [
+        "route"
+      ]
+    },
+    {
+      "name": "ego_state",
+      "producer": "Ego_State_DB",
+      "consumer": "Control",
+      "kind": "store_read",
+      "carries": [
+        "ego_state"
+      ]
+    },
+    {
+      "name": "trajectory",
+      "producer": "trajectory",
+      "consumer": "Control",
+      "kind": "active",
+      "carries": [
+        "trajectory"
+      ]
+    },
+    {
+      "name": "ego_state",
+      "producer": "Ego_State_DB",
+      "consumer": "Safety_Shield",
+      "kind": "store_read",
+      "carries": [
+        "ego_state"
+      ]
+    },
+    {
+      "name": "traffic_rules",
+      "producer": "Traffic_Rules_DB",
+      "consumer": "Safety_Shield",
+      "kind": "store_read",
+      "carries": [
+        "traffic_rules"
+      ]
+    },
+    {
+      "name": "actuator_cmd",
+      "producer": "actuator_cmd",
+      "consumer": "Safety_Shield",
+      "kind": "active",
+      "carries": [
+        "actuator_cmd"
+      ]
+    },
+    {
+      "name": "map_data",
+      "producer": "HD_Map_DB",
+      "consumer": "Route_Planning",
+      "kind": "store_read",
+      "carries": [
+        "map_data"
+      ]
+    },
+    {
+      "name": "ego_pose",
+      "producer": "ego_pose",
+      "consumer": "Route_Planning",
+      "kind": "active",
+      "carries": [
+        "ego_pose"
+      ]
+    },
+    {
+      "name": "destination",
+      "producer": "destination",
+      "consumer": "Route_Planning",
+      "kind": "active",
+      "carries": [
+        "destination"
+      ]
+    },
+    {
+      "name": "objects",
+      "producer": "Perception_Localization",
+      "consumer": "Object_Track_DB",
+      "kind": "store_write",
+      "carries": [
+        "objects"
+      ]
+    },
+    {
+      "name": "ego_pose",
+      "producer": "Perception_Localization",
+      "consumer": "ego_pose",
+      "kind": "active",
+      "carries": [
+        "ego_pose"
+      ]
+    },
+    {
+      "name": "ego_pose",
+      "producer": "Perception_Localization",
+      "consumer": "ego_pose",
+      "kind": "active",
+      "carries": [
+        "ego_pose"
+      ]
+    },
+    {
+      "name": "predicted_trajectories",
+      "producer": "Prediction",
+      "consumer": "predicted_trajectories",
+      "kind": "active",
+      "carries": [
+        "predicted_trajectories"
+      ]
+    },
+    {
+      "name": "predicted_trajectories",
+      "producer": "Prediction",
+      "consumer": "predicted_trajectories",
+      "kind": "active",
+      "carries": [
+        "predicted_trajectories"
+      ]
+    },
+    {
+      "name": "maneuver",
+      "producer": "Behavior_Planning",
+      "consumer": "maneuver",
+      "kind": "active",
+      "carries": [
+        "maneuver"
+      ]
+    },
+    {
+      "name": "warning",
+      "producer": "Behavior_Planning",
+      "consumer": "warning",
+      "kind": "active",
+      "carries": [
+        "warning"
+      ]
+    },
+    {
+      "name": "trajectory",
+      "producer": "Motion_Planning",
+      "consumer": "trajectory",
+      "kind": "active",
+      "carries": [
+        "trajectory"
+      ]
+    },
+    {
+      "name": "actuator_cmd",
+      "producer": "Control",
+      "consumer": "actuator_cmd",
+      "kind": "active",
+      "carries": [
+        "actuator_cmd"
+      ]
+    },
+    {
+      "name": "checked_cmd",
+      "producer": "Safety_Shield",
+      "consumer": "checked_cmd",
+      "kind": "active",
+      "carries": [
+        "checked_cmd"
+      ]
+    },
+    {
+      "name": "route",
+      "producer": "Route_Planning",
+      "consumer": "route",
+      "kind": "active",
+      "carries": [
+        "route"
+      ]
+    },
+    {
+      "name": "route",
+      "producer": "Route_Planning",
+      "consumer": "route",
+      "kind": "active",
+      "carries": [
+        "route"
+      ]
+    }
+  ],
+  "traceability": [
+    {
+      "requirement": "F-Perception_Localization",
+      "elements": [
+        "Perception_Localization"
+      ],
+      "realised_by": "process contract",
+      "note": "pre/post in fModule; clause realisation verified by validate_sofl_model.py"
+    },
+    {
+      "requirement": "F-Prediction",
+      "elements": [
+        "Prediction"
+      ],
+      "realised_by": "process contract",
+      "note": "pre/post in fModule; clause realisation verified by validate_sofl_model.py"
+    },
+    {
+      "requirement": "F-Behavior_Planning",
+      "elements": [
+        "Behavior_Planning"
+      ],
+      "realised_by": "process contract",
+      "note": "pre/post in fModule; clause realisation verified by validate_sofl_model.py"
+    },
+    {
+      "requirement": "F-Safety_Shield",
+      "elements": [
+        "Safety_Shield"
+      ],
+      "realised_by": "process contract",
+      "note": "pre/post in fModule; clause realisation verified by validate_sofl_model.py"
+    },
+    {
+      "requirement": "F-Motion_Planning",
+      "elements": [
+        "Motion_Planning"
+      ],
+      "realised_by": "process contract",
+      "note": "pre/post in fModule; clause realisation verified by validate_sofl_model.py"
+    },
+    {
+      "requirement": "F-Control",
+      "elements": [
+        "Control"
+      ],
+      "realised_by": "process contract",
+      "note": "pre/post in fModule; clause realisation verified by validate_sofl_model.py"
+    },
+    {
+      "requirement": "F-Route_Planning",
+      "elements": [
+        "Route_Planning"
+      ],
+      "realised_by": "process contract",
+      "note": "pre/post in fModule; clause realisation verified by validate_sofl_model.py"
+    },
+    {
+      "requirement": "N-1",
+      "elements": [
+        "PlanManeuver"
+      ],
+      "realised_by": "precondition ego_state.speed<=130.0",
+      "note": "AEB capability operational up to a vehicle speed of 130 km/h (N-1)."
+    },
+    {
+      "requirement": "N-2",
+      "elements": [
+        "ClassifyRisk"
+      ],
+      "realised_by": "postcondition min_ttc<=1.5 -> warning.warn_active=1",
+      "note": "Forward-collision warning present no later than TTC = 2.0 s (N-2)."
+    },
+    {
+      "requirement": "N-3",
+      "elements": [
+        "PlanManeuver"
+      ],
+      "realised_by": "via A-1 (decel_req>=6.0)",
+      "note": "The >30 km/h impact-speed reduction is realised through the 6.0 m/s2 emergency deceleration of A-1; the derived intermediate figures of section 7 are not used as constraint values."
+    },
+    {
+      "requirement": "N-4",
+      "elements": [
+        "PlanManeuver"
+      ],
+      "realised_by": "via A-1 (decel_req>=6.0)",
+      "note": "The CCRm envelope (VUT 60-130 km/h, target 20 km/h, target decelerating at -4 m/s2) is the sizing basis of A-1 and is not written as a constraint value."
+    },
+    {
+      "requirement": "N-5",
+      "elements": [
+        "Prediction",
+        "Motion_Planning"
+      ],
+      "realised_by": "trajectory.min_gap<=predicted_trajectories.lead_gap",
+      "note": "RSS longitudinal safe distance d_min, with A-2 parameters; realised as a maintained minimum gap on the predicted lead."
+    },
+    {
+      "requirement": "N-6",
+      "elements": [
+        "Motion_Planning",
+        "Control",
+        "Safety_Shield"
+      ],
+      "realised_by": "trajectory.decel_limit>=4.0 / brake_cmd>=decel_limit / accel_cmd<=2.0",
+      "note": "RSS braking profile: at least a_min,brake = 4.0, and no longitudinal acceleration above a_max,accel = 2.0."
+    },
+    {
+      "requirement": "N-7",
+      "elements": [
+        "Motion_Planning"
+      ],
+      "realised_by": "trajectory.lateral_accel>=0",
+      "note": "Euclidean manoeuvring envelope; the specification fixes no numeric value, so the constraint is qualitative."
+    },
+    {
+      "requirement": "A-1",
+      "elements": [
+        "PlanManeuver"
+      ],
+      "realised_by": "postcondition decel_req>=6.0",
+      "note": "Emergency deceleration 6.0 m/s2, target speed 0, not overridable by a driver acceleration request."
+    },
+    {
+      "requirement": "A-2",
+      "elements": [
+        "Motion_Planning",
+        "Control",
+        "Safety_Shield"
+      ],
+      "realised_by": "A-2 parameter values 4.0 / 2.0 in the braking profile",
+      "note": "RSS parameter set rho = 0.1 s, a_max,accel = 2.0, a_max,brake = 4.0, a_min,brake = 4.0."
+    },
+    {
+      "requirement": "A-3",
+      "elements": [
+        "Control",
+        "Safety_Shield"
+      ],
+      "realised_by": "accel_cmd<=3.0",
+      "note": "Comfortable longitudinal acceleration limit 3.0 m/s2."
+    },
+    {
+      "requirement": "A-4",
+      "elements": [
+        "Perception_Localization"
+      ],
+      "realised_by": "postcondition yaw_rate in (-3.5, 3.5)",
+      "note": "Yaw-rate envelope 3.5 rad/s."
+    },
+    {
+      "requirement": "A-5",
+      "elements": [
+        "ClassifyRisk"
+      ],
+      "realised_by": "postcondition thresholds 3.0 and 1.5",
+      "note": "Risk thresholds T_risk_high = 3.0 s and T_fcw = 1.5 s."
+    },
+    {
+      "requirement": "A-6",
+      "elements": [
+        "Control",
+        "Safety_Shield"
+      ],
+      "realised_by": "steer_cmd in (-1.0, 1.0)",
+      "note": "Normalised steering command envelope +/-1.0."
+    },
+    {
+      "requirement": "A-7",
+      "elements": [
+        "Prediction",
+        "Motion_Planning"
+      ],
+      "realised_by": "trajectory.horizon>0 with horizon 3.0 s",
+      "note": "Prediction horizon 3.0 s covering the caution band of A-5."
+    }
+  ],
+  "open_issues": [
+    {
+      "id": "OI-1",
+      "issue": "Seven-function split sufficient for L2 handover",
+      "related_requirement": "R-SCOPE-1",
+      "impact": "medium",
+      "note": "no separate driver-monitoring function was introduced"
+    },
+    {
+      "id": "OI-2",
+      "issue": "D3 written by F1 but read by F6/F7",
+      "related_requirement": "R-D-1",
+      "impact": "low",
+      "note": "ownership accepted"
+    },
+    {
+      "id": "OI-3",
+      "issue": "No explicit cycle-time requirement in the spec",
+      "related_requirement": "N-2",
+      "impact": "medium",
+      "note": "timing left out of model"
+    },
+    {
+      "id": "OI-4",
+      "issue": "AEB branch chosen as Level-1 refinement",
+      "related_requirement": "R-L1-1",
+      "impact": "low",
+      "note": "alternative F6/F7 chain not modelled"
+    }
+  ]
+}

@@ -1,0 +1,180 @@
+@startuml M4_L1
+' =====================================================================
+' M4  -  AI-generated object-oriented model (UML)  -  Level 1
+' Sole input : NL-RQ-ADAS-v1_需求规格.md  (spec section 6)
+' Refines exactly ONE Level-0 function: F3 Behaviour Planning
+'   -> F3.1 TTC Computation, F3.2 Risk Classification, F3.3 Maneuver Planning
+' All other Level-0 functions stay atomic (R-SCOPE-4, R-L1-1).
+' provenance : producer=llm, passes=1, self_review_performed=false
+' OCL subset : =  <>  >  >=  <  <=  and   (or / not are NOT used)
+' Guard form : "<guard> | <effect>"  ==  "if <guard> holds then <effect> must hold"
+' =====================================================================
+title M4  -  Level 1 Refinement of F3 Behaviour Planning  (AEB branch)
+
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor White
+skinparam shadowing false
+
+note as NLEGEND1
+  <b>Level-1 scope</b>
+  * Only F3 is decomposed (R-SCOPE-4).  All other Level-0 elements are shown as
+    <b>&lt;&lt;parent&gt;&gt; context references</b> - they are <b>not</b> new elements.
+  * Element ids of the refinement: <b>F3.1, F3.2, F3.3</b>.
+  * Thresholds: A-5 (T_risk_high = 3.0, T_fcw = 1.5), A-1 (6.0), A-7 (3.0),
+    N-1 (130 km/h), N-2 (2.0 s) - no value outside spec section 7 / 8 is used.
+end note
+
+package "F3  Behaviour Planning  (Level-1 refinement of the AEB branch)" {
+
+  class "F3.1\nTTC Computation" as F3_1 <<behavioral>> {
+    + considered_object_count : nat
+    + ttc_min_s : real
+    + horizon_s : real
+    + ttc_set : String
+    --
+    + computeTTCSet() : ttc_set
+    "pre: predicted_trajectories <> null and ego_state <> null"
+    "post: considered_object_count >= 0 and ttc_min_s >= 0.0"
+    "post: horizon_s >= 3.0"
+    --
+    + reportEmptySet() : ttc_set
+    "pre: considered_object_count = 0"
+    "post: considered_object_count = 0"
+  }
+
+  class "F3.2\nRisk Classification" as F3_2 <<behavioral>> {
+    + risk_level : String
+    + ttc_min_s : real
+    + warning_type : String
+    + warning_active : String
+    --
+    + classifyRisk() : risk_level
+    "pre: ttc_set <> null and traffic_rules <> null"
+    "post: risk_level = 'no_risk' | ttc_min_s > 3.0"
+    "post: risk_level = 'caution' | ttc_min_s <= 3.0 and ttc_min_s > 1.5"
+    "post: risk_level = 'critical' | ttc_min_s <= 1.5"
+    --
+    + raiseWarning() : warning
+    "pre: risk_level <> ''"
+    "post: risk_level = 'caution' | warning_type = 'caution' and warning_active = 'true'"
+    "post: risk_level = 'critical' | warning_type = 'imminent collision' and warning_active = 'true'"
+    "post: risk_level = 'no_risk' | warning_type = 'none' and warning_active = 'false'"
+    "post: ttc_min_s <= 2.0 | warning_type <> 'none'"
+  }
+
+  class "F3.3\nManeuver Planning" as F3_3 <<behavioral>> {
+    + manoeuvre_type : String
+    + target_speed_kmh : real
+    + target_lane_id : String
+    + required_decel_ms2 : real
+    + ego_speed_kmh : real
+    + driver_accel_request : String
+    --
+    + planManoeuvre() : manoeuvre
+    "pre: risk_level <> '' and ego_state <> null and driver_intent <> null"
+    "pre: route <> null and hd_map_segment <> null"
+    "post: manoeuvre_type <> '' and target_lane_id <> ''"
+    --
+    + planNoRiskManoeuvre() : manoeuvre
+    "pre: risk_level = 'no_risk'"
+    "post: manoeuvre_type = 'cruise'"
+    "post: manoeuvre_type = 'keep_lane'"
+    --
+    + planCautionManoeuvre() : manoeuvre
+    "pre: risk_level = 'caution'"
+    "post: required_decel_ms2 > 0.0"
+    --
+    + planCriticalManoeuvre() : manoeuvre
+    "pre: risk_level = 'critical'"
+    "post: manoeuvre_type = 'emergency_deceleration' and target_speed_kmh = 0.0"
+    "post: required_decel_ms2 >= 6.0"
+    "post: ego_speed_kmh <= 130.0"
+    --
+    + applyDriverIntent() : manoeuvre
+    "pre: driver_intent <> null"
+    "post: driver_accel_request = 'true' and risk_level = 'critical' | required_decel_ms2 >= 6.0 and target_speed_kmh = 0.0"
+    "post: driver_accel_request = 'true' and risk_level <> 'critical' | manoeuvre_type <> 'emergency_deceleration' and required_decel_ms2 >= 0.0"
+  }
+}
+
+' ------------------------------------------------------------------ Level-0 context (parent, unchanged)
+class "F1  Perception &\nLocalisation (L0)" as F1 <<parent>> {
+  + ego_speed_ms : real
+  + ego_yaw_rate_rad_s : real
+}
+
+class "F2  Prediction (L0)" as F2 <<parent>> {
+  + predicted_trajectories : String
+  + min_ttc_s : real
+}
+
+class "F4  Route Planning (L0)" as F4 <<parent>> {
+  + route : String
+}
+
+class "F5  Motion Planning (L0)" as F5 <<parent>> {
+  + trajectory : String
+}
+
+class "D1  HD Map Store (L0)" as D1 <<parent entity>> {
+  + lane_id : String
+}
+
+class "D4  Traffic Rules Store (L0)" as D4 <<parent entity>> {
+  + posted_speed_limit_kmh : real
+}
+
+class "E3  Driver / HMI" as E3 <<actor>> {
+  + driver_intent : String
+}
+
+class "E7  Warning Interface (out)" as E7 <<port>> {
+  + warning_type : String
+  + warning_active : String
+}
+
+' ------------------------------------------------------------------ flows
+F2 "producer" --> "consumer" F3_1 : <<flow>> predicted_trajectories
+F2 "producer" --> "consumer" F3_1 : <<flow>> min_ttc
+F1 "producer" --> "consumer" F3_1 : <<flow>> ego_state
+F1 "producer" --> "consumer" F3_3 : <<flow>> ego_state
+D4 "store" --> "reader" F3_2 : <<flow>> traffic_rules (store_read)
+D1 "store" --> "reader" F3_3 : <<flow>> hd_map_segment (store_read)
+E3 "producer" --> "consumer" F3_3 : <<flow>> driver_intent
+F4 "producer" --> "consumer" F3_3 : <<flow>> route
+F3_1 "producer" --> "consumer" F3_2 : <<flow>> ttc_set
+F3_2 "producer" --> "consumer" F3_3 : <<flow>> risk_level
+F3_2 "producer" --> "consumer" E7  : <<flow>> warning
+F3_3 "producer" --> "consumer" F5  : <<flow>> manoeuvre
+
+' ------------------------------------------------------------------ notes
+note top of F3_1
+  <b>F3.1 - TTC Computation</b>
+  C-L1-1: considered_object_count >= 0 (nat) - the empty-set case reports count 0.
+  The spec does <b>not</b> define a sentinel value for "no TTC" (see OI-12).
+  C-L1-2: F2 keeps the exclusive right to compute TTC (spec F2), yet section 6
+  assigns a TTC computation to F3.1 - conflict recorded as OI-6.
+end note
+
+note bottom of F3_2
+  <b>F3.2 - Risk Classification</b>
+  C-L1-3: risk_level = 'no_risk'   | ttc_min_s > 3.0            [A-5  T_risk_high]
+  C-L1-4: risk_level = 'caution'   | ttc_min_s <= 3.0 and ttc_min_s > 1.5   [A-5]
+  C-L1-5: risk_level = 'critical'  | ttc_min_s <= 1.5            [A-5  T_fcw]
+  C-L1-6: ttc_min_s <= 2.0 | warning_type <> 'none'              [N-2]
+  Warning is raised for caution and critical, not for no risk (spec F3.2).
+end note
+
+note bottom of F3_3
+  <b>F3.3 - Maneuver Planning</b>
+  C-L1-7: risk_level = 'no_risk'   | manoeuvre_type = 'cruise'      (and, as a second guarded line, manoeuvre_type = 'keep_lane')
+         -- the disjunction {cruise, keep_lane} is expressed as two guarded lines
+         because 'or' is not part of the permitted operator set.
+  C-L1-8: risk_level = 'caution'   | required_decel_ms2 > 0.0                (non-zero deceleration)
+  C-L1-9: risk_level = 'critical'  | required_decel_ms2 >= 6.0 and target_speed_kmh = 0.0   [A-1]
+  C-L1-10: risk_level = 'critical' | ego_speed_kmh <= 130.0                   [N-1]
+  C-L1-11: driver_accel_request = 'true' and risk_level = 'critical'
+           | required_decel_ms2 >= 6.0 and target_speed_kmh = 0.0   (emergency is not overridden)
+end note
+
+@enduml

@@ -1,0 +1,369 @@
+@startuml M4_L0
+' =====================================================================
+' M4  -  AI-generated object-oriented model (UML)  -  Level 0
+' Sole input : NL-RQ-ADAS-v1_需求规格.md (vehicle-level ADAS, SAE L2)
+' provenance  : producer=llm, passes=1, self_review_performed=false
+' OCL subset  : =  <>  >  >=  <  <=  and      (or / not are NOT used)
+' Types       : real / nat / String only
+' Guard form  : "<guard> | <effect>"  ==  "if <guard> holds then <effect> must hold"
+' Element rule: exactly 7 behavioural/control classes + 4 entity classes
+'               + 9 external actors/ports  (R-L0-1).  No other element.
+' =====================================================================
+title M4  -  Level 0 Vehicle-Level ADAS Onboard System  (UML Class Diagram)
+
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor White
+skinparam classBorderColor Black
+skinparam ArrowColor Black
+skinparam shadowing false
+
+note as NLEGEND
+  <b>Notation conventions (this model)</b>
+  * Constraint syntax (OCL subset):  =  <>  >  >=  <  <=  and   --  'or' and 'not' are not used
+  * Guarded constraint: <b>&lt;guard&gt; | &lt;effect&gt;</b>  ==  "if &lt;guard&gt; holds then &lt;effect&gt; must hold"
+  * Attribute types are restricted to <b>real</b> / <b>nat</b> / <b>String</b>
+  * Every association is a <b>named, directed</b> data dependency tagged <b><<flow>></b>.
+  * End labels carry the role: <b>producer</b> / <b>consumer</b> / <b>store</b> / <b>reader</b> / <b>writer</b>
+    (UML has no weak data-flow direction of its own - see README section 5).
+  * Only <b>E7</b> and <b>E8</b> leave the system (R-E-1). <b>E9</b> is the named F6 -> F7 hand-off port (R-E-2).
+  * Thresholds are taken verbatim from spec section 7 (N-1..N-7) and section 8 (A-1..A-7).
+end note
+
+' ------------------------------------------------------------------ 7 behaviour classes
+class "F1\nPerception &\nLocalisation" as F1 <<behavioral>> {
+  + object_count : nat
+  + lead_object_id : String
+  + ego_pose_x : real
+  + ego_pose_y : real
+  + ego_speed_ms : real
+  + ego_yaw_rate_rad_s : real
+  + ego_accel_ms2 : real
+  + ego_state_ts : nat
+  --
+  + fuseObjects() : object_table
+  "pre: raw_sensor_data <> null and gnss_imu <> null"
+  "post: object_count >= 0 and lead_object_id <> ''"
+  --
+  + computeEgoState() : ego_state
+  "pre: gnss_imu <> null"
+  "post: ego_speed_ms >= 0.0"
+  --
+  + writeD2() : D2
+  + writeD3() : D3
+  --
+  + publishObjectTable() : object_table
+  + publishEgoState() : ego_state
+}
+
+class "F2\nPrediction" as F2 <<behavioral>> {
+  + prediction_horizon_s : real
+  + min_ttc_s : real
+  + predicted_trajectory : String
+  --
+  + predictTrajectories() : predicted_trajectories
+  "pre: object_table <> null and ego_state <> null"
+  "post: prediction_horizon_s >= 3.0"
+  --
+  + deriveMinTTC() : min_ttc
+  "pre: predicted_trajectories <> null"
+  "post: min_ttc_s >= 0.0"
+}
+
+class "F3\nBehaviour\nPlanning" as F3 <<behavioral>> {
+  + manoeuvre_type : String
+  + target_speed_kmh : real
+  + target_lane_id : String
+  + required_decel_ms2 : real
+  + risk_level : String
+  + ttc_min_s : real
+  + warning_type : String
+  + warning_active : String
+  + gap_to_lead_m : real
+  + d_min_rss_m : real
+  --
+  + decideManoeuvre() : manoeuvre
+  "pre: ego_state <> null and predicted_trajectories <> null and driver_intent <> null"
+  "post: manoeuvre_type <> '' and target_speed_kmh >= 0.0 and target_lane_id <> ''"
+  "post: target_speed_kmh <= speed_limit_kmh"
+  "post: gap_to_lead_m >= d_min_rss_m"
+  --
+  + decideWarning() : warning
+  "pre: risk_level <> '' and ttc_min_s >= 0.0"
+  "post: warning_type <> ''"
+  --
+  + planEmergencyDeceleration() : manoeuvre
+  "pre: risk_level = 'critical'"
+  "post: required_decel_ms2 >= 6.0 and target_speed_kmh = 0.0"
+}
+
+class "F4\nRoute\nPlanning" as F4 <<behavioral>> {
+  + route_length_m : real
+  + eta_s : real
+  + route_lane_geometry : String
+  --
+  + computeRoute() : route
+  "pre: destination <> null and ego_pose <> null and hd_map_segment <> null"
+  "post: route_length_m >= 0.0 and eta_s >= 0.0 and route_lane_geometry <> ''"
+}
+
+class "F5\nMotion\nPlanning" as F5 <<behavioral>> {
+  + max_permitted_speed_kmh : real
+  + max_permitted_accel_ms2 : real
+  + horizon_duration_s : real
+  + commanded_lateral_accel_ms2 : real
+  + trajectory_decel_capability_ms2 : real
+  --
+  + computeTrajectory() : trajectory
+  "pre: manoeuvre <> null and route <> null and ego_state <> null"
+  "post: max_permitted_speed_kmh <= speed_limit_kmh"
+  "post: horizon_duration_s >= 0.0"
+  "post: commanded_lateral_accel_ms2 <= a_lat_max_ms2"
+  --
+  + honourDecelerationRequirement() : trajectory
+  "pre: manoeuvre.required_decel_ms2 >= 0.0"
+  "post: trajectory_decel_capability_ms2 >= manoeuvre.required_decel_ms2"
+  --
+  + emergencyCapability() : trajectory
+  "pre: manoeuvre.risk_level = 'critical'"
+  "post: trajectory_decel_capability_ms2 >= 6.0"
+}
+
+class "F6\nControl" as F6 <<control>> {
+  + accel_cmd_ms2 : real
+  + brake_cmd_ms2 : real
+  + steering_cmd : real
+  --
+  + computeActuationCommand() : actuator_cmd
+  "pre: trajectory <> null and ego_state <> null"
+  "post: accel_cmd_ms2 <= 3.0 and accel_cmd_ms2 >= -6.0"
+  "post: steering_cmd <= 1.0 and steering_cmd >= -1.0"
+  "post: brake_cmd_ms2 >= 0.0 and brake_cmd_ms2 <= 6.0"
+}
+
+class "F7\nSafety Shield\n(monitoring & arbitration)" as F7 <<control>> {
+  + checked_accel_cmd_ms2 : real
+  + checked_brake_cmd_ms2 : real
+  + checked_steering_cmd : real
+  + checked_speed_cmd_kmh : real
+  + dangerous_situation : String
+  + response_time_s : real
+  + steering_within_envelope : String
+  --
+  + arbitrate() : checked_cmd
+  "pre: actuator_cmd <> null and ego_state <> null and traffic_rules <> null"
+  "post: checked_accel_cmd_ms2 <= 3.0 and checked_accel_cmd_ms2 >= -6.0"
+  "post: checked_brake_cmd_ms2 >= 0.0 and checked_brake_cmd_ms2 <= 6.0"
+  "post: checked_steering_cmd <= 1.0 and checked_steering_cmd >= -1.0"
+  --
+  + enforceTrafficRules() : checked_cmd
+  "pre: traffic_rules <> null"
+  "post: checked_speed_cmd_kmh <= speed_limit_kmh"
+  --
+  + enforceRssBrakingProfile() : checked_cmd
+  "pre: dangerous_situation = 'true'"
+  "post: checked_brake_cmd_ms2 >= 4.0"
+  --
+  + enforceResponseTimeLimit() : checked_cmd
+  "pre: response_time_s <= 0.1"
+  "post: checked_accel_cmd_ms2 <= 2.0"
+  --
+  + preserveOrCorrectSteering() : checked_cmd
+  "pre: actuator_cmd <> null"
+  "post: steering_within_envelope = 'true' | checked_steering_cmd = actuator_cmd.steering_cmd"
+}
+
+' ------------------------------------------------------------------ 4 entity classes
+class "D1\nHD Map Store" as D1 <<entity>> {
+  + road_id : String
+  + lane_id : String
+  + posted_speed_limit_kmh : real
+  + curvature_inv_m : real
+  + lane_topology : String
+  --
+  + refreshFrom(map_data)
+  "post: posted_speed_limit_kmh > 0.0"
+}
+
+class "D2\nObject Track Store" as D2 <<entity>> {
+  + object_count : nat
+  + lead_object_id : String
+  + lead_pos_x : real
+  + lead_pos_y : real
+  + lead_velocity_ms : real
+  + lead_class : String
+  --
+  + rebuildFrom(object_table)
+  "post: object_count >= 0"
+}
+
+class "D3\nEgo State Store" as D3 <<entity>> {
+  + ego_pose_x : real
+  + ego_pose_y : real
+  + ego_speed_ms : real
+  + ego_yaw_rate_rad_s : real
+  + ego_accel_ms2 : real
+  + last_update_ts : nat
+  --
+  + updateFrom(ego_state)
+  "post: ego_speed_ms >= 0.0"
+  "post: ego_yaw_rate_rad_s <= 3.5 and ego_yaw_rate_rad_s >= -3.5"
+}
+
+class "D4\nTraffic Rules Store" as D4 <<entity>> {
+  + posted_speed_limit_kmh : real
+  + traffic_signal_state : String
+  --
+  + refreshFrom(traffic_rules)
+  "post: posted_speed_limit_kmh > 0.0"
+}
+
+' ------------------------------------------------------------------ 9 external actors / ports
+class "E1\nPerception\nSensorSet" as E1 <<actor>> {
+  + raw_sensor_data : String
+}
+
+class "E2\nGNSS /\nIMU Unit" as E2 <<actor>> {
+  + gnss_imu : String
+}
+
+class "E3\nDriver / HMI" as E3 <<actor>> {
+  + driver_intent : String
+}
+
+class "E4\nNavigation\nUnit" as E4 <<actor>> {
+  + destination : String
+}
+
+class "E5\nMap Provider" as E5 <<actor>> {
+  + map_data : String
+}
+
+class "E6\nTraffic Rule\nProvider" as E6 <<actor>> {
+  + traffic_rules : String
+}
+
+class "E7\nWarning Interface\n(out only)" as E7 <<port>> {
+  + warning_type : String
+  + warning_active : String
+  --
+  "warning_type domain: none | caution | imminent collision"
+}
+
+class "E8\nActuator Interface\n(out only)" as E8 <<port>> {
+  + checked_accel_cmd_ms2 : real
+  + checked_brake_cmd_ms2 : real
+  + checked_steering_cmd : real
+  --
+  "post: checked_steering_cmd <= 1.0 and checked_steering_cmd >= -1.0"
+}
+
+class "E9\nRaw Command Port\n(F6 -> F7, unarbitrated)" as E9 <<port>> {
+  + accel_cmd_ms2 : real
+  + brake_cmd_ms2 : real
+  + steering_cmd : real
+  --
+  "post: accel_cmd_ms2 <= 3.0 and accel_cmd_ms2 >= -6.0"
+  "post: steering_cmd <= 1.0 and steering_cmd >= -1.0"
+}
+
+' ------------------------------------------------------------------ boundary flows
+E1 "producer" --> "consumer" F1 : <<flow>> raw_sensor_data
+E2 "producer" --> "consumer" F1 : <<flow>> gnss_imu
+E3 "producer" --> "consumer" F3 : <<flow>> driver_intent
+E4 "producer" --> "consumer" F4 : <<flow>> destination
+E5 "producer" --> "store"    D1 : <<flow>> map_data
+E6 "producer" --> "store"    D4 : <<flow>> traffic_rules
+F3 "producer" --> "consumer" E7 : <<flow>> warning
+F7 "producer" --> "consumer" E8 : <<flow>> checked_cmd
+F6 "producer" --> "consumer" E9 : <<flow>> actuator_cmd
+E9 "producer" --> "consumer" F7 : <<flow>> raw_actuator_cmd
+
+' ------------------------------------------------------------------ store accesses (R-D-1 / R-D-2)
+D1 "store" --> "reader" F1 : <<flow>> hd_map_segment (store_read)
+D1 "store" --> "reader" F2 : <<flow>> hd_map_segment (store_read)
+D1 "store" --> "reader" F3 : <<flow>> hd_map_segment (store_read)
+D1 "store" --> "reader" F4 : <<flow>> hd_map_segment (store_read)
+D1 "store" --> "reader" F5 : <<flow>> hd_map_segment (store_read)
+D3 "store" --> "reader" F6 : <<flow>> ego_state (store_read)
+D3 "store" --> "reader" F7 : <<flow>> ego_state (store_read)
+D4 "store" --> "reader" F3 : <<flow>> traffic_rules (store_read)
+D4 "store" --> "reader" F5 : <<flow>> traffic_rules (store_read)
+D4 "store" --> "reader" F7 : <<flow>> traffic_rules (store_read)
+
+F1 "writer" --> "store" D2 : <<flow>> object_table (store_write)
+F1 "writer" --> "store" D3 : <<flow>> ego_state (store_write)
+
+' ------------------------------------------------------------------ function to function flows
+F1 "producer" --> "consumer" F2 : <<flow>> ego_state
+F1 "producer" --> "consumer" F2 : <<flow>> object_table
+F1 "producer" --> "consumer" F3 : <<flow>> ego_state
+F1 "producer" --> "consumer" F4 : <<flow>> ego_state
+F1 "producer" --> "consumer" F5 : <<flow>> ego_state
+F2 "producer" --> "consumer" F3 : <<flow>> predicted_trajectories
+F2 "producer" --> "consumer" F3 : <<flow>> min_ttc
+F2 "producer" --> "consumer" F5 : <<flow>> predicted_trajectories
+F4 "producer" --> "consumer" F3 : <<flow>> route
+F4 "producer" --> "consumer" F5 : <<flow>> route
+F3 "producer" --> "consumer" F5 : <<flow>> manoeuvre
+F5 "producer" --> "consumer" F6 : <<flow>> trajectory
+
+' ------------------------------------------------------------------ element notes
+note top of F1
+  <b>F1 - Perception & Localisation</b>
+  Reads D1; <b>writes</b> D2 and D3; reads neither (spec F1).
+  Constraint C-F1-5: ego_yaw_rate_rad_s <= 3.5 and >= -3.5  [A-4]
+end note
+
+note bottom of F2
+  <b>F2 - Prediction</b>
+  C-F2-3: prediction_horizon_s >= 3.0  [A-7, F2 "at least 3 s"]
+  F2 is declared the <b>only</b> function computing TTC (spec F2).
+  See OI-6: spec section 6 lets F3.1 compute TTC as well.
+end note
+
+note bottom of F3
+  <b>F3 - Behaviour Planning</b>
+  C-F3-4: risk_level = 'critical' | required_decel_ms2 >= 6.0 and target_speed_kmh = 0.0  [A-1, N-3/N-4]
+  C-F3-5: risk_level = 'critical' | ego_speed_kmh <= 130.0                            [N-1]
+  C-F3-6: ttc_min_s <= 2.0 | warning_type <> 'none'                                     [N-2]
+  Refined at Level 1 into F3.1 / F3.2 / F3.3 (see M4_L1.puml).
+end note
+
+note bottom of F5
+  <b>F5 - Motion Planning</b>
+  C-F5-2: max_permitted_speed_kmh <= speed_limit_kmh   (F5, D4)
+  C-F5-6: commanded_lateral_accel_ms2 <= a_lat_max_ms2 (N-7 - the spec gives <b>no numeric value</b>, see OI-8)
+end note
+
+note bottom of F6
+  <b>F6 - Control</b>
+  Envelope A-3 (comfort acceleration <= 3.0) is applied <b>asymmetrically</b>:
+  the braking side is bounded by A-1 (6.0), otherwise no emergency deceleration
+  could ever be commanded. See OI-7.
+end note
+
+note bottom of F7
+  <b>F7 - Safety Shield</b>
+  C-F7-6: dangerous_situation = 'true' | checked_brake_cmd_ms2 >= 4.0   [N-6, A-2]
+  C-F7-7: response_time_s <= 0.1 | checked_accel_cmd_ms2 <= 2.0          [N-6, A-2]
+  C-F7-9: steering_within_envelope = 'true' | checked_steering_cmd = actuator_cmd.steering_cmd
+  F7 is the <b>only</b> path to E8 (R-E-2).
+end note
+
+note bottom of D1
+  D1 - content is refreshed by E5; the spec's owner cell "F5 / F1" conflicts with
+  R-D-1 and with the "shall not write any store" clauses of F1/F5. See OI-9.
+end note
+
+note bottom of D2
+  D2 has <b>no reader</b> among the mandated dependencies of spec section 5.1;
+  the object table reaches F2 directly over F1 -> F2. See OI-10.
+end note
+
+note bottom of E9
+  E9 is listed in the spec's external-interface table although section 5.1 places it
+  between F6 and F7. It is modelled as a named port so that the raw command cannot
+  reach the actuators without passing F7 (R-E-2). See OI-11.
+end note
+
+@enduml

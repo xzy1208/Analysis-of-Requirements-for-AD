@@ -1,0 +1,117 @@
+{
+  "reviewer": "DeepSeek-v4-pro",
+  "reviewer_label": "B",
+  "mode": "blind",
+  "round": 2,
+  "reviews": [
+    {
+      "model": "M1",
+      "level": "L0",
+      "findings": [
+        {
+          "type": "omission",
+          "location": "元素列表 / Safety_Shield",
+          "detail": "规格要求七个功能，模型缺 F7 Safety_Shield，追溯表 F-Safety_Shield 悬空。"
+        },
+        {
+          "type": "contradiction",
+          "location": "Behavior_Planning decel_req==2.0",
+          "detail": "紧急减速度写成 2.0，违反 A-1=6.0。"
+        },
+        {
+          "type": "flow",
+          "location": "route -> Behavior_Planning",
+          "detail": "Behavior_Planning 前置引用 route.path_length 但无 route 输入流，违反 R-G-4。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "Perception_Localization pre",
+          "detail": "「输入应在适当时刻有效」用模糊词替代精确前置条件。"
+        }
+      ]
+    },
+    {
+      "model": "M3",
+      "level": "L0",
+      "findings": [
+        {
+          "type": "omission",
+          "location": "元素列表 / F4",
+          "detail": "缺 F4 Route Planning，route 无生产者，F3/F5 前置悬空。"
+        },
+        {
+          "type": "flow",
+          "location": "actuator_cmd: F6 -> E9 且无 E9->F7",
+          "detail": "E9 未连到 F7，F6 原始命令可绕过仲裁直达输出，违反 R-E-2。"
+        },
+        {
+          "type": "condition",
+          "location": "F6/F7 steering == -1.0",
+          "detail": "保留条件压缩到单点 -1.0，A-6 包络语义错误。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "F1 pre",
+          "detail": "「输入应在适当时刻有效」模糊前置条件。"
+        }
+      ]
+    },
+    {
+      "model": "M4",
+      "level": "L0",
+      "findings": [
+        {
+          "type": "omission",
+          "location": "元素列表 / F4",
+          "detail": "缺 F4 Route Planning，route 无生产者。"
+        },
+        {
+          "type": "flow",
+          "location": "ego_state: D3 -> F6",
+          "detail": "F6 前置引用 ego_state 但无 D3->F6 流，违反 R-G-4。"
+        },
+        {
+          "type": "contradiction",
+          "location": "F3 critical required_decel_ms2 == 2.0",
+          "detail": "紧急减速度 2.0 违反 A-1=6.0。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "F1 pre",
+          "detail": "「输入应在适当时刻有效」模糊前置条件。"
+        }
+      ]
+    },
+    {
+      "model": "M5",
+      "level": "L1",
+      "findings": [
+        {
+          "type": "contradiction",
+          "location": "EmergencyBrake / T3/T13/T20/T27 ==2.0",
+          "detail": "紧急减速度 2.0 违反 A-1=6.0。"
+        },
+        {
+          "type": "condition",
+          "location": "T17 pre driver_accel_request=true",
+          "detail": "未排除 critical，紧急机动可被驾驶员加速覆盖，违反 F3.3。"
+        },
+        {
+          "type": "condition",
+          "location": "T12 caution 下 driver_accel",
+          "detail": "caution 级别驾驶员加速未优先，与 F3.3 及 T10 矛盾。"
+        },
+        {
+          "type": "omission",
+          "location": "FaultDegraded / Deactivated 合成状态",
+          "detail": "规格未要求的降级/退出状态被引入，违反 R-G-3。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "T1 pre",
+          "detail": "「输入应在适当时刻有效」模糊前置条件。"
+        }
+      ]
+    }
+  ]
+}

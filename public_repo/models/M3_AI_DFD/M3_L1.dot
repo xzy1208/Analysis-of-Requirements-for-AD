@@ -1,0 +1,67 @@
+digraph M3_L1 {
+  graph [
+    label="M3 Level 1 DFD - Refinement of F3 (AEB branch), balanced with Level 0"
+    labelloc="t"
+    fontsize=16
+    fontname="Helvetica"
+    rankdir=LR
+    splines=true
+    nodesep=0.5
+    ranksep=1.2
+  ];
+  node [fontname="Helvetica", fontsize=10];
+  edge [fontname="Helvetica", fontsize=9];
+
+  /* ==== Parent F3 boundary (3.0) ==== */
+  subgraph cluster_parent {
+    label="3.0  F3 Behaviour Planning  (parent process, refined here)"
+    style=dashed;
+    color="#888888";
+    fontsize=11;
+
+    node [shape=box, style="", fillcolor=white, height=0.7, width=1.6];
+    "3.1" [label="3.1  F3.1\nTTC Computation"];
+    "3.2" [label="3.2  F3.2\nRisk Classification"];
+    "3.3" [label="3.3  F3.3\nManeuver Planning"];
+  }
+
+  /* ==== External interfaces / parent-owned elements crossing the F3 boundary ==== */
+  node [shape=box, style="rounded,filled", fillcolor="#E8E8E8", height=0.6, width=1.4];
+  P_F1 [label="F1 Perception &\nLocalisation\n(parent)"];
+  P_F2 [label="F2 Prediction\n(parent)"];
+  P_F4 [label="F4 Route Planning\n(parent)"];
+  P_F5 [label="F5 Motion Planning\n(parent)"];
+  E3  [label="E3\ndriver_intent (in)"];
+  E7  [label="E7\nwarning (out)"];
+
+  node [shape=cylinder, style=filled, fillcolor="#F7F7F7", height=0.8, width=1.3];
+  D1 [label="D1\nHD Map Store"];
+  D4 [label="D4\nTraffic Rules Store"];
+
+  /* ==== Intra-F3 flows ==== */
+  "3.1" -> "3.2" [label="ttc_set", color=black];
+  "3.2" -> "3.3" [label="risk_level", color=black];
+
+  /* ==== Parent-boundary IN flows (must match L0 inputs of F3) ==== */
+  P_F2 -> "3.1" [label="predicted_trajectories", color=black];
+  P_F1 -> "3.1" [label="ego_state", color=black];
+  P_F1 -> "3.3" [label="ego_state", color=black];
+  D4   -> "3.2" [label="traffic_rules", color="#666666", style=dashed];
+  E3   -> "3.3" [label="driver_intent", color=black];
+  P_F4 -> "3.3" [label="route", color=black];
+  D1   -> "3.3" [label="hd_map_segment", color="#666666", style=dashed];
+
+  /* ==== Parent-boundary OUT flows (must match L0 outputs of F3) ==== */
+  "3.2" -> E7  [label="warning", color=black];
+  "3.3" -> P_F5 [label="manoeuvre", color=black];
+
+  /* ==== Balance note ==== */
+  subgraph cluster_balance {
+    label="Parent/child interface balance (L0 F3 <-> L1)"
+    style=dotted;
+    color="#999999";
+    "bal_in"  [label="IN: predicted_trajectories (F2)\nIN: ego_state (F1)\nIN: traffic_rules (D4, read)\nIN: driver_intent (E3)\nIN: route (F4)\nIN: hd_map_segment (D1, read)", shape=note, style=filled, fillcolor="#FFFBE6", fontsize=8, align=left];
+    "bal_out" [label="OUT: manoeuvre -> F5\nOUT: warning -> E7", shape=note, style=filled, fillcolor="#FFFBE6", fontsize=8, align=left];
+  }
+  "bal_in" -> "bal_out" [label="", color=black, constraint=false, arrowhead=none, fontsize=8];
+}

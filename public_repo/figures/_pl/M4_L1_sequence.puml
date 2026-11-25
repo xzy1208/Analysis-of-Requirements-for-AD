@@ -1,0 +1,159 @@
+@startuml M4_L1_sequence
+' =====================================================================
+' M4  -  Level 1 sequence: one complete AEB (emergency braking) trigger
+' Sole input : NL-RQ-ADAS-v1_需求规格.md
+' Order       : perception -> prediction -> TTC -> risk classification -> manoeuvre
+' provenance  : producer=llm, passes=1, self_review_performed=false
+' Thresholds  : A-5 (3.0 / 1.5 s), A-1 (6.0 m/s2), A-3 (3.0), A-6 (1.0),
+'               N-1 (130 km/h), N-2 (2.0 s), N-6 / A-2 (0.1 s, 2.0, 4.0)
+' =====================================================================
+title M4  -  Level 1 Sequence:  AEB Trigger  (perception -> prediction -> TTC -> risk -> manoeuvre)
+
+skinparam shadowing false
+skinparam sequenceMessageAlign left
+skinparam responseMessageAlign left
+autonumber
+
+actor "Driver / HMI\n(E3)" as E3
+actor "Sensors\n(E1, E2)" as ES
+database "D1 HD Map" as D1
+database "D2 Object Track" as D2
+database "D3 Ego State" as D3
+database "D4 Traffic Rules" as D4
+participant "F1\nPerception &\nLocalisation" as F1
+participant "F2\nPrediction" as F2
+participant "F3.1\nTTC\nComputation" as F31
+participant "F3.2\nRisk\nClassification" as F32
+participant "F3.3\nManeuver\nPlanning" as F33
+participant "F4\nRoute\nPlanning" as F4
+participant "F5\nMotion\nPlanning" as F5
+participant "F6\nControl" as F6
+participant "E9\nRaw Command Port" as E9
+participant "F7\nSafety Shield" as F7
+participant "E7\nWarning (out)" as E7
+participant "E8\nActuators (out)" as E8
+
+== 1. Perception ==
+
+ES -> F1 : raw_sensor_data (E1)  <<flow>>
+ES -> F1 : gnss_imu (E2)  <<flow>>
+F1 -> D1 : read hd_map_segment (store_read)
+activate F1
+F1 -> D2 : write object_table (store_write)
+F1 -> D3 : write ego_state (store_write)
+note right of F1
+  C-F1-1 pre: raw_sensor_data <> null and gnss_imu <> null
+  C-F1-3 post: object_count >= 0 and lead_object_id <> ''
+  C-F1-5 inv : ego_yaw_rate_rad_s <= 3.5 and >= -3.5   [A-4]
+  F1 writes D2 and D3 and reads neither (spec F1).
+end note
+
+== 2. Prediction ==
+
+F1 -> F2 : ego_state  <<flow>>
+F1 -> F2 : object_table  <<flow>>
+activate F2
+F2 -> D1 : read hd_map_segment (store_read)
+F2 -> F2 : predict trajectories over the horizon
+note right of F2
+  C-F2-3 post: prediction_horizon_s >= 3.0   [A-7]
+  F2 is the declared only TTC computation function (spec F2);
+  F3.1 recomputes per-object TTC - conflict OI-6.
+end note
+
+== 3. TTC computation (F3.1) ==
+
+F2 -> F31 : predicted_trajectories  <<flow>>
+F2 -> F31 : min_ttc  <<flow>>
+F1 -> F31 : ego_state  <<flow>>
+activate F31
+F31 -> F31 : compute TTC per predicted object
+F31 -> F31 : take the minimum over the object set
+note right of F31
+  C-L1-1 post: considered_object_count >= 0 and ttc_min_s >= 0.0
+  Empty object set -> count = 0 (no sentinel TTC value is specified: OI-12).
+end note
+
+== 4. Risk classification (F3.2) ==
+
+F31 -> F32 : ttc_set  <<flow>>
+activate F32
+F32 -> D4 : read traffic_rules (store_read)
+F32 -> F32 : classify on ttc_min_s
+note right of F32
+  C-L1-3 risk_level = 'no_risk'  | ttc_min_s > 3.0                    [A-5 T_risk_high]
+  C-L1-4 risk_level = 'caution'  | ttc_min_s <= 3.0 and ttc_min_s > 1.5 [A-5]
+  C-L1-5 risk_level = 'critical' | ttc_min_s <= 1.5                    [A-5 T_fcw]
+end note
+
+alt TTC <= 2.0 s  (warning must be present no later than 2.0 s, N-2)
+  F32 -> E7 : warning  <<flow>>  [warning_type = 'imminent collision', warning_active = 'true']
+  note right of E7
+    C-L1-6: ttc_min_s <= 2.0 | warning_type <> 'none'   [N-2]
+  end note
+end
+
+== 5. Maneuver planning (F3.3) ==
+
+F32 -> F33 : risk_level  <<flow>>
+activate F33
+E3 -> F33 : driver_intent (E3)  <<flow>>
+F4 -> F33 : route  <<flow>>
+F33 -> D1 : read hd_map_segment (store_read)
+F33 -> F33 : decide the manoeuvre for the risk level
+note right of F33
+  C-L1-7 risk_level = 'no_risk'  | manoeuvre_type = 'cruise' / 'keep_lane'
+  C-L1-8 risk_level = 'caution'  | required_decel_ms2 > 0.0
+  C-L1-9 risk_level = 'critical' | required_decel_ms2 >= 6.0 and target_speed_kmh = 0.0  [A-1]
+  C-L1-10 risk_level = 'critical'| ego_speed_kmh <= 130.0   [N-1]
+  C-L1-11 driver acceleration request + risk_level = 'critical'
+         | required_decel_ms2 >= 6.0 and target_speed_kmh = 0.0
+         -> the emergency manoeuvre is not overridden (spec F3.3).
+end note
+
+== 6. Motion planning and control ==
+
+F33 -> F5 : manoeuvre  <<flow>>
+activate F5
+F5 -> F5 : build a kinematically feasible trajectory
+note right of F5
+  C-F5-2 post: max_permitted_speed_kmh <= speed_limit_kmh   (D4)
+  C-F5-6 post: commanded_lateral_accel_ms2 <= a_lat_max_ms2 [N-7, no numeric value]
+end note
+F5 -> F6 : trajectory  <<flow>>
+activate F6
+F6 -> F6 : convert the trajectory into an actuation command
+note right of F6
+  C-F6-2 post: accel_cmd_ms2 <= 3.0 and accel_cmd_ms2 >= -6.0   [A-3 / A-1]
+  C-F6-3 post: steering_cmd <= 1.0 and steering_cmd >= -1.0     [A-6]
+end note
+
+== 7. Arbitration (F7) and delivery ==
+
+F6 -> E9 : actuator_cmd  <<flow>>   (raw, unarbitrated)
+activate E9
+E9 -> F7 : raw_actuator_cmd  <<flow>>
+activate F7
+F7 -> D3 : read ego_state (store_read)
+F7 -> D4 : read traffic_rules (store_read)
+F7 -> F7 : arbitrate into the safety envelope
+note right of F7
+  C-F7-2 post: checked_accel_cmd_ms2 <= 3.0 and >= -6.0
+  C-F7-6 dangerous_situation = 'true' | checked_brake_cmd_ms2 >= 4.0   [N-6, A-2]
+  C-F7-7 response_time_s <= 0.1 | checked_accel_cmd_ms2 <= 2.0          [N-6, A-2]
+  C-F7-9 steering_within_envelope = 'true' | checked_steering_cmd = actuator_cmd.steering_cmd
+  F7 is the only path to E8 (R-E-2): the raw command never reaches the actuators.
+end note
+F7 -> E8 : checked_cmd  <<flow>>
+deactivate F7
+deactivate E9
+deactivate F6
+deactivate F5
+
+deactivate F33
+deactivate F32
+deactivate F31
+deactivate F2
+deactivate F1
+
+@enduml

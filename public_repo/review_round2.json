@@ -1,0 +1,130 @@
+{
+  "reviewer": "Tencent Hunyuan 4 Flash",
+  "round": 2,
+  "reviews": [
+    {
+      "model": "M1",
+      "level": "L0",
+      "findings": [
+        {
+          "type": "omission",
+          "location": "元素 F7 Safety_Shield",
+          "detail": "元素仅 6 个（Perception_Localization / Prediction / Behavior_Planning / Motion_Planning / Control / Route_Planning），缺少 F7 Safety_Shield 监控仲裁功能；但追溯条目却列有 F-Safety_Shield -> ['Safety_Shield']。违反 R-L0-1（恰好 F1–F7）和 R-E-2（E8 必须由监控仲裁函数产生）。"
+        },
+        {
+          "type": "flow",
+          "location": "F6→F7→E8 仲裁链",
+          "detail": "没有 Control(F6)→F7 的 actuator_cmd(E9) 输入流，也没有 F7→E8 的 checked_cmd 输出流；Control 输出的 actuator_cmd 悬空、无消费者，E8 接口在整个数据流中完全缺失。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "Perception_Localization（描述与 pre）",
+          "detail": "描述“及时处理相关数据以提供合适输出”及前置条件“输入应在适当时刻有效”包含“及时 / 合适 / 适当”等模糊词，未给出可量化后置条件，不满足 R-G-1 与规格 §5 对 F1 职责的精确描述。"
+        },
+        {
+          "type": "condition",
+          "location": "Behavior_Planning post[predicted_trajectories.min_ttc<1.5]",
+          "detail": "以严格小于 <1.5 界定紧急情形，而 §6/A-5 规定 critical 为“at or below T_fcw=1.5”（应为 ≤）；且该分支给出 maneuver.decel_req==2.0，远低于 A-1 规定的紧急制动 6.0 m/s²，边界算子与阈值均不符。"
+        }
+      ]
+    },
+    {
+      "model": "M3",
+      "level": "L0",
+      "findings": [
+        {
+          "type": "omission",
+          "location": "元素 F4 Route Planning",
+          "detail": "元素只有 F1、F2、F3、F5、F6、F7 共 6 个，缺少 F4 Route Planning；而追溯条目（R-SCOPE-1、R-SCOPE-2、R-L0-1、F4 等）均引用 F4。违反 R-L0-1。"
+        },
+        {
+          "type": "flow",
+          "location": "F4 相关路由数据流",
+          "detail": "E4 destination→F4、D1→F4 的 map 读取、F4→F3 与 F4→F5 的 route 流全部缺失；但 F3、F5 的前置条件都引用 route.path_length>0，输入悬空，E4 接口在数据流中未出现。"
+        },
+        {
+          "type": "flow",
+          "location": "E3 driver_intent → F3",
+          "detail": "F3 前置条件引用 driver_intent.requested_speed，但数据流中没有 E3→F3 的 driver_intent 输入；外部接口 E3 完全未建模，违反 §5.1 与 R-SCOPE-2。"
+        },
+        {
+          "type": "flow",
+          "location": "E9 actuator_cmd → F7",
+          "detail": "F7 前置条件引用 actuator_cmd.steering，但只有 F6→E9 的输出流，没有 E9→F7 的输入流；F7 的被监控命令悬空，R-E-2 要求的监控仲裁数据流不完整。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "F1（描述与 pre）",
+          "detail": "描述“及时处理相关数据以提供合适输出”与前置“输入应在适当时刻有效”含“及时 / 合适 / 适当”模糊词，无量化后置条件，不符合 R-G-1。"
+        }
+      ]
+    },
+    {
+      "model": "M4",
+      "level": "L0",
+      "findings": [
+        {
+          "type": "omission",
+          "location": "元素 F4 Route Planning",
+          "detail": "元素只有 F1、F2、F3、F5、F6、F7 共 6 个，缺少 F4 Route Planning；追溯条目 R-SCOPE-1/2/3、R-L0-1 等均引用 F4。违反 R-L0-1。"
+        },
+        {
+          "type": "flow",
+          "location": "F4 相关路由数据流",
+          "detail": "没有 E4 destination→F4、D1→F4 读取以及 F4→F3 / F4→F5 的 route 流；F3 与 F5 的前置条件都要求 route<>null，但该输入悬空，E4 接口在数据流中缺失。"
+        },
+        {
+          "type": "flow",
+          "location": "D3 Ego State Store → F6",
+          "detail": "F6 前置条件要求 ego_state<>null，但只有 ego_state: D3->F7，没有 D3→F6 的 ego_state 读取流；违反 §5 中 F6 Inputs 与 §5.1 的“F6 reads D3”。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "F1（描述）",
+          "detail": "描述“及时处理相关数据以提供合适输出”使用“及时 / 合适”模糊词，未给出 §5 要求的精确职责与量化后置条件，不符合 R-G-1。"
+        }
+      ]
+    },
+    {
+      "model": "M5",
+      "level": "L1",
+      "findings": [
+        {
+          "type": "contradiction",
+          "location": "EmergencyBrake 状态、T3/T13/T16/T20/T27",
+          "detail": "紧急制动减速度写为“at least 2.0 m/s2”“maneuver.deceleration == 2.0”，且状态描述标注 (F3.3/A-1)；但 §8 A-1 规定紧急制动为 6.0 m/s²，2.0 与阈值直接冲突。"
+        },
+        {
+          "type": "condition",
+          "location": "T18 / T19 / T20",
+          "detail": "三条转换的前置条件完全相同（sensor_validity=false and odd_active=true），却分别得到 none/cruise、caution/deceleration、emergency 三种互斥结果，条件无法区分，产生非确定数据流。"
+        },
+        {
+          "type": "contradiction",
+          "location": "T17、T12、T9/T11（驾驶员加速请求）",
+          "detail": "§6 F3.3 要求紧急情形不得被驾驶员加速请求覆盖、其他风险级别加速请求应优先。T17 未排除 critical 即输出 driver_accelerate；T12 在 caution 下仍输出 deceleration；T9（无请求下输出 driver_accelerate）与 T11（有请求下输出 cruise）互相矛盾。"
+        },
+        {
+          "type": "condition",
+          "location": "T2、T5",
+          "detail": "以 obj_count>0 作为解除警告并回到 cruise 的条件，而 T6/T7 用 obj_count==0 才回到 cruise；按 §6 F3.1“无对象时 count=0”的语义，对象存在不应清除 caution/imminent 警告，比较算子方向相反。"
+        },
+        {
+          "type": "omission",
+          "location": "R-L1-1 / F3.1、F3.2、F3.3",
+          "detail": "§6 要求 F3 恰好分解为 F3.1 TTC 计算、F3.2 风险分级、F3.3 机动规划三个子功能；模型仅给出 6 个状态与 T1–T27 状态机，没有建立这三个子功能元素（仅在追溯条目中名义映射）。"
+        },
+        {
+          "type": "flow",
+          "location": "AEB 分支输入流",
+          "detail": "F3.1→F3.2 的 TTC set、D4→F3.2 的 traffic_rules、F3.2→F3.3 的 risk level，以及 F3.3 所需的 ego_state / route(F4) / D1 均无显式数据流；T27 依赖 checked_cmd 但无 E9→仲裁的输入流，§6 父接口悬空。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "T1（描述与 pre）",
+          "detail": "描述“及时处理相关数据以提供合适输出”、前置“输入应在适当时刻有效”含模糊词，且未以 A-5 的 T_risk_high=3.0s 作为进入 caution 的量化条件，不满足 R-G-1/§6 F3.2。"
+        }
+      ]
+    }
+  ]
+}

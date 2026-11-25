@@ -1,0 +1,437 @@
+{
+  "_readme": "填 label（1 / 0.5 / 0）与 evidence（一句话）。本文件不含任何参考答案。\nset=discriminating 的行是必做的（30 个）；set=control 的行是可选的（24 个），用于检查是否存在系统性偏差，若时间紧可整组留空。",
+  "rows": [
+    {
+      "atom_id": "TH-1",
+      "model": "M1",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-1",
+      "model": "M1.1",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-1",
+      "model": "M2",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-1",
+      "model": "M3",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-1",
+      "model": "M4",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-1",
+      "model": "M5",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-3",
+      "model": "M1",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-3",
+      "model": "M1.1",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-3",
+      "model": "M2",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-3",
+      "model": "M3",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-3",
+      "model": "M4",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-3",
+      "model": "M5",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-4",
+      "model": "M1",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-4",
+      "model": "M1.1",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-4",
+      "model": "M2",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-4",
+      "model": "M3",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-4",
+      "model": "M4",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-4",
+      "model": "M5",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-5",
+      "model": "M1",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-5",
+      "model": "M1.1",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-5",
+      "model": "M2",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-5",
+      "model": "M3",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-5",
+      "model": "M4",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-5",
+      "model": "M5",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-6",
+      "model": "M1",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-6",
+      "model": "M1.1",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-6",
+      "model": "M2",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-6",
+      "model": "M3",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-6",
+      "model": "M4",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-6",
+      "model": "M5",
+      "level": "L1",
+      "set": "discriminating",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "AEB-1",
+      "model": "M1",
+      "level": "L1",
+      "set": "control",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "AEB-1",
+      "model": "M3",
+      "level": "L1",
+      "set": "control",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "AEB-1",
+      "model": "M4",
+      "level": "L1",
+      "set": "control",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "AEB-3",
+      "model": "M1",
+      "level": "L1",
+      "set": "control",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "AEB-3",
+      "model": "M3",
+      "level": "L1",
+      "set": "control",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "AEB-3",
+      "model": "M4",
+      "level": "L1",
+      "set": "control",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "EXT-3",
+      "model": "M1",
+      "level": "L1",
+      "set": "control",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "EXT-3",
+      "model": "M3",
+      "level": "L1",
+      "set": "control",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "EXT-3",
+      "model": "M4",
+      "level": "L1",
+      "set": "control",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "EXT-5",
+      "model": "M1",
+      "level": "L1",
+      "set": "control",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "EXT-5",
+      "model": "M3",
+      "level": "L1",
+      "set": "control",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "EXT-5",
+      "model": "M4",
+      "level": "L1",
+      "set": "control",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "EXT-6",
+      "model": "M1",
+      "level": "L1",
+      "set": "control",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "EXT-6",
+      "model": "M3",
+      "level": "L1",
+      "set": "control",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "EXT-6",
+      "model": "M4",
+      "level": "L1",
+      "set": "control",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "SCOPE-1",
+      "model": "M1",
+      "level": "L1",
+      "set": "control",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "SCOPE-1",
+      "model": "M3",
+      "level": "L1",
+      "set": "control",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "SCOPE-1",
+      "model": "M4",
+      "level": "L1",
+      "set": "control",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "SCOPE-3",
+      "model": "M1",
+      "level": "L1",
+      "set": "control",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "SCOPE-3",
+      "model": "M3",
+      "level": "L1",
+      "set": "control",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "SCOPE-3",
+      "model": "M4",
+      "level": "L1",
+      "set": "control",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-2",
+      "model": "M1",
+      "level": "L1",
+      "set": "control",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-2",
+      "model": "M3",
+      "level": "L1",
+      "set": "control",
+      "label": "",
+      "evidence": ""
+    },
+    {
+      "atom_id": "TH-2",
+      "model": "M4",
+      "level": "L1",
+      "set": "control",
+      "label": "",
+      "evidence": ""
+    }
+  ]
+}

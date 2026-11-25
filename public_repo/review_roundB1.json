@@ -1,0 +1,157 @@
+{
+  "reviewer": "DeepSeek-v4-pro",
+  "reviewer_label": "B",
+  "mode": "blind",
+  "round": 1,
+  "reviews": [
+    {
+      "model": "M1",
+      "level": "L0",
+      "findings": [
+        {
+          "type": "omission",
+          "location": "元素列表 / Safety_Shield；追溯 F-Safety_Shield",
+          "detail": "规格 §5 要求七个顶层功能 F1–F7，其中 F7 为 Safety_Shield（监控与仲裁）。模型元素列表仅 6 个 function，缺失 Safety_Shield；但追溯表仍保留 F-Safety_Shield -> ['Safety_Shield']，指向一个不存在的元素，形成悬空追溯。"
+        },
+        {
+          "type": "contradiction",
+          "location": "Behavior_Planning post[predicted_trajectories.min_ttc<1.5]",
+          "detail": "规格 A-1 规定紧急减速度为 6.0 m/s²，F3.3 要求 critical 时 required deceleration 至少 A_emergency。模型写 maneuver.decel_req==2.0，低于 6.0，与规格直接冲突。"
+        },
+        {
+          "type": "condition",
+          "location": "Behavior_Planning post[min_ttc<1.5] 阈值算子；多处 post 的 ==0",
+          "detail": "风险分级边界使用 min_ttc<1.5 的严格开区间，而规格 A-5 规定 critical 为 TTC ≤ T_fcw(1.5 s)，应为闭区间 ≤。此外多个后置条件出现 ==0（如 ego_state.speed==0、map_data.speed_limit==0）把本应为 >= 或 > 的边界条件改成了等值判断，边界语义错误。"
+        },
+        {
+          "type": "flow",
+          "location": "Behavior_Planning 输入 route",
+          "detail": "Behavior_Planning 的前置条件引用 route.path_length>0，但数据流列表中没有 route -> Behavior_Planning 的流（规格 §5.1 要求 F4→F3 的 route 流）。输入依赖无显式具名流，违反 R-G-4。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "Perception_Localization 描述与 pre",
+          "detail": "「及时处理相关数据以提供合适输出」「输入应在适当时刻有效」用及时/合适/适当替代精确约束，违反 R-G-1 对具名前置条件的要求。"
+        },
+        {
+          "type": "omission",
+          "location": "追溯条目",
+          "detail": "追溯表仅保留 6 条 F-xx 条目，缺失 R-SCOPE/R-E/R-D/R-L0/R-G 等跨切面需求条款到元素的映射，违反 R-G-2「每条 R-xx 至少追溯到一个元素」。"
+        }
+      ]
+    },
+    {
+      "model": "M3",
+      "level": "L0",
+      "findings": [
+        {
+          "type": "omission",
+          "location": "元素列表 / F4",
+          "detail": "规格 §5 要求七个功能 F1–F7，其中 F4 为 Route Planning。模型元素仅 F1/F2/F3/F5/F6/F7 六个，缺失 F4；但 F3、F5 的输入均引用 route(F4)，route 无生产者，前置条件悬空。"
+        },
+        {
+          "type": "flow",
+          "location": "actuator_cmd: F6 -> E9（缺失 F6/F7 间仲裁链）",
+          "detail": "规格 R-E-2 要求系统输出 E8 是对 E9 的监控仲裁结果，E9 不得直达执行器。模型把 actuator_cmd 建模为 F6->E9 的 boundary_out，且 F7 的输入 actuator_cmd 无对应入流（E9 未连到 F7），F6 的原始命令可绕过 F7 直接输出，违反 R-E-2。"
+        },
+        {
+          "type": "condition",
+          "location": "F6 post / F7 post 的 steering == -1.0",
+          "detail": "F6 post 写 actuator_cmd.steering <= 1.0 and steering == -1.0，F7 的保留条件写 steering <= 1.0 and steering == -1.0。规格 A-6 转向包络为 ±1.0，F7 应保留包络内的转向命令；用 == 把保留条件压缩到单点 -1.0，排除了包络内其他取值，边界算子错误。"
+        },
+        {
+          "type": "condition",
+          "location": "F1 post / F2 pre 的 ==0",
+          "detail": "F1 post 写 ego_state.speed == 0 and object_table.lead_velocity == 0，F2 pre 写 ego_state.speed == 0、object_table.lead_velocity == 0。把状态字段约束写成恒等于 0，语义上等价于断言车辆静止且前车速度为 0，与真实状态空间不符，边界/量词错误。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "F1 描述与 pre",
+          "detail": "「及时处理相关数据以提供合适输出」「输入应在适当时刻有效」用模糊词替代精确前置条件，违反 R-G-1。"
+        },
+        {
+          "type": "omission",
+          "location": "追溯条目",
+          "detail": "追溯表缺失 F6、F7 的 F-xx 条目（只到 F5），且 R-G-6 的 null-safety 要求无对应映射，部分 R-xx 条款覆盖不完整，违反 R-G-2。"
+        }
+      ]
+    },
+    {
+      "model": "M4",
+      "level": "L0",
+      "findings": [
+        {
+          "type": "omission",
+          "location": "元素列表 / F4",
+          "detail": "规格 §5 要求七个功能 F1–F7，含 F4 Route Planning。模型元素仅 6 个，缺失 F4；但 F3、F5 的输入引用 route(F4)，route 无生产者。"
+        },
+        {
+          "type": "flow",
+          "location": "ego_state: D3 -> F6 缺失",
+          "detail": "规格 §5 F6 输入含 ego state(D3 read)。F6 pre 引用 ego_state，但数据流只有 D3->F7，无 D3->F6 流，F6 的 ego_state 输入无具名流，违反 R-G-4。"
+        },
+        {
+          "type": "contradiction",
+          "location": "F3 post[risk_level='critical'] 的 required_decel_ms2 == 2.0",
+          "detail": "规格 A-1 紧急减速度 6.0 m/s²，F3.3 要求 critical 至少 A_emergency。模型在 critical 分支写 required_decel_ms2 == 2.0，低于阈值，与规格冲突。"
+        },
+        {
+          "type": "condition",
+          "location": "F6 post / F7 post 的 accel_cmd == -2.0、steering == -1.0",
+          "detail": "F6 post 写 accel_cmd_ms2 <= 3.0 and accel_cmd_ms2 == -2.0、steering_cmd <= 1.0 and steering_cmd == -1.0。用 == 把包络约束压缩到单个边界点，A-3/A-6 的包络语义被破坏，边界算子错误。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "F1 描述与 pre",
+          "detail": "「及时处理相关数据以提供合适输出」「输入应在适当时刻有效」用模糊词替代精确前置条件，违反 R-G-1。"
+        },
+        {
+          "type": "omission",
+          "location": "追溯条目 / R-G-3、R-G-4",
+          "detail": "追溯表中 R-G-3、R-G-4 的 elements 为空数组，未映射到任何元素，违反 R-G-2「每条 R-xx 至少追溯到一个元素」。"
+        }
+      ]
+    },
+    {
+      "model": "M5",
+      "level": "L1",
+      "findings": [
+        {
+          "type": "contradiction",
+          "location": "EmergencyBrake 状态 / T3/T13/T20/T27",
+          "detail": "规格 A-1 紧急减速度 6.0 m/s²。模型多处写 maneuver.deceleration == 2.0（状态 EmergencyBrake 描述「at least 2.0 m/s2」、T3/T13/T20/T27 后置条件），低于阈值，与规格冲突。"
+        },
+        {
+          "type": "condition",
+          "location": "T3/T13/T20 的 ==2.0 与 guard 边界",
+          "detail": "用 ==2.0 表示紧急减速度，规格 F3.3 为「至少 A_emergency」（≥），比较算子误用（>= 写成 ==）。T3 进入 EmergencyBrake 的 guard 仅 min_ttc <= 1.5，规格 A-5 critical 为 TTC ≤ 1.5（边界含端点，此处一致，但 FCW 判定阈值 N-2 要求不晚于 2.0s 的告警语义未在 guard 体现）。"
+        },
+        {
+          "type": "condition",
+          "location": "T17 DriverOverride->FaultDegraded pre",
+          "detail": "T17 pre 仅 driver_accel_request=true 即令 maneuver=driver_accelerate，未排除 critical 情形；违反 F3.3「紧急机动不得被驾驶员加速请求覆盖」。"
+        },
+        {
+          "type": "condition",
+          "location": "T12 DriverOverride->Caution",
+          "detail": "T12 在 caution 级别且 driver_accel_request=true 时输出 deceleration，与 F3.3「critical 之外驾驶员加速请求优先」矛盾（driver_accel 应覆盖），且与 T10 的 driver_accelerate 语义冲突。"
+        },
+        {
+          "type": "omission",
+          "location": "合成状态 FaultDegraded / Deactivated",
+          "detail": "规格 §6 只要求 F3.1–F3.3 三级 AEB 分支，未要求传感器降级状态与 ODD 退出状态。模型自行引入 FaultDegraded、Deactivated 两个合成状态及 T14–T26 大量转换，超出规格范围（尽管在 OI-5 声明，但已违反 R-G-3 的「规格未写明不得发明元素」精神）。"
+        },
+        {
+          "type": "flow",
+          "location": "数据流 / route、D1、risk level",
+          "detail": "规格 F3.3 输入含 route(from F4) 与 D1。模型状态机无 route 流、无 D1 读流，也无 F3.2->F3.3 显式命名的 risk level 流，输入依赖缺失。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "T1 描述与 pre",
+          "detail": "「及时处理相关数据以提供合适输出」「输入应在适当时刻有效」用模糊词替代精确前置条件，违反 R-G-1。"
+        }
+      ]
+    }
+  ]
+}

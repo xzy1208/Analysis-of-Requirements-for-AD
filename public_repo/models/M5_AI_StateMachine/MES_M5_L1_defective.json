@@ -1,0 +1,1396 @@
+{
+  "model_id": "M5",
+  "model_title": "AI-generated UML state machine of the AEB branch of F3 (single pass)",
+  "level": "L1",
+  "parent_module": "System",
+  "provenance": {
+    "producer": "llm",
+    "llm_family": "Tencent Hunyuan 4 Flash",
+    "generation_date": "2026-11-18",
+    "passes": 1,
+    "prompt_summary": "Generate a UML state-machine requirement model of the F3 AEB branch from NL-RQ-ADAS-v1 sections 6, 7 and 8, map every state and transition to an MES element, and honour the restricted Boolean syntax.",
+    "self_review_performed": false
+  },
+  "elements": [
+    {
+      "id": "Normal",
+      "kind": "state",
+      "name": "Normal",
+      "responsibility": "No risk: cruise/keep-lane manoeuvre, no warning (F3.2/F3.3).",
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": true,
+      "invariants": [
+        "risk_level = no_risk",
+        "warning = none",
+        "maneuver = cruise",
+        "obj_count > 0 and min_ttc > 3.0",
+        "odd_active = true and sensor_validity = true"
+      ],
+      "notes": "S1; min_ttc > 3.0 applies when obj_count > 0."
+    },
+    {
+      "id": "Caution",
+      "kind": "state",
+      "name": "Caution",
+      "responsibility": "Caution band: forward collision warning plus non-zero deceleration (F3.2/F3.3).",
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": true,
+      "invariants": [
+        "risk_level = caution",
+        "min_ttc <= 3.0 and min_ttc > 1.5",
+        "warning = caution",
+        "maneuver = deceleration and maneuver.deceleration > 0",
+        "odd_active = true and sensor_validity = true"
+      ],
+      "notes": "S2; thresholds from A-5."
+    },
+    {
+      "id": "EmergencyBrake",
+      "kind": "state",
+      "name": "EmergencyBrake",
+      "responsibility": "Critical: emergency deceleration at least 2.0 m/s2 with target speed 0 (F3.3/A-1).",
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": true,
+      "invariants": [
+        "risk_level = critical",
+        "min_ttc <= 1.5",
+        "warning = imminent_collision",
+        "maneuver = emergency_deceleration and maneuver.deceleration == 2.0 and maneuver.target_speed = 0",
+        "checked_cmd.deceleration == 2.0",
+        "odd_active = true and sensor_validity = true"
+      ],
+      "notes": "S3 composite state; contains BrakeRamp and Standstill."
+    },
+    {
+      "id": "Standstill",
+      "kind": "state",
+      "name": "Standstill",
+      "responsibility": "Substate of EmergencyBrake: target speed 0 reached and brake held.",
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": true,
+      "invariants": [
+        "ego_speed = 0",
+        "checked_cmd.target_speed = 0"
+      ],
+      "notes": "S3.b; hierarchical substate, F3.3."
+    },
+    {
+      "id": "DriverOverride",
+      "kind": "state",
+      "name": "DriverOverride",
+      "responsibility": "Driver acceleration request takes precedence for no-risk and caution levels, never for critical (F3.3).",
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": true,
+      "invariants": [
+        "driver_accel_request = true",
+        "risk_level <> critical",
+        "maneuver = driver_accelerate",
+        "odd_active = true and sensor_validity = true"
+      ],
+      "notes": "S4; no incoming path from EmergencyBrake."
+    },
+    {
+      "id": "FaultDegraded",
+      "kind": "state",
+      "name": "FaultDegraded",
+      "responsibility": "Synthetic degraded state entered when sensor validity flags are false; last outputs are retained.",
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": false,
+      "invariants": [
+        "sensor_validity = false",
+        "warning = retained and maneuver = retained"
+      ],
+      "notes": "S5 synthetic state; declared in OI-5. 'retained' is the value of the source state."
+    },
+    {
+      "id": "Deactivated",
+      "kind": "state",
+      "name": "Deactivated",
+      "responsibility": "Synthetic exit state entered when ODD status becomes inactive; AEB off.",
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": false,
+      "invariants": [
+        "odd_active = false",
+        "warning = none and maneuver = cruise"
+      ],
+      "notes": "S6 synthetic state; declared in OI-5."
+    },
+    {
+      "id": "T1",
+      "kind": "transition",
+      "name": "T1_Normal_to_Caution",
+      "from": "Normal",
+      "to": "Caution",
+      "guard": "min_ttc <= 3.0 and min_ttc > 1.5",
+      "action": "warning(caution), maneuver(deceleration)",
+      "preconditions": [
+        "输入应在适当时刻有效"
+      ],
+      "postconditions": [
+        "warning = caution and maneuver = deceleration and maneuver.deceleration > 0"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": true,
+      "clauses": [
+        "F3.2",
+        "F3.3",
+        "A-5"
+      ],
+      "notes": "Risk transitions into caution band.",
+      "responsibility": "及时处理相关数据以提供合适输出"
+    },
+    {
+      "id": "T2",
+      "kind": "transition",
+      "name": "T2_Caution_to_Normal",
+      "from": "Caution",
+      "to": "Normal",
+      "guard": "min_ttc > 3.0",
+      "action": "warning(none), maneuver(cruise)",
+      "preconditions": [
+        "warning = caution and obj_count > 0"
+      ],
+      "postconditions": [
+        "warning = none and maneuver = cruise"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": true,
+      "clauses": [
+        "F3.2",
+        "F3.3",
+        "A-5"
+      ],
+      "notes": "Risk falls back to no risk."
+    },
+    {
+      "id": "T3",
+      "kind": "transition",
+      "name": "T3_Caution_to_EmergencyBrake",
+      "from": "Caution",
+      "to": "EmergencyBrake",
+      "guard": "min_ttc <= 1.5",
+      "action": "warning(imminent_collision), maneuver(emergency_deceleration), checked_cmd(decel == 2.0, target_speed = 0)",
+      "preconditions": [
+        "warning = caution and sensor_validity = true and odd_active = true"
+      ],
+      "postconditions": [
+        "warning = imminent_collision and maneuver = emergency_deceleration and maneuver.deceleration == 2.0 and maneuver.target_speed = 0 and checked_cmd.deceleration == 2.0"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": true,
+      "clauses": [
+        "F3.2",
+        "F3.3",
+        "A-1",
+        "A-5",
+        "N-2",
+        "R-E-2"
+      ],
+      "notes": "FCW issued at TTC 1.5 s, earlier than N-2 limit of 2.0 s."
+    },
+    {
+      "id": "T4",
+      "kind": "transition",
+      "name": "T4_EmergencyBrake_to_Caution",
+      "from": "EmergencyBrake",
+      "to": "Caution",
+      "guard": "min_ttc > 1.5 and min_ttc <= 3.0",
+      "action": "warning(caution), maneuver(deceleration)",
+      "preconditions": [
+        "warning = imminent_collision and maneuver.deceleration == 2.0"
+      ],
+      "postconditions": [
+        "warning = caution and maneuver = deceleration and maneuver.deceleration > 0"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": true,
+      "clauses": [
+        "F3.2",
+        "F3.3",
+        "A-5"
+      ],
+      "notes": "Risk recovers from critical to caution."
+    },
+    {
+      "id": "T5",
+      "kind": "transition",
+      "name": "T5_EmergencyBrake_to_Normal",
+      "from": "EmergencyBrake",
+      "to": "Normal",
+      "guard": "min_ttc > 3.0",
+      "action": "warning(none), maneuver(cruise)",
+      "preconditions": [
+        "warning = imminent_collision and obj_count > 0"
+      ],
+      "postconditions": [
+        "warning = none and maneuver = cruise"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": true,
+      "clauses": [
+        "F3.2",
+        "F3.3",
+        "A-5"
+      ],
+      "notes": "Risk recovers directly to no risk."
+    },
+    {
+      "id": "T6",
+      "kind": "transition",
+      "name": "T6_Caution_to_Normal_empty",
+      "from": "Caution",
+      "to": "Normal",
+      "guard": "obj_count = 0",
+      "action": "warning(none), maneuver(cruise)",
+      "preconditions": [
+        "warning = caution and obj_count = 0"
+      ],
+      "postconditions": [
+        "warning = none and maneuver = cruise"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": false,
+      "clauses": [
+        "F3.1",
+        "F3.2",
+        "F3.3"
+      ],
+      "notes": "F3.1 reports count 0; treated as no risk, see OI-7."
+    },
+    {
+      "id": "T7",
+      "kind": "transition",
+      "name": "T7_EmergencyBrake_to_Normal_empty",
+      "from": "EmergencyBrake",
+      "to": "Normal",
+      "guard": "obj_count = 0",
+      "action": "warning(none), maneuver(cruise)",
+      "preconditions": [
+        "warning = imminent_collision and obj_count = 0"
+      ],
+      "postconditions": [
+        "warning = none and maneuver = cruise"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": false,
+      "clauses": [
+        "F3.1",
+        "F3.2",
+        "F3.3"
+      ],
+      "notes": "F3.1 reports count 0; treated as no risk, see OI-7."
+    },
+    {
+      "id": "T8",
+      "kind": "transition",
+      "name": "T8_DriverOverride_to_Normal_empty",
+      "from": "DriverOverride",
+      "to": "Normal",
+      "guard": "obj_count = 0",
+      "action": "warning(none), maneuver(cruise)",
+      "preconditions": [
+        "driver_accel_request = true and obj_count = 0"
+      ],
+      "postconditions": [
+        "warning = none and maneuver = cruise"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": false,
+      "clauses": [
+        "F3.1",
+        "F3.2",
+        "F3.3"
+      ],
+      "notes": "F3.1 reports count 0; treated as no risk, see OI-7."
+    },
+    {
+      "id": "T9",
+      "kind": "transition",
+      "name": "T9_Normal_to_DriverOverride",
+      "from": "Normal",
+      "to": "DriverOverride",
+      "guard": "driver_accel_request = true and min_ttc > 3.0",
+      "action": "maneuver(driver_accelerate), warning(none)",
+      "preconditions": [
+        "risk_level = no_risk and odd_active = true"
+      ],
+      "postconditions": [
+        "maneuver = driver_accelerate and warning = none"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": true,
+      "clauses": [
+        "E3",
+        "F3.3",
+        "A-5"
+      ],
+      "notes": "Driver accel takes precedence in no-risk level."
+    },
+    {
+      "id": "T10",
+      "kind": "transition",
+      "name": "T10_Caution_to_DriverOverride",
+      "from": "Caution",
+      "to": "DriverOverride",
+      "guard": "driver_accel_request = true and min_ttc <= 3.0 and min_ttc > 1.5",
+      "action": "maneuver(driver_accelerate), warning(caution)",
+      "preconditions": [
+        "risk_level = caution and warning = caution"
+      ],
+      "postconditions": [
+        "maneuver = driver_accelerate and warning = caution"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": true,
+      "clauses": [
+        "E3",
+        "F3.2",
+        "F3.3",
+        "A-5"
+      ],
+      "notes": "Driver accel takes precedence but FCW is retained."
+    },
+    {
+      "id": "T11",
+      "kind": "transition",
+      "name": "T11_DriverOverride_to_Normal",
+      "from": "DriverOverride",
+      "to": "Normal",
+      "guard": "driver_accel_request = false and min_ttc > 3.0",
+      "action": "maneuver(cruise), warning(none)",
+      "preconditions": [
+        "driver_accel_request = true and risk_level = no_risk"
+      ],
+      "postconditions": [
+        "maneuver = cruise and warning = none"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": true,
+      "clauses": [
+        "E3",
+        "F3.2",
+        "F3.3",
+        "A-5"
+      ],
+      "notes": "Driver request released, no-risk level."
+    },
+    {
+      "id": "T12",
+      "kind": "transition",
+      "name": "T12_DriverOverride_to_Caution",
+      "from": "DriverOverride",
+      "to": "Caution",
+      "guard": "driver_accel_request = false and min_ttc <= 3.0 and min_ttc > 1.5",
+      "action": "maneuver(deceleration), warning(caution)",
+      "preconditions": [
+        "driver_accel_request = true and risk_level = caution"
+      ],
+      "postconditions": [
+        "maneuver = deceleration and warning = caution and maneuver.deceleration > 0"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": true,
+      "clauses": [
+        "E3",
+        "F3.2",
+        "F3.3",
+        "A-5"
+      ],
+      "notes": "Driver request released, caution level."
+    },
+    {
+      "id": "T13",
+      "kind": "transition",
+      "name": "T13_DriverOverride_to_EmergencyBrake",
+      "from": "DriverOverride",
+      "to": "EmergencyBrake",
+      "guard": "min_ttc <= 1.5",
+      "action": "warning(imminent_collision), maneuver(emergency_deceleration), checked_cmd(decel == 2.0, target_speed = 0)",
+      "preconditions": [
+        "driver_accel_request = true and min_ttc <= 1.5"
+      ],
+      "postconditions": [
+        "warning = imminent_collision and maneuver = emergency_deceleration and maneuver.deceleration == 2.0 and maneuver.target_speed = 0 and checked_cmd.deceleration == 2.0"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": true,
+      "clauses": [
+        "F3.3",
+        "A-1",
+        "A-5",
+        "N-2"
+      ],
+      "notes": "Emergency manoeuvre cannot be overridden by driver accelerate request."
+    },
+    {
+      "id": "T14",
+      "kind": "transition",
+      "name": "T14_Normal_to_FaultDegraded",
+      "from": "Normal",
+      "to": "FaultDegraded",
+      "guard": "sensor_validity = false",
+      "action": "warning(none), maneuver(cruise)",
+      "preconditions": [
+        "risk_level = no_risk"
+      ],
+      "postconditions": [
+        "warning = none and maneuver = cruise"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": false,
+      "clauses": [
+        "E1",
+        "E2"
+      ],
+      "notes": "Synthetic fault path, see OI-5."
+    },
+    {
+      "id": "T15",
+      "kind": "transition",
+      "name": "T15_Caution_to_FaultDegraded",
+      "from": "Caution",
+      "to": "FaultDegraded",
+      "guard": "sensor_validity = false",
+      "action": "warning(caution), maneuver(deceleration)",
+      "preconditions": [
+        "warning = caution"
+      ],
+      "postconditions": [
+        "warning = caution and maneuver = deceleration"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": false,
+      "clauses": [
+        "E1",
+        "E2",
+        "F3.2"
+      ],
+      "notes": "Synthetic fault path, see OI-5."
+    },
+    {
+      "id": "T16",
+      "kind": "transition",
+      "name": "T16_EmergencyBrake_to_FaultDegraded",
+      "from": "EmergencyBrake",
+      "to": "FaultDegraded",
+      "guard": "sensor_validity = false",
+      "action": "warning(imminent_collision), maneuver(emergency_deceleration)",
+      "preconditions": [
+        "warning = imminent_collision and maneuver.deceleration == 2.0"
+      ],
+      "postconditions": [
+        "warning = imminent_collision and maneuver = emergency_deceleration"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": false,
+      "clauses": [
+        "E1",
+        "E2",
+        "A-1"
+      ],
+      "notes": "Synthetic fault path, see OI-5."
+    },
+    {
+      "id": "T17",
+      "kind": "transition",
+      "name": "T17_DriverOverride_to_FaultDegraded",
+      "from": "DriverOverride",
+      "to": "FaultDegraded",
+      "guard": "sensor_validity = false",
+      "action": "warning(none), maneuver(driver_accelerate)",
+      "preconditions": [
+        "driver_accel_request = true"
+      ],
+      "postconditions": [
+        "warning = none and maneuver = driver_accelerate"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": false,
+      "clauses": [
+        "E1",
+        "E2",
+        "E3"
+      ],
+      "notes": "Synthetic fault path, see OI-5."
+    },
+    {
+      "id": "T18",
+      "kind": "transition",
+      "name": "T18_FaultDegraded_to_Normal",
+      "from": "FaultDegraded",
+      "to": "Normal",
+      "guard": "sensor_validity = true and min_ttc > 3.0",
+      "action": "warning(none), maneuver(cruise)",
+      "preconditions": [
+        "sensor_validity = false and odd_active = true"
+      ],
+      "postconditions": [
+        "warning = none and maneuver = cruise"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": true,
+      "clauses": [
+        "E1",
+        "E2",
+        "F3.2",
+        "A-5"
+      ],
+      "notes": "Recovery, no-risk band."
+    },
+    {
+      "id": "T19",
+      "kind": "transition",
+      "name": "T19_FaultDegraded_to_Caution",
+      "from": "FaultDegraded",
+      "to": "Caution",
+      "guard": "sensor_validity = true and min_ttc <= 3.0 and min_ttc > 1.5",
+      "action": "warning(caution), maneuver(deceleration)",
+      "preconditions": [
+        "sensor_validity = false and odd_active = true"
+      ],
+      "postconditions": [
+        "warning = caution and maneuver = deceleration and maneuver.deceleration > 0"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": true,
+      "clauses": [
+        "E1",
+        "E2",
+        "F3.2",
+        "A-5"
+      ],
+      "notes": "Recovery, caution band."
+    },
+    {
+      "id": "T20",
+      "kind": "transition",
+      "name": "T20_FaultDegraded_to_EmergencyBrake",
+      "from": "FaultDegraded",
+      "to": "EmergencyBrake",
+      "guard": "sensor_validity = true and min_ttc <= 1.5",
+      "action": "warning(imminent_collision), maneuver(emergency_deceleration), checked_cmd(decel == 2.0, target_speed = 0)",
+      "preconditions": [
+        "sensor_validity = false and odd_active = true"
+      ],
+      "postconditions": [
+        "warning = imminent_collision and maneuver = emergency_deceleration and maneuver.deceleration == 2.0 and maneuver.target_speed = 0"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": true,
+      "clauses": [
+        "E1",
+        "E2",
+        "F3.3",
+        "A-1",
+        "A-5"
+      ],
+      "notes": "Recovery, critical band."
+    },
+    {
+      "id": "T21",
+      "kind": "transition",
+      "name": "T21_Normal_to_Deactivated",
+      "from": "Normal",
+      "to": "Deactivated",
+      "guard": "odd_active = false",
+      "action": "warning(none), maneuver(cruise)",
+      "preconditions": [
+        "risk_level = no_risk"
+      ],
+      "postconditions": [
+        "warning = none and maneuver = cruise"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": false,
+      "clauses": [
+        "E3"
+      ],
+      "notes": "Synthetic exit path, see OI-5."
+    },
+    {
+      "id": "T22",
+      "kind": "transition",
+      "name": "T22_Caution_to_Deactivated",
+      "from": "Caution",
+      "to": "Deactivated",
+      "guard": "odd_active = false",
+      "action": "warning(none), maneuver(cruise)",
+      "preconditions": [
+        "warning = caution"
+      ],
+      "postconditions": [
+        "warning = none and maneuver = cruise"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": false,
+      "clauses": [
+        "E3"
+      ],
+      "notes": "Synthetic exit path, see OI-5."
+    },
+    {
+      "id": "T23",
+      "kind": "transition",
+      "name": "T23_EmergencyBrake_to_Deactivated",
+      "from": "EmergencyBrake",
+      "to": "Deactivated",
+      "guard": "odd_active = false",
+      "action": "warning(none), maneuver(cruise)",
+      "preconditions": [
+        "warning = imminent_collision"
+      ],
+      "postconditions": [
+        "warning = none and maneuver = cruise"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": false,
+      "clauses": [
+        "E3"
+      ],
+      "notes": "Synthetic exit path, see OI-5."
+    },
+    {
+      "id": "T24",
+      "kind": "transition",
+      "name": "T24_DriverOverride_to_Deactivated",
+      "from": "DriverOverride",
+      "to": "Deactivated",
+      "guard": "odd_active = false",
+      "action": "warning(none), maneuver(cruise)",
+      "preconditions": [
+        "driver_accel_request = true"
+      ],
+      "postconditions": [
+        "warning = none and maneuver = cruise"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": false,
+      "clauses": [
+        "E3"
+      ],
+      "notes": "Synthetic exit path, see OI-5."
+    },
+    {
+      "id": "T25",
+      "kind": "transition",
+      "name": "T25_FaultDegraded_to_Deactivated",
+      "from": "FaultDegraded",
+      "to": "Deactivated",
+      "guard": "odd_active = false",
+      "action": "warning(none), maneuver(cruise)",
+      "preconditions": [
+        "sensor_validity = false"
+      ],
+      "postconditions": [
+        "warning = none and maneuver = cruise"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": false,
+      "clauses": [
+        "E3"
+      ],
+      "notes": "Synthetic exit path, see OI-5."
+    },
+    {
+      "id": "T26",
+      "kind": "transition",
+      "name": "T26_Deactivated_to_Normal",
+      "from": "Deactivated",
+      "to": "Normal",
+      "guard": "odd_active = true",
+      "action": "warning(none), maneuver(cruise)",
+      "preconditions": [
+        "odd_active = false"
+      ],
+      "postconditions": [
+        "warning = none and maneuver = cruise"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": false,
+      "clauses": [
+        "E3",
+        "F3.2",
+        "F3.3"
+      ],
+      "notes": "Reactivation; next planning cycle reclassifies risk."
+    },
+    {
+      "id": "T27",
+      "kind": "transition",
+      "name": "T27_BrakeRamp_to_Standstill",
+      "from": "BrakeRamp",
+      "to": "Standstill",
+      "guard": "ego_speed = 0",
+      "action": "checked_cmd(hold_brake, target_speed = 0)",
+      "preconditions": [
+        "maneuver.deceleration == 2.0"
+      ],
+      "postconditions": [
+        "checked_cmd.target_speed = 0 and checked_cmd.brake = active"
+      ],
+      "level": "L1",
+      "parent_module": "System",
+      "quantified": false,
+      "clauses": [
+        "F3.3",
+        "A-1",
+        "D3",
+        "E8",
+        "R-E-2"
+      ],
+      "notes": "Hierarchical substate transition inside EmergencyBrake."
+    }
+  ],
+  "stores": [],
+  "externals": [
+    {
+      "id": "E1",
+      "name": "raw_sensor_data",
+      "direction": "in",
+      "content": [
+        "camera frames",
+        "radar frames",
+        "lidar frames",
+        "per-sensor validity flags"
+      ],
+      "consumers": [
+        "FaultDegraded"
+      ]
+    },
+    {
+      "id": "E2",
+      "name": "gnss_imu",
+      "direction": "in",
+      "content": [
+        "GNSS fix",
+        "IMU samples",
+        "validity flags"
+      ],
+      "consumers": [
+        "FaultDegraded"
+      ]
+    },
+    {
+      "id": "E3",
+      "name": "driver_intent",
+      "direction": "in",
+      "content": [
+        "requested cruise speed",
+        "manual override accelerate",
+        "driver attention state",
+        "ODD status"
+      ],
+      "consumers": [
+        "DriverOverride",
+        "Deactivated"
+      ]
+    },
+    {
+      "id": "E7",
+      "name": "warning",
+      "direction": "out",
+      "content": [
+        "warning type (none/caution/imminent collision)",
+        "active flag"
+      ],
+      "consumers": []
+    },
+    {
+      "id": "E8",
+      "name": "checked_cmd",
+      "direction": "out",
+      "content": [
+        "longitudinal acceleration command",
+        "brake command",
+        "steering command"
+      ],
+      "consumers": []
+    },
+    {
+      "id": "E9",
+      "name": "actuator_cmd",
+      "direction": "in",
+      "content": [
+        "raw actuation command before safety arbitration"
+      ],
+      "consumers": [],
+      "notes": "Consumed by parent function F7 (left to the parent model at L1); see R-E-2."
+    }
+  ],
+  "flows": [
+    {
+      "name": "sensor_validity_E1",
+      "producer": "E1",
+      "consumer": "FaultDegraded",
+      "kind": "boundary_in",
+      "carries": [
+        "sensor_validity"
+      ]
+    },
+    {
+      "name": "sensor_validity_E2",
+      "producer": "E2",
+      "consumer": "FaultDegraded",
+      "kind": "boundary_in",
+      "carries": [
+        "sensor_validity"
+      ]
+    },
+    {
+      "name": "driver_accel_request",
+      "producer": "E3",
+      "consumer": "DriverOverride",
+      "kind": "boundary_in",
+      "carries": [
+        "driver_accel_request"
+      ]
+    },
+    {
+      "name": "odd_active",
+      "producer": "E3",
+      "consumer": "Deactivated",
+      "kind": "boundary_in",
+      "carries": [
+        "odd_active"
+      ]
+    },
+    {
+      "name": "warning_caution",
+      "producer": "Caution",
+      "consumer": "E7",
+      "kind": "boundary_out",
+      "carries": [
+        "warning"
+      ]
+    },
+    {
+      "name": "warning_imminent",
+      "producer": "EmergencyBrake",
+      "consumer": "E7",
+      "kind": "boundary_out",
+      "carries": [
+        "warning"
+      ]
+    },
+    {
+      "name": "checked_cmd_brake",
+      "producer": "EmergencyBrake",
+      "consumer": "E8",
+      "kind": "boundary_out",
+      "carries": [
+        "checked_cmd"
+      ]
+    },
+    {
+      "name": "T1_guard",
+      "producer": "Normal",
+      "consumer": "Caution",
+      "kind": "active",
+      "carries": [
+        "min_ttc",
+        "obj_count"
+      ],
+      "transition": "T1",
+      "guard": "min_ttc <= 3.0 and min_ttc > 1.5",
+      "action": "warning(caution), maneuver(deceleration)"
+    },
+    {
+      "name": "T2_guard",
+      "producer": "Caution",
+      "consumer": "Normal",
+      "kind": "active",
+      "carries": [
+        "min_ttc"
+      ],
+      "transition": "T2",
+      "guard": "min_ttc > 3.0",
+      "action": "warning(none), maneuver(cruise)"
+    },
+    {
+      "name": "T3_guard",
+      "producer": "Caution",
+      "consumer": "EmergencyBrake",
+      "kind": "active",
+      "carries": [
+        "min_ttc"
+      ],
+      "transition": "T3",
+      "guard": "min_ttc <= 1.5",
+      "action": "warning(imminent_collision), maneuver(emergency_deceleration), checked_cmd(decel == 2.0, target_speed = 0)"
+    },
+    {
+      "name": "T4_guard",
+      "producer": "EmergencyBrake",
+      "consumer": "Caution",
+      "kind": "active",
+      "carries": [
+        "min_ttc"
+      ],
+      "transition": "T4",
+      "guard": "min_ttc > 1.5 and min_ttc <= 3.0",
+      "action": "warning(caution), maneuver(deceleration)"
+    },
+    {
+      "name": "T5_guard",
+      "producer": "EmergencyBrake",
+      "consumer": "Normal",
+      "kind": "active",
+      "carries": [
+        "min_ttc"
+      ],
+      "transition": "T5",
+      "guard": "min_ttc > 3.0",
+      "action": "warning(none), maneuver(cruise)"
+    },
+    {
+      "name": "T6_guard",
+      "producer": "Caution",
+      "consumer": "Normal",
+      "kind": "active",
+      "carries": [
+        "obj_count"
+      ],
+      "transition": "T6",
+      "guard": "obj_count = 0",
+      "action": "warning(none), maneuver(cruise)"
+    },
+    {
+      "name": "T7_guard",
+      "producer": "EmergencyBrake",
+      "consumer": "Normal",
+      "kind": "active",
+      "carries": [
+        "obj_count"
+      ],
+      "transition": "T7",
+      "guard": "obj_count = 0",
+      "action": "warning(none), maneuver(cruise)"
+    },
+    {
+      "name": "T8_guard",
+      "producer": "DriverOverride",
+      "consumer": "Normal",
+      "kind": "active",
+      "carries": [
+        "obj_count"
+      ],
+      "transition": "T8",
+      "guard": "obj_count = 0",
+      "action": "warning(none), maneuver(cruise)"
+    },
+    {
+      "name": "T9_guard",
+      "producer": "Normal",
+      "consumer": "DriverOverride",
+      "kind": "active",
+      "carries": [
+        "driver_accel_request",
+        "min_ttc"
+      ],
+      "transition": "T9",
+      "guard": "driver_accel_request = true and min_ttc > 3.0",
+      "action": "maneuver(driver_accelerate), warning(none)"
+    },
+    {
+      "name": "T11_guard",
+      "producer": "DriverOverride",
+      "consumer": "Normal",
+      "kind": "active",
+      "carries": [
+        "driver_accel_request",
+        "min_ttc"
+      ],
+      "transition": "T11",
+      "guard": "driver_accel_request = false and min_ttc > 3.0",
+      "action": "maneuver(cruise), warning(none)"
+    },
+    {
+      "name": "T12_guard",
+      "producer": "DriverOverride",
+      "consumer": "Caution",
+      "kind": "active",
+      "carries": [
+        "driver_accel_request",
+        "min_ttc"
+      ],
+      "transition": "T12",
+      "guard": "driver_accel_request = false and min_ttc <= 3.0 and min_ttc > 1.5",
+      "action": "maneuver(deceleration), warning(caution)"
+    },
+    {
+      "name": "T13_guard",
+      "producer": "DriverOverride",
+      "consumer": "EmergencyBrake",
+      "kind": "active",
+      "carries": [
+        "min_ttc"
+      ],
+      "transition": "T13",
+      "guard": "min_ttc <= 1.5",
+      "action": "warning(imminent_collision), maneuver(emergency_deceleration), checked_cmd(decel == 2.0, target_speed = 0)"
+    },
+    {
+      "name": "T14_guard",
+      "producer": "Normal",
+      "consumer": "FaultDegraded",
+      "kind": "active",
+      "carries": [
+        "sensor_validity"
+      ],
+      "transition": "T14",
+      "guard": "sensor_validity = false",
+      "action": "warning(none), maneuver(cruise)"
+    },
+    {
+      "name": "T15_guard",
+      "producer": "Caution",
+      "consumer": "FaultDegraded",
+      "kind": "active",
+      "carries": [
+        "sensor_validity"
+      ],
+      "transition": "T15",
+      "guard": "sensor_validity = false",
+      "action": "warning(caution), maneuver(deceleration)"
+    },
+    {
+      "name": "T16_guard",
+      "producer": "EmergencyBrake",
+      "consumer": "FaultDegraded",
+      "kind": "active",
+      "carries": [
+        "sensor_validity"
+      ],
+      "transition": "T16",
+      "guard": "sensor_validity = false",
+      "action": "warning(imminent_collision), maneuver(emergency_deceleration)"
+    },
+    {
+      "name": "T17_guard",
+      "producer": "DriverOverride",
+      "consumer": "FaultDegraded",
+      "kind": "active",
+      "carries": [
+        "sensor_validity"
+      ],
+      "transition": "T17",
+      "guard": "sensor_validity = false",
+      "action": "warning(none), maneuver(driver_accelerate)"
+    },
+    {
+      "name": "T18_guard",
+      "producer": "FaultDegraded",
+      "consumer": "Normal",
+      "kind": "active",
+      "carries": [
+        "sensor_validity",
+        "min_ttc"
+      ],
+      "transition": "T18",
+      "guard": "sensor_validity = true and min_ttc > 3.0",
+      "action": "warning(none), maneuver(cruise)"
+    },
+    {
+      "name": "T19_guard",
+      "producer": "FaultDegraded",
+      "consumer": "Caution",
+      "kind": "active",
+      "carries": [
+        "sensor_validity",
+        "min_ttc"
+      ],
+      "transition": "T19",
+      "guard": "sensor_validity = true and min_ttc <= 3.0 and min_ttc > 1.5",
+      "action": "warning(caution), maneuver(deceleration)"
+    },
+    {
+      "name": "T20_guard",
+      "producer": "FaultDegraded",
+      "consumer": "EmergencyBrake",
+      "kind": "active",
+      "carries": [
+        "sensor_validity",
+        "min_ttc"
+      ],
+      "transition": "T20",
+      "guard": "sensor_validity = true and min_ttc <= 1.5",
+      "action": "warning(imminent_collision), maneuver(emergency_deceleration), checked_cmd(decel == 2.0, target_speed = 0)"
+    },
+    {
+      "name": "T21_guard",
+      "producer": "Normal",
+      "consumer": "Deactivated",
+      "kind": "active",
+      "carries": [
+        "odd_active"
+      ],
+      "transition": "T21",
+      "guard": "odd_active = false",
+      "action": "warning(none), maneuver(cruise)"
+    },
+    {
+      "name": "T22_guard",
+      "producer": "Caution",
+      "consumer": "Deactivated",
+      "kind": "active",
+      "carries": [
+        "odd_active"
+      ],
+      "transition": "T22",
+      "guard": "odd_active = false",
+      "action": "warning(none), maneuver(cruise)"
+    },
+    {
+      "name": "T23_guard",
+      "producer": "EmergencyBrake",
+      "consumer": "Deactivated",
+      "kind": "active",
+      "carries": [
+        "odd_active"
+      ],
+      "transition": "T23",
+      "guard": "odd_active = false",
+      "action": "warning(none), maneuver(cruise)"
+    },
+    {
+      "name": "T24_guard",
+      "producer": "DriverOverride",
+      "consumer": "Deactivated",
+      "kind": "active",
+      "carries": [
+        "odd_active"
+      ],
+      "transition": "T24",
+      "guard": "odd_active = false",
+      "action": "warning(none), maneuver(cruise)"
+    },
+    {
+      "name": "T25_guard",
+      "producer": "FaultDegraded",
+      "consumer": "Deactivated",
+      "kind": "active",
+      "carries": [
+        "odd_active"
+      ],
+      "transition": "T25",
+      "guard": "odd_active = false",
+      "action": "warning(none), maneuver(cruise)"
+    },
+    {
+      "name": "T26_guard",
+      "producer": "Deactivated",
+      "consumer": "Normal",
+      "kind": "active",
+      "carries": [
+        "odd_active"
+      ],
+      "transition": "T26",
+      "guard": "odd_active = true",
+      "action": "warning(none), maneuver(cruise)"
+    }
+  ],
+  "traceability": [
+    {
+      "requirement": "R-SCOPE-1",
+      "elements": [
+        "DriverOverride"
+      ],
+      "realised_by": "state",
+      "note": "SAE L2 driver supervision represented by driver override paths."
+    },
+    {
+      "requirement": "R-SCOPE-2",
+      "elements": [
+        "E1",
+        "E2",
+        "E3",
+        "E7",
+        "E8",
+        "E9"
+      ],
+      "realised_by": "externals",
+      "note": "Everything outside the vehicle stays external."
+    },
+    {
+      "requirement": "R-SCOPE-4",
+      "elements": [
+        "Normal",
+        "Caution",
+        "EmergencyBrake",
+        "DriverOverride"
+      ],
+      "realised_by": "state",
+      "note": "Level 1 refinement of F3 only."
+    },
+    {
+      "requirement": "R-E-1",
+      "elements": [
+        "Caution",
+        "EmergencyBrake",
+        "T3",
+        "T13",
+        "T20",
+        "T27"
+      ],
+      "realised_by": "action",
+      "note": "Only warning (E7) and checked_cmd (E8) are emitted."
+    },
+    {
+      "requirement": "R-E-2",
+      "elements": [
+        "T3",
+        "T13",
+        "T20",
+        "T27",
+        "E9"
+      ],
+      "realised_by": "postcondition",
+      "note": "checked_cmd is the arbitrated output; E9 is parent-owned by F7."
+    },
+    {
+      "requirement": "R-L1-1",
+      "elements": [
+        "Normal",
+        "Caution",
+        "EmergencyBrake",
+        "DriverOverride"
+      ],
+      "realised_by": "state",
+      "note": "F3.1/F3.2/F3.3 responsibilities encoded in guards, warnings and manoeuvres."
+    },
+    {
+      "requirement": "F3.1",
+      "elements": [
+        "T6",
+        "T7",
+        "T8"
+      ],
+      "realised_by": "guard",
+      "note": "obj_count = 0 path."
+    },
+    {
+      "requirement": "F3.2",
+      "elements": [
+        "Normal",
+        "Caution",
+        "EmergencyBrake",
+        "T1",
+        "T2",
+        "T3",
+        "T4",
+        "T5"
+      ],
+      "realised_by": "invariant and guard",
+      "note": "Risk classification by min_ttc bands."
+    },
+    {
+      "requirement": "F3.3",
+      "elements": [
+        "DriverOverride",
+        "T9",
+        "T10",
+        "T11",
+        "T12",
+        "T13",
+        "T27"
+      ],
+      "realised_by": "postcondition",
+      "note": "Manoeuvre selection and driver-accel precedence rule."
+    },
+    {
+      "requirement": "N-2",
+      "elements": [
+        "T3",
+        "T10",
+        "T13",
+        "T20"
+      ],
+      "realised_by": "guard",
+      "note": "Warning issued at TTC 1.5 s, no later than 2.0 s."
+    }
+  ],
+  "open_issues": [
+    {
+      "id": "OI-1",
+      "issue": "Is the seven-function split of section 5 sufficient for the stated ODD? Is a separate driver-monitoring function needed for L2 handover?",
+      "related_requirement": "R-SCOPE-1",
+      "impact": "medium",
+      "answer": "For this L1 behaviour model, driver attention and manual override are carried by E3 and the DriverOverride state; no extra function is introduced because R-L0-1 forbids it. A dedicated driver-monitoring function remains an L0 open issue."
+    },
+    {
+      "id": "OI-2",
+      "issue": "D3 is written by F1 but read by F6/F7; is that ownership acceptable?",
+      "related_requirement": "D3",
+      "impact": "low",
+      "answer": "Acceptable: R-D-1/R-D-2 permit a named read, and the state machine only consumes ego_speed from D3 (T27) without writing it."
+    },
+    {
+      "id": "OI-3",
+      "issue": "The specification fixes thresholds while leaving timing unspecified; is a cycle-time requirement needed for the emergency branch?",
+      "related_requirement": "R-L1-1",
+      "impact": "high",
+      "answer": "Yes. The state machine is event-driven and assumes min_ttc is refreshed every planning cycle; without an upper cycle-time bound the TTC bands cannot guarantee N-2. No cycle time is invented here."
+    },
+    {
+      "id": "OI-4",
+      "issue": "Is the AEB branch of F3 the right Level-1 refinement? Should Level 1 refine the F6/F7 actuation chain instead?",
+      "related_requirement": "R-SCOPE-4",
+      "impact": "medium",
+      "answer": "The spec mandates R-SCOPE-4, so this model refines F3. A state machine is well suited to this choice because risk-level mode switching is inherently stateful; the F6/F7 chain is better expressed as data arbitration."
+    },
+    {
+      "id": "OI-5",
+      "issue": "FaultDegraded and Deactivated are synthetic states absent from the specification.",
+      "related_requirement": "R-G-3",
+      "impact": "medium",
+      "answer": "Introduced to satisfy the requested exit/failure states. Their guards use only E1/E2 validity flags and E3 ODD status; their actions (retain last outputs, or fall back to cruise/none) are explicit modelling assumptions, not spec values."
+    },
+    {
+      "id": "OI-6",
+      "issue": "A-1 emergency deceleration (2.0 m/s2) exceeds the A-3 comfortable longitudinal limit (3.0 m/s2).",
+      "related_requirement": "A-1",
+      "impact": "medium",
+      "answer": "The critical state treats A-1 as a safety exception enforced through F7 arbitration; the model leaves the two numerically unreconciled because the spec gives no priority rule."
+    },
+    {
+      "id": "OI-7",
+      "issue": "F3.1 reports obj_count = 0 while the spec leaves min_ttc undefined in that case.",
+      "related_requirement": "F3.1",
+      "impact": "low",
+      "answer": "The state machine treats obj_count = 0 as no risk (T6/T7/T8) and leaves the classification of an empty object set for subsequent cycles open, without inventing a numeric min_ttc."
+    }
+  ]
+}

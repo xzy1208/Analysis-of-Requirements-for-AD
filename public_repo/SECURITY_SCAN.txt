@@ -1,0 +1,23 @@
+# Security scan
+
+Checks: JSON `primary_label` keys, filled `label` values, explicit primary scores in prose.
+
+Result: **PASS** — no answer-bearing file is included.
+
+Excluded from the public package:
+
+- `experiment_kit/second_annotator_kit/annotator_form.json (filled labels — top-level copy)`
+- `experiment_kit/second_annotator_kit/annotator_form_IN_PROGRESS_backup.json`
+- `experiment_kit/second_annotator_kit/annotator_form_filled_20261125.json`
+- `experiment_kit/second_annotator_kit/candidate_clauses.json (traceability answers)`
+- `experiment_kit/second_annotator_kit/second_rater_results.json`
+- `experiment_kit/second_annotator_kit/paper_patch.md`
+- `experiment_kit/second_annotator_kit/legacy/`
+- `.workbuddy/ (internal notes)`
+
+Known exception included:
+
+- `labelling_template_discriminating.json` — its `primary_label` values duplicate
+  `coverage_manual.json`, which the paper publishes as a scoring artefact; the
+  template is required by `finalize_second_rater.py` to compute kappa. The blank
+  annotator form in `handover/` remains free of labels.

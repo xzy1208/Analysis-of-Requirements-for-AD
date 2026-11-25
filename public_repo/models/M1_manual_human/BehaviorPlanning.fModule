@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<module name="BehaviorPlanning">
+  <constantDeclaration>
+  </constantDeclaration>
+  <typeDeclaration>TTCSet = composed of
+           count: nat
+           min_ttc: real
+           lead_id: nat
+         end
+
+RiskLevel = composed of
+              risk_type: nat
+              risk_value: real
+            end
+
+MapData = composed of
+              road_id: nat
+              lane_id: nat
+              speed_limit: real
+              curvature: real
+            end
+
+EgoState = composed of
+              pos_x: real
+              pos_y: real
+              speed: real
+              yaw_rate: real
+              accel: real
+            end
+
+ObjectTable = composed of
+                obj_count: nat
+                lead_id: nat
+                lead_pos_x: real
+                lead_pos_y: real
+                lead_speed: real
+              end
+
+TrafficRules = composed of
+                speed_limit: real
+                red_light: nat
+              end
+
+PredictedTrajectory = composed of
+                        count: nat
+                        min_ttc: real
+                        lead_id: nat
+                      end
+
+Route = composed of
+          path_length: real
+          eta: real
+        end
+
+DriverIntent = composed of
+                 intent_type: nat
+                 cruise_speed: real
+               end
+
+Maneuver = composed of
+             maneuver_type: nat
+             target_lane: nat
+             target_speed: real
+             decel_req: real
+           end
+
+Warning = composed of
+            warning_type: nat
+            warn_active: nat
+          end
+ </typeDeclaration>
+  <variableDeclaration>
+  </variableDeclaration>
+  <typeAndStateInvariants>
+  </typeAndStateInvariants>
+  <moduleDecom>System
+  </moduleDecom>
+  <processList>
+    <process name="ComputeTTC" head="(predicted_trajectories:  | ego_state: )ttc_values: ">
+pre predicted_trajectories.min_ttc&gt;=0 and ego_state.speed&gt;=0
+post
+if true then ttc_values.min_ttc&gt;=0
+if predicted_trajectories.count=0 then ttc_values.count=0
+if predicted_trajectories.count&gt;0 then ttc_values.count=predicted_trajectories.count and ttc_values.min_ttc&lt;=predicted_trajectories.min_ttc
+</process>
+    <process name="ClassifyRisk" head="(ttc_values:  | traffic_rules: )risk_level:  | warning: ">
+pre ttc_values.min_ttc&gt;=0 and traffic_rules.speed_limit&gt;0
+post
+if true then risk_level.risk_value&gt;=0
+if ttc_values.min_ttc&gt;3.0 then risk_level.risk_type=0 and warning.warn_active=0
+if ttc_values.min_ttc&lt;=3.0 and ttc_values.min_ttc&gt;1.5 then risk_level.risk_type=1 and warning.warn_active=1
+if ttc_values.min_ttc&lt;=1.5 then risk_level.risk_type=2 and warning.warn_active=1
+</process>
+    <process name="PlanManeuver" head="(risk_level:  | ego_state:  | driver_intent:  | route:  | map_data: )maneuver: ">
+pre risk_level.risk_value&gt;=0 and ego_state.speed&gt;=0 and driver_intent.cruise_speed&gt;=0 and route.path_length&gt;0 and map_data.speed_limit&gt;=0
+post
+if true then maneuver.target_speed&gt;=0 and maneuver.decel_req&gt;=0
+if risk_level.risk_type=0 then maneuver.maneuver_type=1 and maneuver.target_speed&lt;=map_data.speed_limit
+if risk_level.risk_type=1 then maneuver.maneuver_type=2 and maneuver.decel_req&gt;0
+if risk_level.risk_type=2 then maneuver.maneuver_type=3 and maneuver.decel_req&gt;=6.0 and maneuver.target_speed=0
+if driver_intent.intent_type=2 and risk_level.risk_type&lt;2 then maneuver.maneuver_type=1
+</process>
+  </processList>
+  <functions>
+  </functions>
+</module>

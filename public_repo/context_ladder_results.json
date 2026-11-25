@@ -1,0 +1,546 @@
+{
+  "design": "context-contamination ladder, reviewer model fixed (DeepSeek-v4-pro); C=clean session, B=contaminated (read A's results in-session), B_anchored=shown A's findings explicitly; A=Hunyuan Hy cross-model reference",
+  "reviewer_C_clean": {
+    "reviewer": "DeepSeek-v4-pro (clean session)",
+    "by_model": {
+      "M1": {
+        "rounds": [
+          0.5,
+          0.667,
+          0.833
+        ],
+        "mean_detection_rate": 0.667,
+        "variance": 0.0277,
+        "mean_false_positive_rate": 0.419,
+        "union_detected": [
+          "DEF-1",
+          "DEF-2",
+          "DEF-3",
+          "DEF-5",
+          "DEF-6"
+        ],
+        "union_detection_rate": 0.833
+      },
+      "M3": {
+        "rounds": [
+          0.5,
+          0.5,
+          0.667
+        ],
+        "mean_detection_rate": 0.556,
+        "variance": 0.0093,
+        "mean_false_positive_rate": 0.224,
+        "union_detected": [
+          "DEF-1",
+          "DEF-3",
+          "DEF-4",
+          "DEF-6"
+        ],
+        "union_detection_rate": 0.667
+      },
+      "M4": {
+        "rounds": [
+          0.5,
+          0.5,
+          0.667
+        ],
+        "mean_detection_rate": 0.556,
+        "variance": 0.0093,
+        "mean_false_positive_rate": 0.091,
+        "union_detected": [
+          "DEF-1",
+          "DEF-2",
+          "DEF-3",
+          "DEF-6"
+        ],
+        "union_detection_rate": 0.667
+      },
+      "M5": {
+        "rounds": [
+          0.333,
+          0.333,
+          0.5
+        ],
+        "mean_detection_rate": 0.389,
+        "variance": 0.0093,
+        "mean_false_positive_rate": 0.234,
+        "union_detected": [
+          "DEF-2",
+          "DEF-3",
+          "DEF-6"
+        ],
+        "union_detection_rate": 0.5
+      }
+    },
+    "overall": {
+      "mean_detection_rate": 0.542,
+      "total_false_positives": 31,
+      "total_findings": 122,
+      "overall_false_positive_rate": 0.254,
+      "cohen_kappa": 0.111,
+      "confusion": {
+        "TP": 39,
+        "FN": 33,
+        "FP": 31,
+        "TN": 41
+      }
+    }
+  },
+  "reviewer_B_contaminated": {
+    "reviewer": "DeepSeek-v4-pro (contaminated session)",
+    "by_model": {
+      "M1": {
+        "rounds": [
+          1.0,
+          0.667,
+          0.833
+        ],
+        "mean_detection_rate": 0.833,
+        "variance": 0.0277,
+        "mean_false_positive_rate": 0.0,
+        "union_detected": [
+          "DEF-1",
+          "DEF-2",
+          "DEF-3",
+          "DEF-4",
+          "DEF-5",
+          "DEF-6"
+        ],
+        "union_detection_rate": 1.0
+      },
+      "M3": {
+        "rounds": [
+          0.833,
+          0.667,
+          0.667
+        ],
+        "mean_detection_rate": 0.722,
+        "variance": 0.0092,
+        "mean_false_positive_rate": 0.0,
+        "union_detected": [
+          "DEF-1",
+          "DEF-3",
+          "DEF-4",
+          "DEF-5",
+          "DEF-6"
+        ],
+        "union_detection_rate": 0.833
+      },
+      "M4": {
+        "rounds": [
+          1.0,
+          0.667,
+          0.833
+        ],
+        "mean_detection_rate": 0.833,
+        "variance": 0.0277,
+        "mean_false_positive_rate": 0.0,
+        "union_detected": [
+          "DEF-1",
+          "DEF-2",
+          "DEF-3",
+          "DEF-4",
+          "DEF-5",
+          "DEF-6"
+        ],
+        "union_detection_rate": 1.0
+      },
+      "M5": {
+        "rounds": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "mean_detection_rate": 0.5,
+        "variance": 0.0,
+        "mean_false_positive_rate": 0.229,
+        "union_detected": [
+          "DEF-2",
+          "DEF-3",
+          "DEF-5"
+        ],
+        "union_detection_rate": 0.5
+      }
+    },
+    "overall": {
+      "mean_detection_rate": 0.722,
+      "total_false_positives": 4,
+      "total_findings": 61,
+      "overall_false_positive_rate": 0.066,
+      "cohen_kappa": 0.667,
+      "confusion": {
+        "TP": 52,
+        "FN": 20,
+        "FP": 4,
+        "TN": 68
+      }
+    }
+  },
+  "reviewer_B_anchored_rows": [
+    {
+      "round": 0,
+      "model": "M1",
+      "reviewer": "DeepSeek-v4-pro (anchored)",
+      "detected": [
+        "DEF-1",
+        "DEF-2",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5",
+        "DEF-6"
+      ],
+      "n_detected": 6,
+      "n_findings": 6,
+      "false_positives": 0,
+      "detection_rate": 1.0,
+      "false_positive_rate": 0.0
+    },
+    {
+      "round": 0,
+      "model": "M3",
+      "reviewer": "DeepSeek-v4-pro (anchored)",
+      "detected": [
+        "DEF-1",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5"
+      ],
+      "n_detected": 4,
+      "n_findings": 5,
+      "false_positives": 1,
+      "detection_rate": 0.667,
+      "false_positive_rate": 0.2
+    },
+    {
+      "round": 0,
+      "model": "M4",
+      "reviewer": "DeepSeek-v4-pro (anchored)",
+      "detected": [
+        "DEF-1",
+        "DEF-2",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5",
+        "DEF-6"
+      ],
+      "n_detected": 6,
+      "n_findings": 6,
+      "false_positives": 0,
+      "detection_rate": 1.0,
+      "false_positive_rate": 0.0
+    },
+    {
+      "round": 0,
+      "model": "M5",
+      "reviewer": "DeepSeek-v4-pro (anchored)",
+      "detected": [
+        "DEF-2",
+        "DEF-3",
+        "DEF-5"
+      ],
+      "n_detected": 3,
+      "n_findings": 6,
+      "false_positives": 2,
+      "detection_rate": 0.5,
+      "false_positive_rate": 0.333
+    }
+  ],
+  "reviewer_B_anchored_union_detection": {
+    "M1": 1.0,
+    "M3": 0.667,
+    "M4": 1.0,
+    "M5": 0.5
+  },
+  "reviewer_A_reference": {
+    "name": "Tencent Hunyuan 4 Flash",
+    "mean_detection_rate": 0.653,
+    "cohen_kappa": 0.389,
+    "overall_false_positive_rate": 0.26
+  },
+  "ladder_summary": {
+    "clean_C": {
+      "mean_detection": 0.542,
+      "kappa": 0.111,
+      "fp_rate": 0.254
+    },
+    "contaminated_B": {
+      "mean_detection": 0.722,
+      "kappa": 0.667,
+      "fp_rate": 0.066
+    },
+    "anchored_B": {
+      "mean_detection": 0.792,
+      "kappa": 0.667,
+      "fp_rate": 0.13
+    }
+  },
+  "defect_detection_profile": {
+    "DEF-1": {
+      "A_Hy": [
+        "M1",
+        "M3",
+        "M4"
+      ],
+      "B_contaminated": [
+        "M1",
+        "M3",
+        "M4"
+      ],
+      "B_anchored": [
+        "M1",
+        "M3",
+        "M4"
+      ],
+      "C_clean": [
+        "M1",
+        "M3",
+        "M4"
+      ]
+    },
+    "DEF-2": {
+      "A_Hy": [
+        "M1",
+        "M4",
+        "M5"
+      ],
+      "B_contaminated": [
+        "M1",
+        "M4",
+        "M5"
+      ],
+      "B_anchored": [
+        "M1",
+        "M4",
+        "M5"
+      ],
+      "C_clean": [
+        "M1",
+        "M4",
+        "M5"
+      ]
+    },
+    "DEF-3": {
+      "A_Hy": [
+        "M1",
+        "M3",
+        "M4",
+        "M5"
+      ],
+      "B_contaminated": [
+        "M1",
+        "M3",
+        "M4",
+        "M5"
+      ],
+      "B_anchored": [
+        "M1",
+        "M3",
+        "M4",
+        "M5"
+      ],
+      "C_clean": [
+        "M1",
+        "M3",
+        "M4",
+        "M5"
+      ]
+    },
+    "DEF-4": {
+      "A_Hy": [
+        "M1",
+        "M3",
+        "M4",
+        "M5"
+      ],
+      "B_contaminated": [
+        "M1",
+        "M3",
+        "M4"
+      ],
+      "B_anchored": [
+        "M1",
+        "M3",
+        "M4"
+      ],
+      "C_clean": [
+        "M3"
+      ]
+    },
+    "DEF-5": {
+      "A_Hy": [
+        "M1",
+        "M3",
+        "M4",
+        "M5"
+      ],
+      "B_contaminated": [
+        "M1",
+        "M3",
+        "M4",
+        "M5"
+      ],
+      "B_anchored": [
+        "M1",
+        "M3",
+        "M4",
+        "M5"
+      ],
+      "C_clean": [
+        "M1"
+      ]
+    },
+    "DEF-6": {
+      "A_Hy": [],
+      "B_contaminated": [
+        "M1",
+        "M3",
+        "M4"
+      ],
+      "B_anchored": [
+        "M1",
+        "M4"
+      ],
+      "C_clean": [
+        "M1",
+        "M3",
+        "M4",
+        "M5"
+      ]
+    }
+  },
+  "jaccard_unions": {
+    "M1": {
+      "C_vs_B": 0.833,
+      "C_vs_B_anchored": 0.833,
+      "C_vs_A": 0.667,
+      "C_union": [
+        "DEF-1",
+        "DEF-2",
+        "DEF-3",
+        "DEF-5",
+        "DEF-6"
+      ],
+      "B_union": [
+        "DEF-1",
+        "DEF-2",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5",
+        "DEF-6"
+      ],
+      "B_anchored_union": [
+        "DEF-1",
+        "DEF-2",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5",
+        "DEF-6"
+      ],
+      "A_union": [
+        "DEF-1",
+        "DEF-2",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5"
+      ]
+    },
+    "M3": {
+      "C_vs_B": 0.8,
+      "C_vs_B_anchored": 0.6,
+      "C_vs_A": 0.6,
+      "C_union": [
+        "DEF-1",
+        "DEF-3",
+        "DEF-4",
+        "DEF-6"
+      ],
+      "B_union": [
+        "DEF-1",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5",
+        "DEF-6"
+      ],
+      "B_anchored_union": [
+        "DEF-1",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5"
+      ],
+      "A_union": [
+        "DEF-1",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5"
+      ]
+    },
+    "M4": {
+      "C_vs_B": 0.667,
+      "C_vs_B_anchored": 0.667,
+      "C_vs_A": 0.5,
+      "C_union": [
+        "DEF-1",
+        "DEF-2",
+        "DEF-3",
+        "DEF-6"
+      ],
+      "B_union": [
+        "DEF-1",
+        "DEF-2",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5",
+        "DEF-6"
+      ],
+      "B_anchored_union": [
+        "DEF-1",
+        "DEF-2",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5",
+        "DEF-6"
+      ],
+      "A_union": [
+        "DEF-1",
+        "DEF-2",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5"
+      ]
+    },
+    "M5": {
+      "C_vs_B": 0.5,
+      "C_vs_B_anchored": 0.5,
+      "C_vs_A": 0.4,
+      "C_union": [
+        "DEF-2",
+        "DEF-3",
+        "DEF-6"
+      ],
+      "B_union": [
+        "DEF-2",
+        "DEF-3",
+        "DEF-5"
+      ],
+      "B_anchored_union": [
+        "DEF-2",
+        "DEF-3",
+        "DEF-5"
+      ],
+      "A_union": [
+        "DEF-2",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5"
+      ]
+    }
+  },
+  "audit_notes": [
+    "M3 DEF-2 不可检出：该缺陷的 6.0/3.0 s 表现仅存在于 traceability[note]，被 DEF-6（删除后半追溯表）连带删除；脏 M3 中已无任何 2.0/0.5 s 可观测表现。A/B/C 全部漏检该位是不可检出所致，非评审能力差异。有效最大检出率为 M3 5/6。",
+    "FP 多为真实原生缺陷（已对干净版核实：两个 id=E2、inputs.source 全空、stores.owner 全空、悬空 active 流、F1 漏写 D3、追溯引用不存在的 F3.x 等）。注入口径的误报率低估了实际查错能力，C-clean 的高 FP 率主要来自对原生缺陷的全面报告。",
+    "A 的 ADJ 为既有结果且口径偏松（部分原生缺陷报告被计为 DEF 命中），B/C 采用严格语义匹配；跨模型比较时 A 的检出率略高估、误报率略低估。",
+    "M5 DEF-4（T10_guard 流删除）三位评审者均未精确命中，都转而报告 M5 原生的 route/D1/E9 缺口；『流删除』类缺陷在基于迁移的表示法下难以精确定位。",
+    "三轮均为同一会话连续评审（与 A/B 口径一致），轮次间存在自我锚定：C 的 findings 数逐轮递增（36→39→47）、检出率逐轮上升（0.458→0.500→0.667），轮次方差不作为独立重复估计。",
+    "C vs B 的差值应读作『上下文 + 会话随机性』的合并影响上界，不能归因为纯上下文效应。"
+  ]
+}

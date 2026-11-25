@@ -1,0 +1,56 @@
+{
+  "purpose": "Same-notation control (M2) and prompt-prohibition contrast, supporting Section V factors analysis. M2 is an additional control introduced by this study, not part of the assignment requirement.",
+  "m2_provenance": {
+    "generator": "MiniMax-M3.1-Flash",
+    "passes": 1,
+    "blind": true,
+    "input": "NL-RQ-ADAS-v1 only",
+    "same_generator_as": "M4"
+  },
+  "null_guard_counts_contract_fields": {
+    "M1_human": 0,
+    "M2_sofl_minimax_no_prohibition": 57,
+    "M3_dfd_hy_prohibited": 0,
+    "M4_uml_minimax_no_prohibition": 31,
+    "M5_sm_hy_prohibited": 0,
+    "measurement": "occurrences of the string x <> null inside preconditions/postconditions/invariants/guard/effect fields of MES files; historical notes cited 37 for M4 (earlier counting method), current reproducible count is 31"
+  },
+  "coverage_manual": {
+    "L0": {
+      "M1": 1.0,
+      "M2": 1.0,
+      "M3": 1.0,
+      "M4": 1.0
+    },
+    "L1": {
+      "M1": 0.615,
+      "M2": 0.808,
+      "M3": 1.0,
+      "M4": 1.0,
+      "M5": 0.615
+    },
+    "L1_safety": {
+      "M1": 0.583,
+      "M2": 0.792,
+      "M3": 1.0,
+      "M4": 1.0,
+      "M5": 0.583
+    },
+    "note": "manual semantic labeling, 31 atoms at L0 and 13 at L1, evidence per atom in coverage_manual.json"
+  },
+  "comparison_M1_vs_M2_same_notation": {
+    "factor_isolated": "human vs LLM (notation fixed: SOFL)",
+    "coverage_L1": "M1 0.615 (misses TH-1/3/4/5/6) vs M2 0.808 (misses TH-3, partial TH-4/5/6)",
+    "formal_precision": "M1 0.914/0.800 vs M2 0.957/1.000 — M2 inflated by 57 vacuous x <> null guards that the ambiguity metric does not count",
+    "consistency": "M1 0.749/0.737 vs M2 0.601/0.458 — M2 depressed by ID-based external references and child-module parent-level references (scoring-convention artifact, same class as M3)"
+  },
+  "comparison_M2_vs_M4_same_generator": {
+    "factor_isolated": "notation (generator fixed: MiniMax-M3.1-Flash)",
+    "formal_precision_L1": "SOFL M2 1.000 vs UML M4 0.600 — notation ceiling confirmed with generator held constant",
+    "coverage_L1": "M2 0.808 vs M4 1.000 — UML class model enumerates threshold clauses better; SOFL replica holds them in contracts"
+  },
+  "artifact_notes": [
+    "M2 and M3 register externals with ids (E1..E9) while flows reference those ids; the scorer canonicalises external names only, so such flows count as unresolved in both — depresses D2 equally for both, not a modelling defect",
+    "M2 L1 flows referencing parent-level elements (F1/F2/F4/E3/E7) are cross-level references, unresolvable within the child document by construction"
+  ]
+}

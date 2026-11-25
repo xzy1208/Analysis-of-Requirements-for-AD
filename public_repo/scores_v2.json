@@ -1,0 +1,380 @@
+{
+  "atoms": 44,
+  "rows": [
+    {
+      "model": "M1",
+      "level": "L0",
+      "M1_coverage": 1.0,
+      "M1_safety_coverage": 1.0,
+      "coverage_source": "manual",
+      "M2_precision": 1.0,
+      "M3_consistency": 0.749,
+      "M4_formal_precision": 0.914,
+      "avg_without_M5": 0.916,
+      "details": {
+        "M1": {
+          "coverage_source": "manual",
+          "auto_coverage": 0.387
+        },
+        "M2": {
+          "elements": 7,
+          "grounded": 7
+        },
+        "M3": {
+          "flows": 38,
+          "resolved": 24,
+          "orphan": 0.33
+        },
+        "M4": {
+          "pre": 1.0,
+          "pre_eff": 1.0,
+          "n_vacuous": 0,
+          "quant": 0.71,
+          "ambiguous": 0,
+          "amb_ratio": 0.0
+        }
+      }
+    },
+    {
+      "model": "M1",
+      "level": "L1",
+      "M1_coverage": 0.615,
+      "M1_safety_coverage": 0.583,
+      "coverage_source": "manual",
+      "M2_precision": 1.0,
+      "M3_consistency": 0.737,
+      "M4_formal_precision": 0.8,
+      "avg_without_M5": 0.788,
+      "details": {
+        "M1": {
+          "coverage_source": "manual",
+          "auto_coverage": 0.206
+        },
+        "M2": {
+          "elements": 3,
+          "grounded": 3
+        },
+        "M3": {
+          "flows": 13,
+          "resolved": 9,
+          "orphan": 0.55
+        },
+        "M4": {
+          "pre": 1.0,
+          "pre_eff": 1.0,
+          "n_vacuous": 0,
+          "quant": 0.33,
+          "ambiguous": 0,
+          "amb_ratio": 0.0
+        }
+      }
+    },
+    {
+      "model": "M1.1",
+      "level": "L0",
+      "M1_coverage": 1.0,
+      "M1_safety_coverage": 1.0,
+      "coverage_source": "manual",
+      "M2_precision": 1.0,
+      "M3_consistency": 0.749,
+      "M4_formal_precision": 0.914,
+      "avg_without_M5": 0.916,
+      "details": {
+        "M1": {
+          "coverage_source": "manual",
+          "auto_coverage": 0.468
+        },
+        "M2": {
+          "elements": 7,
+          "grounded": 7
+        },
+        "M3": {
+          "flows": 38,
+          "resolved": 24,
+          "orphan": 0.33
+        },
+        "M4": {
+          "pre": 1.0,
+          "pre_eff": 1.0,
+          "n_vacuous": 0,
+          "quant": 0.71,
+          "ambiguous": 0,
+          "amb_ratio": 0.0
+        }
+      }
+    },
+    {
+      "model": "M1.1",
+      "level": "L1",
+      "M1_coverage": 1.0,
+      "M1_safety_coverage": 1.0,
+      "coverage_source": "manual",
+      "M2_precision": 1.0,
+      "M3_consistency": 0.737,
+      "M4_formal_precision": 0.8,
+      "avg_without_M5": 0.884,
+      "details": {
+        "M1": {
+          "coverage_source": "manual",
+          "auto_coverage": 0.412
+        },
+        "M2": {
+          "elements": 3,
+          "grounded": 3
+        },
+        "M3": {
+          "flows": 13,
+          "resolved": 9,
+          "orphan": 0.55
+        },
+        "M4": {
+          "pre": 1.0,
+          "pre_eff": 1.0,
+          "n_vacuous": 0,
+          "quant": 0.33,
+          "ambiguous": 0,
+          "amb_ratio": 0.0
+        }
+      }
+    },
+    {
+      "model": "M2",
+      "level": "L0",
+      "M1_coverage": 1.0,
+      "M1_safety_coverage": 1.0,
+      "coverage_source": "manual",
+      "M2_precision": 1.0,
+      "M3_consistency": 0.601,
+      "M4_formal_precision": 0.557,
+      "avg_without_M5": 0.79,
+      "details": {
+        "M1": {
+          "coverage_source": "manual",
+          "auto_coverage": 0.968
+        },
+        "M2": {
+          "elements": 7,
+          "grounded": 7
+        },
+        "M3": {
+          "flows": 34,
+          "resolved": 12,
+          "orphan": 0.38
+        },
+        "M4": {
+          "pre": 1.0,
+          "pre_eff": 0.0,
+          "n_vacuous": 28,
+          "quant": 0.86,
+          "ambiguous": 0,
+          "amb_ratio": 0.0
+        }
+      }
+    },
+    {
+      "model": "M2",
+      "level": "L1",
+      "M1_coverage": 0.808,
+      "M1_safety_coverage": 0.792,
+      "coverage_source": "manual",
+      "M2_precision": 1.0,
+      "M3_consistency": 0.458,
+      "M4_formal_precision": 0.6,
+      "avg_without_M5": 0.716,
+      "details": {
+        "M1": {
+          "coverage_source": "manual",
+          "auto_coverage": 0.676
+        },
+        "M2": {
+          "elements": 3,
+          "grounded": 3
+        },
+        "M3": {
+          "flows": 11,
+          "resolved": 2,
+          "orphan": 0.67
+        },
+        "M4": {
+          "pre": 1.0,
+          "pre_eff": 0.0,
+          "n_vacuous": 9,
+          "quant": 1.0,
+          "ambiguous": 0,
+          "amb_ratio": 0.0
+        }
+      }
+    },
+    {
+      "model": "M3",
+      "level": "L0",
+      "M1_coverage": 1.0,
+      "M1_safety_coverage": 1.0,
+      "coverage_source": "manual",
+      "M2_precision": 1.0,
+      "M3_consistency": 0.624,
+      "M4_formal_precision": 0.871,
+      "avg_without_M5": 0.874,
+      "details": {
+        "M1": {
+          "coverage_source": "manual",
+          "auto_coverage": 0.968
+        },
+        "M2": {
+          "elements": 7,
+          "grounded": 7
+        },
+        "M3": {
+          "flows": 31,
+          "resolved": 11,
+          "orphan": 0.27
+        },
+        "M4": {
+          "pre": 1.0,
+          "pre_eff": 1.0,
+          "n_vacuous": 0,
+          "quant": 0.57,
+          "ambiguous": 0,
+          "amb_ratio": 0.0
+        }
+      }
+    },
+    {
+      "model": "M3",
+      "level": "L1",
+      "M1_coverage": 1.0,
+      "M1_safety_coverage": 1.0,
+      "coverage_source": "manual",
+      "M2_precision": 1.0,
+      "M3_consistency": 0.458,
+      "M4_formal_precision": 1.0,
+      "avg_without_M5": 0.864,
+      "details": {
+        "M1": {
+          "coverage_source": "manual",
+          "auto_coverage": 0.647
+        },
+        "M2": {
+          "elements": 3,
+          "grounded": 3
+        },
+        "M3": {
+          "flows": 11,
+          "resolved": 2,
+          "orphan": 0.67
+        },
+        "M4": {
+          "pre": 1.0,
+          "pre_eff": 1.0,
+          "n_vacuous": 0,
+          "quant": 1.0,
+          "ambiguous": 0,
+          "amb_ratio": 0.0
+        }
+      }
+    },
+    {
+      "model": "M4",
+      "level": "L0",
+      "M1_coverage": 1.0,
+      "M1_safety_coverage": 1.0,
+      "coverage_source": "manual",
+      "M2_precision": 1.0,
+      "M3_consistency": 0.596,
+      "M4_formal_precision": 0.614,
+      "avg_without_M5": 0.803,
+      "details": {
+        "M1": {
+          "coverage_source": "manual",
+          "auto_coverage": 0.968
+        },
+        "M2": {
+          "elements": 7,
+          "grounded": 7
+        },
+        "M3": {
+          "flows": 36,
+          "resolved": 12,
+          "orphan": 0.35
+        },
+        "M4": {
+          "pre": 1.0,
+          "pre_eff": 0.14,
+          "n_vacuous": 23,
+          "quant": 0.86,
+          "ambiguous": 0,
+          "amb_ratio": 0.0
+        }
+      }
+    },
+    {
+      "model": "M4",
+      "level": "L1",
+      "M1_coverage": 1.0,
+      "M1_safety_coverage": 1.0,
+      "coverage_source": "manual",
+      "M2_precision": 1.0,
+      "M3_consistency": 0.571,
+      "M4_formal_precision": 0.429,
+      "avg_without_M5": 0.75,
+      "details": {
+        "M1": {
+          "coverage_source": "manual",
+          "auto_coverage": 0.559
+        },
+        "M2": {
+          "elements": 7,
+          "grounded": 7
+        },
+        "M3": {
+          "flows": 12,
+          "resolved": 8,
+          "orphan": 0.67
+        },
+        "M4": {
+          "pre": 0.43,
+          "pre_eff": 0.0,
+          "n_vacuous": 9,
+          "quant": 0.43,
+          "ambiguous": 0,
+          "amb_ratio": 0.0
+        }
+      }
+    },
+    {
+      "model": "M5",
+      "level": "L1",
+      "M1_coverage": 0.615,
+      "M1_safety_coverage": 0.583,
+      "coverage_source": "manual",
+      "M2_precision": 1.0,
+      "M3_consistency": 0.748,
+      "M4_formal_precision": 0.771,
+      "avg_without_M5": 0.784,
+      "details": {
+        "M1": {
+          "coverage_source": "manual",
+          "auto_coverage": 0.735
+        },
+        "M2": {
+          "elements": 35,
+          "grounded": 35
+        },
+        "M3": {
+          "flows": 34,
+          "resolved": 27,
+          "orphan": 0.4
+        },
+        "M4": {
+          "pre": 0.77,
+          "pre_eff": 0.77,
+          "n_vacuous": 0,
+          "quant": 0.54,
+          "ambiguous": 0,
+          "amb_ratio": 0.0
+        }
+      }
+    }
+  ],
+  "defect_detection_rate": null
+}

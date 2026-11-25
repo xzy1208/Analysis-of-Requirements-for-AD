@@ -1,0 +1,470 @@
+[
+  {
+    "id": "SCOPE-1",
+    "category": "scope",
+    "text": "系统为 SAE L2 级整车级 ADAS 车载系统，驾驶员持续监督",
+    "source_clause": "R-SCOPE-1",
+    "criticality": "medium",
+    "llm_match": "SCOPE-1",
+    "llm_similarity": 0.485
+  },
+  {
+    "id": "SCOPE-2",
+    "category": "scope",
+    "text": "系统边界为整车，传感器/GNSS-IMU/HMI/执行器仅作为外部接口",
+    "source_clause": "R-SCOPE-2",
+    "criticality": "medium",
+    "llm_match": "SCOPE-2",
+    "llm_similarity": 0.577
+  },
+  {
+    "id": "SCOPE-3",
+    "category": "scope",
+    "text": "规格约束功能分配与数据依赖，不约束功能内部算法",
+    "source_clause": "R-SCOPE-3",
+    "criticality": "low",
+    "llm_match": "SCOPE-3",
+    "llm_similarity": 0.601
+  },
+  {
+    "id": "SCOPE-4",
+    "category": "scope",
+    "text": "Level 1 只细化 F3 的紧急制动分支，其余 Level 0 功能保持原子",
+    "source_clause": "R-SCOPE-4",
+    "criticality": "high",
+    "llm_match": "SCOPE-4",
+    "llm_similarity": 0.75
+  },
+  {
+    "id": "EXT-1",
+    "category": "external",
+    "text": "E1 raw_sensor_data：带时间戳和有效性标志的传感器帧输入",
+    "source_clause": "E1",
+    "criticality": "medium",
+    "llm_match": "EXT-1",
+    "llm_similarity": 0.412
+  },
+  {
+    "id": "EXT-2",
+    "category": "external",
+    "text": "E2 gnss_imu：GNSS 定位与 IMU 角速率/加速度输入",
+    "source_clause": "E2",
+    "criticality": "medium",
+    "llm_match": "EXT-2",
+    "llm_similarity": 0.531
+  },
+  {
+    "id": "EXT-3",
+    "category": "external",
+    "text": "E3 driver_intent：驾驶员指令与 ODD 状态、注意力状态输入",
+    "source_clause": "E3",
+    "criticality": "high",
+    "llm_match": "EXT-3",
+    "llm_similarity": 0.453
+  },
+  {
+    "id": "EXT-4",
+    "category": "external",
+    "text": "E4 destination：导航目的地经纬度与路线偏好输入",
+    "source_clause": "E4",
+    "criticality": "low",
+    "llm_match": "EXT-4",
+    "llm_similarity": 0.741
+  },
+  {
+    "id": "EXT-5",
+    "category": "external",
+    "text": "E5 map_data：当前位置高精地图路段（道路/车道/限速/曲率）输入",
+    "source_clause": "E5",
+    "criticality": "medium",
+    "llm_match": "EXT-5",
+    "llm_similarity": 0.727
+  },
+  {
+    "id": "EXT-6",
+    "category": "external",
+    "text": "E6 traffic_rules：当前适用交通规则（限速与信号灯状态）输入",
+    "source_clause": "E6",
+    "criticality": "high",
+    "llm_match": "EXT-6",
+    "llm_similarity": 0.631
+  },
+  {
+    "id": "EXT-7",
+    "category": "external",
+    "text": "E7 warning：面向驾驶员的预警输出（类型与激活标志）",
+    "source_clause": "E7",
+    "criticality": "high",
+    "llm_match": "EXT-7",
+    "llm_similarity": 0.579
+  },
+  {
+    "id": "EXT-8",
+    "category": "external",
+    "text": "E8 checked_cmd：经仲裁后送达执行器的最终控制指令输出",
+    "source_clause": "E8",
+    "criticality": "high",
+    "llm_match": "EXT-8",
+    "llm_similarity": 0.366
+  },
+  {
+    "id": "EXT-9",
+    "category": "external",
+    "text": "E9 actuator_cmd：F6 产生的原始控制指令，未经仲裁不得直达执行器",
+    "source_clause": "E9 / R-E-2",
+    "criticality": "high",
+    "llm_match": null,
+    "llm_similarity": 0.0
+  },
+  {
+    "id": "STORE-1",
+    "category": "store",
+    "text": "D1 HD Map Store 缓存高精地图路段，供多功能读取",
+    "source_clause": "D1",
+    "criticality": "low",
+    "llm_match": "STORE-1",
+    "llm_similarity": 0.462
+  },
+  {
+    "id": "STORE-2",
+    "category": "store",
+    "text": "D2 Object Track Store 保存融合目标表，由 F1 独占写入",
+    "source_clause": "D2 / R-D-1",
+    "criticality": "high",
+    "llm_match": "STORE-2",
+    "llm_similarity": 0.312
+  },
+  {
+    "id": "STORE-3",
+    "category": "store",
+    "text": "D3 Ego State Store 保存自车位姿/速度/横摆角速度，由 F1 写入",
+    "source_clause": "D3",
+    "criticality": "high",
+    "llm_match": "STORE-3",
+    "llm_similarity": 0.536
+  },
+  {
+    "id": "STORE-4",
+    "category": "store",
+    "text": "D4 Traffic Rules Store 保存限速与信号灯状态，供 F3/F5/F7 读取",
+    "source_clause": "D4",
+    "criticality": "high",
+    "llm_match": "STORE-4",
+    "llm_similarity": 0.393
+  },
+  {
+    "id": "FUNC-1",
+    "category": "function",
+    "text": "F1 将原始传感器数据融合为目标表（id/位置/速度/类别）并识别前车",
+    "source_clause": "F1",
+    "criticality": "high",
+    "llm_match": "FUNC-1",
+    "llm_similarity": 0.891
+  },
+  {
+    "id": "FUNC-2",
+    "category": "function",
+    "text": "F1 融合 E2 与自身运动信号计算自车状态（位姿/速度/横摆角速度/加速度）",
+    "source_clause": "F1",
+    "criticality": "high",
+    "llm_match": "FUNC-2",
+    "llm_similarity": 0.817
+  },
+  {
+    "id": "FUNC-3",
+    "category": "function",
+    "text": "F1 写入 D2 与 D3，且不读取 D2/D3",
+    "source_clause": "F1",
+    "criticality": "medium",
+    "llm_match": "FUNC-3",
+    "llm_similarity": 0.567
+  },
+  {
+    "id": "FUNC-4",
+    "category": "function",
+    "text": "F2 预测相关目标未来至少 3 s 的运动",
+    "source_clause": "F2",
+    "criticality": "high",
+    "llm_match": "FUNC-4",
+    "llm_similarity": 0.45
+  },
+  {
+    "id": "FUNC-5",
+    "category": "function",
+    "text": "F2 是唯一计算 TTC 的功能，并从中导出最小 TTC",
+    "source_clause": "F2",
+    "criticality": "high",
+    "llm_match": "FUNC-5",
+    "llm_similarity": 0.531
+  },
+  {
+    "id": "FUNC-6",
+    "category": "function",
+    "text": "F2 不写入任何数据存储",
+    "source_clause": "F2",
+    "criticality": "low",
+    "llm_match": null,
+    "llm_similarity": 0.0
+  },
+  {
+    "id": "FUNC-7",
+    "category": "function",
+    "text": "F3 每周期决定目标机动（巡航/保持车道/换道/减速/紧急制动）及目标车速/车道/减速度",
+    "source_clause": "F3",
+    "criticality": "high",
+    "llm_match": "FUNC-6",
+    "llm_similarity": 0.575
+  },
+  {
+    "id": "FUNC-8",
+    "category": "function",
+    "text": "F3 决定是否发出预警及预警类型",
+    "source_clause": "F3",
+    "criticality": "high",
+    "llm_match": "FUNC-7",
+    "llm_similarity": 0.55
+  },
+  {
+    "id": "FUNC-9",
+    "category": "function",
+    "text": "F3 遵守 D4 交通规则与 E3 驾驶员意图，且不写存储",
+    "source_clause": "F3",
+    "criticality": "medium",
+    "llm_match": "FUNC-8",
+    "llm_similarity": 0.631
+  },
+  {
+    "id": "FUNC-10",
+    "category": "function",
+    "text": "F4 计算到目的地的路径（长度与 ETA），向 F3/F5 提供车道几何",
+    "source_clause": "F4",
+    "criticality": "medium",
+    "llm_match": "FUNC-9",
+    "llm_similarity": 0.443
+  },
+  {
+    "id": "FUNC-11",
+    "category": "function",
+    "text": "F5 把机动转换为运动学可行轨迹（最大车速/加速度/视界），且不得超过 D4 限速",
+    "source_clause": "F5",
+    "criticality": "high",
+    "llm_match": "FUNC-10",
+    "llm_similarity": 0.483
+  },
+  {
+    "id": "FUNC-12",
+    "category": "function",
+    "text": "F6 把轨迹转换为纵向加速度/制动/转向指令并保持在执行器包络内",
+    "source_clause": "F6 / A-3 / A-6",
+    "criticality": "high",
+    "llm_match": "FUNC-11",
+    "llm_similarity": 0.439
+  },
+  {
+    "id": "FUNC-13",
+    "category": "function",
+    "text": "F7 监控仲裁 F6 原始指令，即使其违规也输出满足安全包络的指令",
+    "source_clause": "F7 / R-E-2",
+    "criticality": "high",
+    "llm_match": null,
+    "llm_similarity": 0.0
+  },
+  {
+    "id": "FUNC-14",
+    "category": "function",
+    "text": "F7 保留 F6 的转向指令除非其违规，并在最终指令上强制执行交通规则",
+    "source_clause": "F7",
+    "criticality": "high",
+    "llm_match": null,
+    "llm_similarity": 0.0
+  },
+  {
+    "id": "AEB-1",
+    "category": "aeb",
+    "text": "F3.1 对每个预测目标计算 TTC，报告最小 TTC 与考虑的目标数量",
+    "source_clause": "F3.1",
+    "criticality": "high",
+    "llm_match": "AEB-2",
+    "llm_similarity": 0.893
+  },
+  {
+    "id": "AEB-2",
+    "category": "aeb",
+    "text": "F3.1 当无目标时 TTC 集合计数为 0",
+    "source_clause": "F3.1",
+    "criticality": "medium",
+    "llm_match": "AEB-3",
+    "llm_similarity": 0.442
+  },
+  {
+    "id": "AEB-3",
+    "category": "aeb",
+    "text": "F3.2 按最小 TTC 分三级：TTC>3.0s 无风险、1.5–3.0s 注意、≤1.5s 临界",
+    "source_clause": "F3.2 / A-5",
+    "criticality": "high",
+    "llm_match": null,
+    "llm_similarity": 0.0
+  },
+  {
+    "id": "AEB-4",
+    "category": "aeb",
+    "text": "F3.2 对注意与临界发出预警，对无风险不发预警",
+    "source_clause": "F3.2",
+    "criticality": "high",
+    "llm_match": "AEB-5",
+    "llm_similarity": 0.388
+  },
+  {
+    "id": "AEB-5",
+    "category": "aeb",
+    "text": "F3.3 无风险时输出巡航/保持车道机动；注意时输出非零减速机动",
+    "source_clause": "F3.3",
+    "criticality": "high",
+    "llm_match": "AEB-6",
+    "llm_similarity": 0.57
+  },
+  {
+    "id": "AEB-6",
+    "category": "aeb",
+    "text": "F3.3 临界时输出紧急制动：减速度≥6.0 m/s²、目标车速 0，且不被驾驶员加速请求覆盖",
+    "source_clause": "F3.3 / A-1",
+    "criticality": "high",
+    "llm_match": "AEB-9",
+    "llm_similarity": 0.344
+  },
+  {
+    "id": "TH-1",
+    "category": "threshold",
+    "text": "AEB 工作车速上限至少 130 km/h（静止目标除外）",
+    "source_clause": "N-1",
+    "criticality": "high",
+    "llm_match": "TH-1",
+    "llm_similarity": 0.55
+  },
+  {
+    "id": "TH-2",
+    "category": "threshold",
+    "text": "前向碰撞预警须在 TTC=2.0 s 前发出（对应 FCW at TTC>1.5s）",
+    "source_clause": "N-2",
+    "criticality": "high",
+    "llm_match": "TH-2",
+    "llm_similarity": 0.453
+  },
+  {
+    "id": "TH-3",
+    "category": "threshold",
+    "text": "部分介入需将碰撞速度降低超过 30 km/h",
+    "source_clause": "N-3",
+    "criticality": "high",
+    "llm_match": "TH-3",
+    "llm_similarity": 0.453
+  },
+  {
+    "id": "TH-4",
+    "category": "threshold",
+    "text": "CCRm 测试包络 VUT 60–130 km/h、目标 20 km/h；CCRb 目标减速度 −4 m/s²",
+    "source_clause": "N-4",
+    "criticality": "high",
+    "llm_match": "TH-4",
+    "llm_similarity": 0.564
+  },
+  {
+    "id": "TH-5",
+    "category": "threshold",
+    "text": "保持 RSS 纵向安全距离 d_min，采用集成方定义参数集",
+    "source_clause": "N-5 / A-2",
+    "criticality": "high",
+    "llm_match": null,
+    "llm_similarity": 0.0
+  },
+  {
+    "id": "TH-6",
+    "category": "threshold",
+    "text": "危险持续期间至少以 a_min,brake 制动，响应时间内不超过 a_max,accel",
+    "source_clause": "N-6",
+    "criticality": "high",
+    "llm_match": "TH-6",
+    "llm_similarity": 0.5
+  },
+  {
+    "id": "TH-7",
+    "category": "threshold",
+    "text": "紧急减速度 6.0 m/s²；风险阈值 3.0s/1.5s；预测视界 3.0s",
+    "source_clause": "A-1 / A-5 / A-7",
+    "criticality": "high",
+    "llm_match": null,
+    "llm_similarity": 0.0
+  },
+  {
+    "id": "LLM-EXT-9",
+    "category": "ext",
+    "text": "E9 actuator_cmd 为输入：控制功能产生的原始执行命令，处于任何安全仲裁之前",
+    "source_clause": "E9",
+    "criticality": "medium",
+    "llm_only": true
+  },
+  {
+    "id": "LLM-FUNC-12",
+    "category": "func",
+    "text": "系统最终执行输出 E8 必须是监控/仲裁函数对 E9 的处理结果，原始命令 E9 不得直达执行器",
+    "source_clause": "R-E-2",
+    "criticality": "high",
+    "llm_only": true
+  },
+  {
+    "id": "LLM-FUNC-13",
+    "category": "func",
+    "text": "F7 须监督 F6 的命令并输出满足安全包络的命令（即使 F6 命令违反包络），保留 F6 转向命令除非违反包络，对最终命令施加 D4，且不得写任何存储",
+    "source_clause": "F7",
+    "criticality": "high",
+    "llm_only": true
+  },
+  {
+    "id": "LLM-AEB-1",
+    "category": "aeb",
+    "text": "F3 须分解为恰好三个子功能 F3.1/F3.2/F3.3，共同实现紧急制动能力",
+    "source_clause": "R-L1-1",
+    "criticality": "high",
+    "llm_only": true
+  },
+  {
+    "id": "LLM-AEB-4",
+    "category": "aeb",
+    "text": "F3.2 须按最小 TTC 划分风险等级：no risk（TTC 高于 $T_risk_high）、caution（TTC 不高于 $T_risk_high 且高于 $T_fcw）、critical（TTC 不高于 $T_fcw）",
+    "source_clause": "F3.2",
+    "criticality": "high",
+    "llm_only": true
+  },
+  {
+    "id": "LLM-AEB-7",
+    "category": "aeb",
+    "text": "F3.3 须对 caution 产生带非零所需减速度的减速机动",
+    "source_clause": "F3.3",
+    "criticality": "high",
+    "llm_only": true
+  },
+  {
+    "id": "LLM-AEB-8",
+    "category": "aeb",
+    "text": "F3.3 须对 critical 产生所需减速度至少为 $A_emergency 且目标速度为 0 的紧急减速机动",
+    "source_clause": "F3.3",
+    "criticality": "high",
+    "llm_only": true
+  },
+  {
+    "id": "LLM-TH-5",
+    "category": "th",
+    "text": "本车须与 lead 目标保持不小于 RSS 最小安全距离 d_min 的纵向距离，按 A-2 参数集计算",
+    "source_clause": "N-5",
+    "criticality": "high",
+    "llm_only": true
+  },
+  {
+    "id": "LLM-TH-7",
+    "category": "th",
+    "text": "轨迹与转向命令蕴含的横向加速度须保持在本车横向加速度能力包络内，违反视为安全违规而非舒适性问题",
+    "source_clause": "N-7",
+    "criticality": "high",
+    "llm_only": true
+  }
+]

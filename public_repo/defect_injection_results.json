@@ -1,0 +1,269 @@
+{
+  "rows": [
+    {
+      "round": 1,
+      "model": "M1",
+      "detected": [
+        "DEF-1",
+        "DEF-2",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5"
+      ],
+      "n_detected": 5,
+      "n_findings": 7,
+      "false_positives": 1,
+      "detection_rate": 0.833,
+      "false_positive_rate": 0.143
+    },
+    {
+      "round": 1,
+      "model": "M3",
+      "detected": [
+        "DEF-1",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5"
+      ],
+      "n_detected": 4,
+      "n_findings": 7,
+      "false_positives": 2,
+      "detection_rate": 0.667,
+      "false_positive_rate": 0.286
+    },
+    {
+      "round": 1,
+      "model": "M4",
+      "detected": [
+        "DEF-1",
+        "DEF-4",
+        "DEF-5"
+      ],
+      "n_detected": 3,
+      "n_findings": 6,
+      "false_positives": 2,
+      "detection_rate": 0.5,
+      "false_positive_rate": 0.333
+    },
+    {
+      "round": 1,
+      "model": "M5",
+      "detected": [
+        "DEF-2",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5"
+      ],
+      "n_detected": 4,
+      "n_findings": 8,
+      "false_positives": 4,
+      "detection_rate": 0.667,
+      "false_positive_rate": 0.5
+    },
+    {
+      "round": 2,
+      "model": "M1",
+      "detected": [
+        "DEF-1",
+        "DEF-2",
+        "DEF-4",
+        "DEF-5"
+      ],
+      "n_detected": 4,
+      "n_findings": 4,
+      "false_positives": 0,
+      "detection_rate": 0.667,
+      "false_positive_rate": 0.0
+    },
+    {
+      "round": 2,
+      "model": "M3",
+      "detected": [
+        "DEF-1",
+        "DEF-4",
+        "DEF-5"
+      ],
+      "n_detected": 3,
+      "n_findings": 5,
+      "false_positives": 1,
+      "detection_rate": 0.5,
+      "false_positive_rate": 0.2
+    },
+    {
+      "round": 2,
+      "model": "M4",
+      "detected": [
+        "DEF-1",
+        "DEF-4",
+        "DEF-5"
+      ],
+      "n_detected": 3,
+      "n_findings": 4,
+      "false_positives": 0,
+      "detection_rate": 0.5,
+      "false_positive_rate": 0.0
+    },
+    {
+      "round": 2,
+      "model": "M5",
+      "detected": [
+        "DEF-2",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5"
+      ],
+      "n_detected": 4,
+      "n_findings": 7,
+      "false_positives": 3,
+      "detection_rate": 0.667,
+      "false_positive_rate": 0.429
+    },
+    {
+      "round": 3,
+      "model": "M1",
+      "detected": [
+        "DEF-1",
+        "DEF-2",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5"
+      ],
+      "n_detected": 5,
+      "n_findings": 7,
+      "false_positives": 1,
+      "detection_rate": 0.833,
+      "false_positive_rate": 0.143
+    },
+    {
+      "round": 3,
+      "model": "M3",
+      "detected": [
+        "DEF-1",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5"
+      ],
+      "n_detected": 4,
+      "n_findings": 6,
+      "false_positives": 1,
+      "detection_rate": 0.667,
+      "false_positive_rate": 0.167
+    },
+    {
+      "round": 3,
+      "model": "M4",
+      "detected": [
+        "DEF-1",
+        "DEF-2",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5"
+      ],
+      "n_detected": 5,
+      "n_findings": 6,
+      "false_positives": 1,
+      "detection_rate": 0.833,
+      "false_positive_rate": 0.167
+    },
+    {
+      "round": 3,
+      "model": "M5",
+      "detected": [
+        "DEF-2",
+        "DEF-4",
+        "DEF-5"
+      ],
+      "n_detected": 3,
+      "n_findings": 6,
+      "false_positives": 3,
+      "detection_rate": 0.5,
+      "false_positive_rate": 0.5
+    }
+  ],
+  "by_model": {
+    "M1": {
+      "rounds": [
+        0.833,
+        0.667,
+        0.833
+      ],
+      "mean_detection_rate": 0.778,
+      "variance": 0.0092,
+      "mean_false_positive_rate": 0.095,
+      "union_detected": [
+        "DEF-1",
+        "DEF-2",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5"
+      ],
+      "union_detection_rate": 0.833
+    },
+    "M3": {
+      "rounds": [
+        0.667,
+        0.5,
+        0.667
+      ],
+      "mean_detection_rate": 0.611,
+      "variance": 0.0093,
+      "mean_false_positive_rate": 0.218,
+      "union_detected": [
+        "DEF-1",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5"
+      ],
+      "union_detection_rate": 0.667
+    },
+    "M4": {
+      "rounds": [
+        0.5,
+        0.5,
+        0.833
+      ],
+      "mean_detection_rate": 0.611,
+      "variance": 0.037,
+      "mean_false_positive_rate": 0.167,
+      "union_detected": [
+        "DEF-1",
+        "DEF-2",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5"
+      ],
+      "union_detection_rate": 0.833
+    },
+    "M5": {
+      "rounds": [
+        0.667,
+        0.667,
+        0.5
+      ],
+      "mean_detection_rate": 0.611,
+      "variance": 0.0093,
+      "mean_false_positive_rate": 0.476,
+      "union_detected": [
+        "DEF-2",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5"
+      ],
+      "union_detection_rate": 0.667
+    }
+  },
+  "overall": {
+    "mean_detection_rate": 0.653,
+    "total_false_positives": 19,
+    "total_findings": 73,
+    "overall_false_positive_rate": 0.26,
+    "cohen_kappa": 0.389,
+    "confusion": {
+      "TP": 47,
+      "FN": 25,
+      "FP": 19,
+      "TN": 53
+    },
+    "kappa_note": "pooled over 3 rounds x 4 models x 6 defect slots; TN = slots with no planted defect and no false alarm"
+  }
+}

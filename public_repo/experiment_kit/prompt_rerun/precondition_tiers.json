@@ -1,0 +1,2955 @@
+[
+  {
+    "label": "M1 人工基准",
+    "file": "System+AEB_Branch",
+    "pre": 29,
+    "tiers": {
+      "T1": 0,
+      "T2a": 0,
+      "T2b": 2,
+      "T3": 26,
+      "T4": 1
+    },
+    "t1_rate": 0.0,
+    "content_rate": 0.034,
+    "t2b_rate": 0.069,
+    "detail": [
+      [
+        "Perception_Localization",
+        "raw_sensor_data.valid=1",
+        "T2b",
+        null
+      ],
+      [
+        "Perception_Localization",
+        "gnss_imu.valid=1",
+        "T2b",
+        null
+      ],
+      [
+        "Perception_Localization",
+        "map_data.speed_limit>=0",
+        "T3",
+        null
+      ],
+      [
+        "Prediction",
+        "objects.lead_speed>=0",
+        "T3",
+        null
+      ],
+      [
+        "Prediction",
+        "ego_pose.speed>=0",
+        "T3",
+        null
+      ],
+      [
+        "Prediction",
+        "map_data.speed_limit>=0",
+        "T3",
+        null
+      ],
+      [
+        "Behavior_Planning",
+        "ego_state.speed>=0",
+        "T3",
+        null
+      ],
+      [
+        "Behavior_Planning",
+        "driver_intent.cruise_speed>=0",
+        "T3",
+        null
+      ],
+      [
+        "Behavior_Planning",
+        "route.path_length>0",
+        "T3",
+        null
+      ],
+      [
+        "Behavior_Planning",
+        "traffic_rules.speed_limit>0",
+        "T3",
+        null
+      ],
+      [
+        "Safety_Shield",
+        "ego_state.speed>=0",
+        "T3",
+        null
+      ],
+      [
+        "Safety_Shield",
+        "actuator_cmd.brake_cmd>=0",
+        "T3",
+        null
+      ],
+      [
+        "Motion_Planning",
+        "maneuver.target_speed>=0",
+        "T3",
+        null
+      ],
+      [
+        "Motion_Planning",
+        "ego_state.speed>=0",
+        "T3",
+        null
+      ],
+      [
+        "Motion_Planning",
+        "map_data.speed_limit>=0",
+        "T3",
+        null
+      ],
+      [
+        "Control",
+        "trajectory.horizon>0",
+        "T3",
+        null
+      ],
+      [
+        "Control",
+        "ego_state.speed>=0",
+        "T3",
+        null
+      ],
+      [
+        "Route_Planning",
+        "ego_pose.speed>=0",
+        "T3",
+        null
+      ],
+      [
+        "Route_Planning",
+        "map_data.speed_limit>=0",
+        "T3",
+        null
+      ],
+      [
+        "Route_Planning",
+        "destination.lon>=0",
+        "T3",
+        null
+      ],
+      [
+        "ComputeTTC",
+        "predicted_trajectories.min_ttc>=0",
+        "T3",
+        null
+      ],
+      [
+        "ComputeTTC",
+        "ego_state.speed>=0",
+        "T3",
+        null
+      ],
+      [
+        "ClassifyRisk",
+        "ttc_values.min_ttc>=0",
+        "T3",
+        null
+      ],
+      [
+        "ClassifyRisk",
+        "traffic_rules.speed_limit>0",
+        "T3",
+        null
+      ],
+      [
+        "PlanManeuver",
+        "risk_level.risk_value>=0",
+        "T4",
+        null
+      ],
+      [
+        "PlanManeuver",
+        "ego_state.speed>=0",
+        "T3",
+        null
+      ],
+      [
+        "PlanManeuver",
+        "driver_intent.cruise_speed>=0",
+        "T3",
+        null
+      ],
+      [
+        "PlanManeuver",
+        "route.path_length>0",
+        "T3",
+        null
+      ],
+      [
+        "PlanManeuver",
+        "map_data.speed_limit>=0",
+        "T3",
+        null
+      ]
+    ]
+  },
+  {
+    "label": "A1 MiniMax+单点禁令",
+    "file": "MiniMax-M3.1-Flash-1.md",
+    "pre": 36,
+    "tiers": {
+      "T1": 4,
+      "T2a": 5,
+      "T2b": 0,
+      "T3": 26,
+      "T4": 1
+    },
+    "t1_rate": 0.111,
+    "content_rate": 0.028,
+    "t2b_rate": 0.0,
+    "detail": [
+      [
+        "F1_Perception_Localisation",
+        "E1.timestamp >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F1_Perception_Localisation",
+        "E1.camera_valid = true",
+        "T2a",
+        null
+      ],
+      [
+        "F1_Perception_Localisation",
+        "E1.radar_valid = true",
+        "T2a",
+        null
+      ],
+      [
+        "F1_Perception_Localisation",
+        "E1.lidar_valid = true",
+        "T2a",
+        null
+      ],
+      [
+        "F1_Perception_Localisation",
+        "E2.position_valid = true",
+        "T2a",
+        null
+      ],
+      [
+        "F1_Perception_Localisation",
+        "E2.imu_valid = true",
+        "T2a",
+        null
+      ],
+      [
+        "F1_Perception_Localisation",
+        "D1.posted_speed_limit >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F2_Prediction",
+        "ObjectTable.object_count >= 0",
+        "T1",
+        "nat_ge0_guard"
+      ],
+      [
+        "F2_Prediction",
+        "EgoState.speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F2_Prediction",
+        "D1.posted_speed_limit >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "EgoState.speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "PredictionSet.object_count >= 0",
+        "T1",
+        "nat_ge0_guard"
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "DriverIntent.requested_cruise_speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "D1.posted_speed_limit >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "D4.posted_speed_limit >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F4_Route_Planning",
+        "Destination.longitude >= -180",
+        "T3",
+        null
+      ],
+      [
+        "F4_Route_Planning",
+        "Destination.longitude <= 180",
+        "T3",
+        null
+      ],
+      [
+        "F4_Route_Planning",
+        "Destination.latitude >= -90",
+        "T3",
+        null
+      ],
+      [
+        "F4_Route_Planning",
+        "Destination.latitude <= 90",
+        "T3",
+        null
+      ],
+      [
+        "F4_Route_Planning",
+        "EgoState.speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F4_Route_Planning",
+        "D1.posted_speed_limit >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F5_Motion_Planning",
+        "Maneuver.required_deceleration >= 0",
+        "T4",
+        null
+      ],
+      [
+        "F5_Motion_Planning",
+        "EgoState.speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F5_Motion_Planning",
+        "D1.posted_speed_limit >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F5_Motion_Planning",
+        "D4.posted_speed_limit >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F6_Control",
+        "Trajectory.horizon >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F6_Control",
+        "D3.speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F7_Safety_Shield",
+        "D3.speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F7_Safety_Shield",
+        "D4.posted_speed_limit >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_1_TTC_Computation",
+        "PredictionSet.object_count >= 0",
+        "T1",
+        "nat_ge0_guard"
+      ],
+      [
+        "F3_1_TTC_Computation",
+        "EgoState.speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_2_Risk_Classification",
+        "TTCSet.object_count >= 0",
+        "T1",
+        "nat_ge0_guard"
+      ],
+      [
+        "F3_2_Risk_Classification",
+        "D4.posted_speed_limit >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_3_Maneuver_Planning",
+        "EgoState.speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_3_Maneuver_Planning",
+        "DriverIntent.requested_cruise_speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_3_Maneuver_Planning",
+        "D1.posted_speed_limit >= 0",
+        "T3",
+        null
+      ]
+    ]
+  },
+  {
+    "label": "A2 MiniMax+单点禁令",
+    "file": "MiniMax-M3.1-Flash-2.md",
+    "pre": 44,
+    "tiers": {
+      "T1": 3,
+      "T2a": 5,
+      "T2b": 3,
+      "T3": 29,
+      "T4": 4
+    },
+    "t1_rate": 0.068,
+    "content_rate": 0.091,
+    "t2b_rate": 0.068,
+    "detail": [
+      [
+        "F1",
+        "raw_sensor_data.frame_count >= 1",
+        "T3",
+        null
+      ],
+      [
+        "F1",
+        "raw_sensor_data.timestamp >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F1",
+        "raw_sensor_data.camera_valid = true",
+        "T2a",
+        null
+      ],
+      [
+        "F1",
+        "raw_sensor_data.radar_valid = true",
+        "T2a",
+        null
+      ],
+      [
+        "F1",
+        "raw_sensor_data.lidar_valid = true",
+        "T2a",
+        null
+      ],
+      [
+        "F1",
+        "gnss_imu.gnss_valid = true",
+        "T2a",
+        null
+      ],
+      [
+        "F1",
+        "gnss_imu.imu_valid = true",
+        "T2a",
+        null
+      ],
+      [
+        "F1",
+        "hd_map.posted_speed_limit >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F2",
+        "object_table.object_count >= 0",
+        "T1",
+        "nat_ge0_guard"
+      ],
+      [
+        "F2",
+        "ego_state.speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F2",
+        "ego_state.yaw_rate <= yaw_rate_limit",
+        "T4",
+        null
+      ],
+      [
+        "F2",
+        "ego_state.yaw_rate >= yaw_rate_limit_neg",
+        "T4",
+        null
+      ],
+      [
+        "F2",
+        "hd_map.posted_speed_limit >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3",
+        "ego_state.speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3",
+        "traffic_rules.posted_speed_limit >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3",
+        "predicted_trajectories.min_ttc >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3",
+        "driver_intent.requested_cruise_speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3",
+        "route.route_valid = true",
+        "T2b",
+        null
+      ],
+      [
+        "F4",
+        "destination.longitude >= -180.0",
+        "T3",
+        null
+      ],
+      [
+        "F4",
+        "destination.longitude <= 180.0",
+        "T3",
+        null
+      ],
+      [
+        "F4",
+        "destination.latitude >= -90.0",
+        "T3",
+        null
+      ],
+      [
+        "F4",
+        "destination.latitude <= 90.0",
+        "T3",
+        null
+      ],
+      [
+        "F4",
+        "ego_state.speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F4",
+        "hd_map.posted_speed_limit >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F5",
+        "route.route_valid = true",
+        "T2b",
+        null
+      ],
+      [
+        "F5",
+        "manoeuvre.target_speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F5",
+        "manoeuvre.required_deceleration >= 0",
+        "T4",
+        null
+      ],
+      [
+        "F5",
+        "ego_state.speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F5",
+        "traffic_rules.posted_speed_limit >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F6",
+        "trajectory.kinematically_feasible = true",
+        "T3",
+        null
+      ],
+      [
+        "F6",
+        "trajectory.max_permitted_speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F6",
+        "ego_state.speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F7",
+        "ego_state.speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F7",
+        "traffic_rules.posted_speed_limit >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_1",
+        "predicted_trajectories.object_count >= 0",
+        "T1",
+        "nat_ge0_guard"
+      ],
+      [
+        "F3_1",
+        "predicted_trajectories.horizon_duration >= prediction_horizon",
+        "T4",
+        null
+      ],
+      [
+        "F3_1",
+        "ego_state.speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_2",
+        "ttc_set.object_count >= 0",
+        "T1",
+        "nat_ge0_guard"
+      ],
+      [
+        "F3_2",
+        "ttc_set.min_ttc >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_2",
+        "traffic_rules.posted_speed_limit >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_3",
+        "ego_state.speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_3",
+        "driver_intent.requested_cruise_speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_3",
+        "route.route_valid = true",
+        "T2b",
+        null
+      ],
+      [
+        "F3_3",
+        "hd_map.posted_speed_limit >= 0",
+        "T3",
+        null
+      ]
+    ]
+  },
+  {
+    "label": "D1 MiniMax+泛禁令",
+    "file": "MiniMax-M3.1-Flash+D.md",
+    "pre": 38,
+    "tiers": {
+      "T1": 0,
+      "T2a": 5,
+      "T2b": 28,
+      "T3": 5,
+      "T4": 0
+    },
+    "t1_rate": 0.0,
+    "content_rate": 0.0,
+    "t2b_rate": 0.737,
+    "detail": [
+      [
+        "F1_Perception_Localisation",
+        "raw.frame_count > 0",
+        "T3",
+        null
+      ],
+      [
+        "F1_Perception_Localisation",
+        "raw.validity.camera_valid = 1",
+        "T2a",
+        null
+      ],
+      [
+        "F1_Perception_Localisation",
+        "raw.validity.radar_valid = 1",
+        "T2a",
+        null
+      ],
+      [
+        "F1_Perception_Localisation",
+        "raw.validity.lidar_valid = 1",
+        "T2a",
+        null
+      ],
+      [
+        "F1_Perception_Localisation",
+        "imu.gnss_valid = 1",
+        "T2a",
+        null
+      ],
+      [
+        "F1_Perception_Localisation",
+        "imu.imu_valid = 1",
+        "T2a",
+        null
+      ],
+      [
+        "F1_Perception_Localisation",
+        "map.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F2_Prediction",
+        "table.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F2_Prediction",
+        "ego.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F2_Prediction",
+        "map.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "ego.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "trajectories.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "route.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "rules.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "map.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F4_Route_Planning",
+        "destination.longitude >= -180.0",
+        "T3",
+        null
+      ],
+      [
+        "F4_Route_Planning",
+        "destination.longitude <= 180.0",
+        "T3",
+        null
+      ],
+      [
+        "F4_Route_Planning",
+        "destination.latitude >= -90.0",
+        "T3",
+        null
+      ],
+      [
+        "F4_Route_Planning",
+        "destination.latitude <= 90.0",
+        "T3",
+        null
+      ],
+      [
+        "F4_Route_Planning",
+        "pose.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F4_Route_Planning",
+        "map.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F5_Motion_Planning",
+        "manoeuvre.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F5_Motion_Planning",
+        "route.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F5_Motion_Planning",
+        "ego.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F5_Motion_Planning",
+        "map.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F5_Motion_Planning",
+        "rules.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F6_Control",
+        "trajectory.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F6_Control",
+        "ego.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F7_Safety_Shield",
+        "actuator.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F7_Safety_Shield",
+        "ego.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F7_Safety_Shield",
+        "rules.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3_1_TTC_Computation",
+        "trajectories.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3_1_TTC_Computation",
+        "ego.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3_2_Risk_Classification",
+        "ttcset.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3_2_Risk_Classification",
+        "rules.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3_3_Maneuver_Planning",
+        "ego.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3_3_Maneuver_Planning",
+        "route.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3_3_Maneuver_Planning",
+        "map.valid = 1",
+        "T2b",
+        null
+      ]
+    ]
+  },
+  {
+    "label": "B1 Hunyuan 无禁令",
+    "file": "Tencent Hunyuan Hy-1.md",
+    "pre": 34,
+    "tiers": {
+      "T1": 34,
+      "T2a": 0,
+      "T2b": 0,
+      "T3": 0,
+      "T4": 0
+    },
+    "t1_rate": 1.0,
+    "content_rate": 0.0,
+    "t2b_rate": 0.0,
+    "detail": [
+      [
+        "F1_Perception",
+        "raw_sensor_data.frame_timestamp = raw_sensor_data.frame_timestamp",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F1_Perception",
+        "gnss_imu.gnss_valid = gnss_imu.gnss_valid",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F1_Perception",
+        "hd_map_store.road_id = hd_map_store.road_id",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F2_Prediction",
+        "object_table.object_count = object_table.object_count",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F2_Prediction",
+        "ego_state.timestamp = ego_state.timestamp",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F2_Prediction",
+        "hd_map_store.lane_id = hd_map_store.lane_id",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F3_Planning",
+        "ego_state.timestamp = ego_state.timestamp",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F3_Planning",
+        "predicted_trajectories.trajectory_count = predicted_trajectories.trajectory_count",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F3_Planning",
+        "driver_intent.driver_attention = driver_intent.driver_attention",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F3_Planning",
+        "route.path_length = route.path_length",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F3_Planning",
+        "traffic_rules_store.posted_speed_limit = traffic_rules_store.posted_speed_limit",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F3_Planning",
+        "hd_map_store.lane_id = hd_map_store.lane_id",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F4_Route",
+        "destination.longitude = destination.longitude",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F4_Route",
+        "ego_pose.pose_x = ego_pose.pose_x",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F4_Route",
+        "hd_map_store.road_id = hd_map_store.road_id",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F5_Motion",
+        "maneuver.maneuver_type = maneuver.maneuver_type",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F5_Motion",
+        "route.path_length = route.path_length",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F5_Motion",
+        "ego_state.timestamp = ego_state.timestamp",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F5_Motion",
+        "traffic_rules_store.posted_speed_limit = traffic_rules_store.posted_speed_limit",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F5_Motion",
+        "hd_map_store.lane_id = hd_map_store.lane_id",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F6_Control",
+        "trajectory.max_speed = trajectory.max_speed",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F6_Control",
+        "ego_state_store.speed = ego_state_store.speed",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F7_Safety_Shield",
+        "actuator_cmd.longitudinal_accel = actuator_cmd.longitudinal_accel",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F7_Safety_Shield",
+        "ego_state_store.speed = ego_state_store.speed",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F7_Safety_Shield",
+        "traffic_rules_store.posted_speed_limit = traffic_rules_store.posted_speed_limit",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F3_1_TTC",
+        "predicted_trajectories.trajectory_count = predicted_trajectories.trajectory_count",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F3_1_TTC",
+        "ego_state.timestamp = ego_state.timestamp",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F3_2_Risk",
+        "ttc_set.minimum_ttc = ttc_set.minimum_ttc",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F3_2_Risk",
+        "traffic_rules_store.posted_speed_limit = traffic_rules_store.posted_speed_limit",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F3_3_Maneuver",
+        "risk.risk_level = risk.risk_level",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F3_3_Maneuver",
+        "ego_state.speed = ego_state.speed",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F3_3_Maneuver",
+        "driver_intent.override_accelerate = driver_intent.override_accelerate",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F3_3_Maneuver",
+        "route.path_length = route.path_length",
+        "T1",
+        "selfeq_guard"
+      ],
+      [
+        "F3_3_Maneuver",
+        "hd_map_store.lane_id = hd_map_store.lane_id",
+        "T1",
+        "selfeq_guard"
+      ]
+    ]
+  },
+  {
+    "label": "B2 Hunyuan 无禁令",
+    "file": "Tencent Hunyuan Hy-2.md",
+    "pre": 42,
+    "tiers": {
+      "T1": 2,
+      "T2a": 0,
+      "T2b": 39,
+      "T3": 1,
+      "T4": 0
+    },
+    "t1_rate": 0.048,
+    "content_rate": 0.0,
+    "t2b_rate": 0.929,
+    "detail": [
+      [
+        "F1",
+        "raw_sensor_data.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F1",
+        "raw_sensor_data.camera.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F1",
+        "raw_sensor_data.radar.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F1",
+        "raw_sensor_data.lidar.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F1",
+        "gnss_imu.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F1",
+        "gnss_imu.gnss.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F1",
+        "gnss_imu.imu.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F1",
+        "map_data.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F2",
+        "object_table.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F2",
+        "ego_pose.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F2",
+        "map_data.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F2",
+        "object_table.object_count >= 0",
+        "T1",
+        "nat_ge0_guard"
+      ],
+      [
+        "F3",
+        "ego_state.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3",
+        "traffic_rules.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3",
+        "predicted_trajectories.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3",
+        "driver_intent.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3",
+        "route.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3",
+        "map_data.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F4",
+        "destination.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F4",
+        "ego_pose.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F4",
+        "map_data.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F5",
+        "manoeuvre.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F5",
+        "route.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F5",
+        "ego_state.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F5",
+        "predicted_trajectories.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F5",
+        "map_data.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F5",
+        "traffic_rules.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F6",
+        "trajectory.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F6",
+        "ego_state.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F6",
+        "trajectory.horizon > 0",
+        "T3",
+        null
+      ],
+      [
+        "F7",
+        "actuator_cmd.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F7",
+        "ego_state.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F7",
+        "traffic_rules.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3_1",
+        "predicted_trajectories.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3_1",
+        "ego_state.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3_2",
+        "ttc_set.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3_2",
+        "traffic_rules.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3_3",
+        "ego_state.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3_3",
+        "driver_intent.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3_3",
+        "route.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3_3",
+        "map_data.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F3_3",
+        "risk_level <> \"\"",
+        "T1",
+        "empty_guard"
+      ]
+    ]
+  },
+  {
+    "label": "C1 Hunyuan+单点禁令",
+    "file": "Tencent Hunyuan Hy-3.md",
+    "pre": 40,
+    "tiers": {
+      "T1": 9,
+      "T2a": 5,
+      "T2b": 0,
+      "T3": 23,
+      "T4": 3
+    },
+    "t1_rate": 0.225,
+    "content_rate": 0.075,
+    "t2b_rate": 0.0,
+    "detail": [
+      [
+        "F1_Perception",
+        "raw_sensor_data.camera_valid = 1",
+        "T2a",
+        null
+      ],
+      [
+        "F1_Perception",
+        "raw_sensor_data.radar_valid = 1",
+        "T2a",
+        null
+      ],
+      [
+        "F1_Perception",
+        "raw_sensor_data.lidar_valid = 1",
+        "T2a",
+        null
+      ],
+      [
+        "F1_Perception",
+        "raw_sensor_data.frame_timestamp >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F1_Perception",
+        "gnss_imu.gnss_valid = 1",
+        "T2a",
+        null
+      ],
+      [
+        "F1_Perception",
+        "gnss_imu.imu_valid = 1",
+        "T2a",
+        null
+      ],
+      [
+        "F1_Perception",
+        "gnss_imu.timestamp >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F2_Prediction",
+        "object_table.object_count >= 0",
+        "T1",
+        "nat_ge0_guard"
+      ],
+      [
+        "F2_Prediction",
+        "hd_map_store.road_id <> \"\"",
+        "T1",
+        "empty_guard"
+      ],
+      [
+        "F2_Prediction",
+        "hd_map_store.posted_speed_limit > 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_Planning",
+        "ego_state.speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_Planning",
+        "traffic_rules_store.posted_speed_limit > 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_Planning",
+        "predicted_trajectories.trajectory_count >= 0",
+        "T1",
+        "nat_ge0_guard"
+      ],
+      [
+        "F3_Planning",
+        "route.path_length > 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_Planning",
+        "hd_map_store.lane_id <> \"\"",
+        "T1",
+        "empty_guard"
+      ],
+      [
+        "F4_Route",
+        "destination.latitude >= -90",
+        "T3",
+        null
+      ],
+      [
+        "F4_Route",
+        "destination.latitude <= 90",
+        "T3",
+        null
+      ],
+      [
+        "F4_Route",
+        "destination.longitude >= -180",
+        "T3",
+        null
+      ],
+      [
+        "F4_Route",
+        "destination.longitude <= 180",
+        "T3",
+        null
+      ],
+      [
+        "F4_Route",
+        "hd_map_store.road_id <> \"\"",
+        "T1",
+        "empty_guard"
+      ],
+      [
+        "F5_Motion",
+        "maneuver.required_deceleration >= 0",
+        "T4",
+        null
+      ],
+      [
+        "F5_Motion",
+        "route.path_length > 0",
+        "T3",
+        null
+      ],
+      [
+        "F5_Motion",
+        "ego_state.speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F5_Motion",
+        "traffic_rules_store.posted_speed_limit > 0",
+        "T3",
+        null
+      ],
+      [
+        "F6_Control",
+        "trajectory.horizon > 0",
+        "T3",
+        null
+      ],
+      [
+        "F6_Control",
+        "trajectory.max_speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F6_Control",
+        "ego_state_store.timestamp >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F7_Safety_Shield",
+        "actuator_cmd.brake >= 0",
+        "T4",
+        null
+      ],
+      [
+        "F7_Safety_Shield",
+        "ego_state_store.timestamp >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F7_Safety_Shield",
+        "traffic_rules_store.posted_speed_limit > 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_1_TTC",
+        "predicted_trajectories.trajectory_count >= 0",
+        "T1",
+        "nat_ge0_guard"
+      ],
+      [
+        "F3_1_TTC",
+        "predicted_trajectories.horizon >= 3.0",
+        "T4",
+        null
+      ],
+      [
+        "F3_1_TTC",
+        "ego_state.timestamp >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_2_Risk",
+        "ttc_set.object_count >= 0",
+        "T1",
+        "nat_ge0_guard"
+      ],
+      [
+        "F3_2_Risk",
+        "traffic_rules_store.posted_speed_limit > 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_3_Maneuver",
+        "risk <> \"\"",
+        "T1",
+        "empty_guard"
+      ],
+      [
+        "F3_3_Maneuver",
+        "ego_state.speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_3_Maneuver",
+        "driver_intent.requested_cruise_speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_3_Maneuver",
+        "route.path_length > 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_3_Maneuver",
+        "hd_map_store.lane_id <> \"\"",
+        "T1",
+        "empty_guard"
+      ]
+    ]
+  },
+  {
+    "label": "D2 Hunyuan+泛禁令",
+    "file": "D2_hunyuan_family_ban.md",
+    "pre": 32,
+    "tiers": {
+      "T1": 0,
+      "T2a": 5,
+      "T2b": 0,
+      "T3": 24,
+      "T4": 3
+    },
+    "t1_rate": 0.0,
+    "content_rate": 0.094,
+    "t2b_rate": 0.0,
+    "detail": [
+      [
+        "F1_Perception",
+        "raw_sensor_data.camera_valid = 1",
+        "T2a",
+        null
+      ],
+      [
+        "F1_Perception",
+        "raw_sensor_data.radar_valid = 1",
+        "T2a",
+        null
+      ],
+      [
+        "F1_Perception",
+        "raw_sensor_data.lidar_valid = 1",
+        "T2a",
+        null
+      ],
+      [
+        "F1_Perception",
+        "raw_sensor_data.frame_timestamp >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F1_Perception",
+        "gnss_imu.gnss_valid = 1",
+        "T2a",
+        null
+      ],
+      [
+        "F1_Perception",
+        "gnss_imu.imu_valid = 1",
+        "T2a",
+        null
+      ],
+      [
+        "F1_Perception",
+        "gnss_imu.timestamp >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F2_Prediction",
+        "hd_map_store.posted_speed_limit > 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_Planning",
+        "ego_state.speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_Planning",
+        "traffic_rules_store.posted_speed_limit > 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_Planning",
+        "route.path_length > 0",
+        "T3",
+        null
+      ],
+      [
+        "F4_Route",
+        "destination.latitude >= -90",
+        "T3",
+        null
+      ],
+      [
+        "F4_Route",
+        "destination.latitude <= 90",
+        "T3",
+        null
+      ],
+      [
+        "F4_Route",
+        "destination.longitude >= -180",
+        "T3",
+        null
+      ],
+      [
+        "F4_Route",
+        "destination.longitude <= 180",
+        "T3",
+        null
+      ],
+      [
+        "F5_Motion",
+        "maneuver.required_deceleration >= 0",
+        "T4",
+        null
+      ],
+      [
+        "F5_Motion",
+        "route.path_length > 0",
+        "T3",
+        null
+      ],
+      [
+        "F5_Motion",
+        "ego_state.speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F5_Motion",
+        "traffic_rules_store.posted_speed_limit > 0",
+        "T3",
+        null
+      ],
+      [
+        "F6_Control",
+        "trajectory.horizon > 0",
+        "T3",
+        null
+      ],
+      [
+        "F6_Control",
+        "trajectory.max_speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F6_Control",
+        "ego_state_store.timestamp >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F7_Safety_Shield",
+        "actuator_cmd.brake >= 0",
+        "T4",
+        null
+      ],
+      [
+        "F7_Safety_Shield",
+        "ego_state_store.timestamp >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F7_Safety_Shield",
+        "traffic_rules_store.posted_speed_limit > 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_1_TTC",
+        "predicted_trajectories.horizon >= 3.0",
+        "T4",
+        null
+      ],
+      [
+        "F3_1_TTC",
+        "ego_state.timestamp >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_2_Risk",
+        "traffic_rules_store.posted_speed_limit > 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_3_Maneuver",
+        "ego_state.speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_3_Maneuver",
+        "driver_intent.requested_cruise_speed >= 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_3_Maneuver",
+        "route.path_length > 0",
+        "T3",
+        null
+      ],
+      [
+        "F3_3_Maneuver",
+        "hd_map_store.posted_speed_limit > 0",
+        "T3",
+        null
+      ]
+    ]
+  },
+  {
+    "label": "B3 MiniMax无禁令(当前)",
+    "file": "B3_minimax_no_ban_current.md",
+    "pre": 98,
+    "tiers": {
+      "T1": 95,
+      "T2a": 2,
+      "T2b": 1,
+      "T3": 0,
+      "T4": 0
+    },
+    "t1_rate": 0.969,
+    "content_rate": 0.0,
+    "t2b_rate": 0.01,
+    "detail": [
+      [
+        "F1_Perception_Localisation",
+        "raw_sensor_data.valid = 1",
+        "T2b",
+        null
+      ],
+      [
+        "F1_Perception_Localisation",
+        "gnss_imu.gnss_valid = 1",
+        "T2a",
+        null
+      ],
+      [
+        "F1_Perception_Localisation",
+        "gnss_imu.imu_valid = 1",
+        "T2a",
+        null
+      ],
+      [
+        "F1_Perception_Localisation",
+        "object_table <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F1_Perception_Localisation",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F1_Perception_Localisation",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F1_Perception_Localisation",
+        "prediction <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F1_Perception_Localisation",
+        "driver_intent <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F1_Perception_Localisation",
+        "route <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F1_Perception_Localisation",
+        "destination <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F1_Perception_Localisation",
+        "ego_pose <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F1_Perception_Localisation",
+        "manoeuvre <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F1_Perception_Localisation",
+        "route <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F1_Perception_Localisation",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F1_Perception_Localisation",
+        "prediction <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F1_Perception_Localisation",
+        "trajectory <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F1_Perception_Localisation",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F1_Perception_Localisation",
+        "actuator_cmd <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F1_Perception_Localisation",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F1_Perception_Localisation",
+        "traffic_rules <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F2_Prediction",
+        "object_table <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F2_Prediction",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F2_Prediction",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F2_Prediction",
+        "prediction <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F2_Prediction",
+        "driver_intent <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F2_Prediction",
+        "route <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F2_Prediction",
+        "destination <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F2_Prediction",
+        "ego_pose <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F2_Prediction",
+        "manoeuvre <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F2_Prediction",
+        "route <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F2_Prediction",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F2_Prediction",
+        "prediction <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F2_Prediction",
+        "trajectory <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F2_Prediction",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F2_Prediction",
+        "actuator_cmd <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F2_Prediction",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F2_Prediction",
+        "traffic_rules <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "prediction <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "driver_intent <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "route <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "destination <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "ego_pose <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "manoeuvre <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "route <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "prediction <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "trajectory <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "actuator_cmd <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "traffic_rules <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F4_Route_Planning",
+        "destination <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F4_Route_Planning",
+        "ego_pose <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F4_Route_Planning",
+        "manoeuvre <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F4_Route_Planning",
+        "route <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F4_Route_Planning",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F4_Route_Planning",
+        "prediction <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F4_Route_Planning",
+        "trajectory <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F4_Route_Planning",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F4_Route_Planning",
+        "actuator_cmd <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F4_Route_Planning",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F4_Route_Planning",
+        "traffic_rules <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F5_Motion_Planning",
+        "manoeuvre <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F5_Motion_Planning",
+        "route <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F5_Motion_Planning",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F5_Motion_Planning",
+        "prediction <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F5_Motion_Planning",
+        "trajectory <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F5_Motion_Planning",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F5_Motion_Planning",
+        "actuator_cmd <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F5_Motion_Planning",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F5_Motion_Planning",
+        "traffic_rules <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F6_Control",
+        "trajectory <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F6_Control",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F6_Control",
+        "actuator_cmd <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F6_Control",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F6_Control",
+        "traffic_rules <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F7_Safety_Shield",
+        "actuator_cmd <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F7_Safety_Shield",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F7_Safety_Shield",
+        "traffic_rules <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_1_TTC_Computation",
+        "prediction <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_1_TTC_Computation",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_1_TTC_Computation",
+        "ttc_set <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_1_TTC_Computation",
+        "traffic_rules <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_1_TTC_Computation",
+        "risk_level <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_1_TTC_Computation",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_1_TTC_Computation",
+        "driver_intent <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_1_TTC_Computation",
+        "route <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_2_Risk_Classification",
+        "ttc_set <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_2_Risk_Classification",
+        "traffic_rules <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_2_Risk_Classification",
+        "risk_level <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_2_Risk_Classification",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_2_Risk_Classification",
+        "driver_intent <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_2_Risk_Classification",
+        "route <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_3_Maneuver_Planning",
+        "risk_level <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_3_Maneuver_Planning",
+        "ego_state <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_3_Maneuver_Planning",
+        "driver_intent <> null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "F3_3_Maneuver_Planning",
+        "route <> null",
+        "T1",
+        "null_guard"
+      ]
+    ]
+  },
+  {
+    "label": "B4 MiniMax无禁令(当前)",
+    "file": "B4_minimax_no_ban_current.md",
+    "pre": 31,
+    "tiers": {
+      "T1": 1,
+      "T2a": 0,
+      "T2b": 0,
+      "T3": 30,
+      "T4": 0
+    },
+    "t1_rate": 0.032,
+    "content_rate": 0.0,
+    "t2b_rate": 0.0,
+    "detail": [
+      [
+        "F1_Perception_Localisation",
+        "raw_sensor_data.present = 1",
+        "T3",
+        null
+      ],
+      [
+        "F1_Perception_Localisation",
+        "gnss_imu.present = 1",
+        "T3",
+        null
+      ],
+      [
+        "F1_Perception_Localisation",
+        "raw_sensor_data.validity.valid_count > 0",
+        "T3",
+        null
+      ],
+      [
+        "F1_Perception_Localisation",
+        "gnss_imu.validity.valid_count > 0",
+        "T3",
+        null
+      ],
+      [
+        "F2_Prediction",
+        "object_table.present = 1",
+        "T3",
+        null
+      ],
+      [
+        "F2_Prediction",
+        "ego_state.present = 1",
+        "T3",
+        null
+      ],
+      [
+        "F2_Prediction",
+        "object_table.object_count >= 0",
+        "T1",
+        "nat_ge0_guard"
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "ego_state.present = 1",
+        "T3",
+        null
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "predicted_trajectories.present = 1",
+        "T3",
+        null
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "driver_intent.present = 1",
+        "T3",
+        null
+      ],
+      [
+        "F3_Behaviour_Planning",
+        "route.present = 1",
+        "T3",
+        null
+      ],
+      [
+        "F4_Route_Planning",
+        "destination.present = 1",
+        "T3",
+        null
+      ],
+      [
+        "F4_Route_Planning",
+        "ego_pose.present = 1",
+        "T3",
+        null
+      ],
+      [
+        "F4_Route_Planning",
+        "destination.longitude >= -180.0",
+        "T3",
+        null
+      ],
+      [
+        "F4_Route_Planning",
+        "destination.longitude <= 180.0",
+        "T3",
+        null
+      ],
+      [
+        "F4_Route_Planning",
+        "destination.latitude >= -90.0",
+        "T3",
+        null
+      ],
+      [
+        "F4_Route_Planning",
+        "destination.latitude <= 90.0",
+        "T3",
+        null
+      ],
+      [
+        "F5_Motion_Planning",
+        "manoeuvre.present = 1",
+        "T3",
+        null
+      ],
+      [
+        "F5_Motion_Planning",
+        "route.present = 1",
+        "T3",
+        null
+      ],
+      [
+        "F5_Motion_Planning",
+        "ego_state.present = 1",
+        "T3",
+        null
+      ],
+      [
+        "F6_Control",
+        "trajectory.present = 1",
+        "T3",
+        null
+      ],
+      [
+        "F6_Control",
+        "D3.present = 1",
+        "T3",
+        null
+      ],
+      [
+        "F7_Safety_Shield",
+        "actuator_cmd.present = 1",
+        "T3",
+        null
+      ],
+      [
+        "F7_Safety_Shield",
+        "D3.present = 1",
+        "T3",
+        null
+      ],
+      [
+        "F3.1_TTC_Computation",
+        "predicted_trajectories.present = 1",
+        "T3",
+        null
+      ],
+      [
+        "F3.1_TTC_Computation",
+        "ego_state.present = 1",
+        "T3",
+        null
+      ],
+      [
+        "F3.2_Risk_Classification",
+        "ttc_set.present = 1",
+        "T3",
+        null
+      ],
+      [
+        "F3.3_Maneuver_Planning",
+        "risk_level.present = 1",
+        "T3",
+        null
+      ],
+      [
+        "F3.3_Maneuver_Planning",
+        "ego_state.present = 1",
+        "T3",
+        null
+      ],
+      [
+        "F3.3_Maneuver_Planning",
+        "driver_intent.present = 1",
+        "T3",
+        null
+      ],
+      [
+        "F3.3_Maneuver_Planning",
+        "route.present = 1",
+        "T3",
+        null
+      ]
+    ]
+  },
+  {
+    "label": "M2 MiniMax 无禁令",
+    "file": "ADAS_System+AEB_Branch",
+    "pre": 37,
+    "tiers": {
+      "T1": 37,
+      "T2a": 0,
+      "T2b": 0,
+      "T3": 0,
+      "T4": 0
+    },
+    "t1_rate": 1.0,
+    "content_rate": 0.0,
+    "t2b_rate": 0.0,
+    "detail": [
+      [
+        "Perception_Localisation",
+        "raw_sensor_data<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Perception_Localisation",
+        "gnss_imu<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Perception_Localisation",
+        "map_data<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Perception_Localisation",
+        "HD_Map_DB<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Prediction",
+        "ego_pose<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Prediction",
+        "object_table<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Prediction",
+        "HD_Map_DB<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Behaviour_Planning",
+        "ego_state<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Behaviour_Planning",
+        "predicted_trajectories<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Behaviour_Planning",
+        "driver_intent<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Behaviour_Planning",
+        "route<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Behaviour_Planning",
+        "HD_Map_DB<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Behaviour_Planning",
+        "Traffic_Rules_DB<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Route_Planning",
+        "destination<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Route_Planning",
+        "ego_pose_for_route<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Route_Planning",
+        "HD_Map_DB<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Motion_Planning",
+        "manoeuvre<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Motion_Planning",
+        "route_for_motion<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Motion_Planning",
+        "ego_state_for_motion<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Motion_Planning",
+        "predicted_trajectories_for_motion<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Motion_Planning",
+        "traffic_rules<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Motion_Planning",
+        "HD_Map_DB<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Motion_Planning",
+        "Traffic_Rules_DB<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Control",
+        "trajectory<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Control",
+        "Ego_State_DB<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Safety_Shield",
+        "actuator_cmd<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Safety_Shield",
+        "Ego_State_DB<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Safety_Shield",
+        "Traffic_Rules_DB<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "TTC_Computation",
+        "predicted_trajectories<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "TTC_Computation",
+        "ego_state<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Risk_Classification",
+        "ttc_set<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Risk_Classification",
+        "Traffic_Rules_DB<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Maneuver_Planning",
+        "risk_level<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Maneuver_Planning",
+        "ego_state<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Maneuver_Planning",
+        "driver_intent<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Maneuver_Planning",
+        "route<>null",
+        "T1",
+        "null_guard"
+      ],
+      [
+        "Maneuver_Planning",
+        "HD_Map_DB<>null",
+        "T1",
+        "null_guard"
+      ]
+    ]
+  }
+]

@@ -1,0 +1,278 @@
+{
+  "M2": {
+    "L0": {
+      "groups": 28,
+      "eff_groups": 0,
+      "clauses": 28,
+      "subst_clauses": 0,
+      "pre_eff": 0.0,
+      "quant": 0.7561,
+      "amb_ratio": 0.0,
+      "i4_pre": 0.0,
+      "i4": 0.5268
+    },
+    "L1": {
+      "groups": 9,
+      "eff_groups": 0,
+      "clauses": 9,
+      "subst_clauses": 0,
+      "pre_eff": 0.0,
+      "quant": 0.9333,
+      "amb_ratio": 0.0,
+      "i4_pre": 0.0,
+      "i4": 0.58
+    }
+  },
+  "B3": {
+    "L0": {
+      "groups": 10,
+      "eff_groups": 3,
+      "clauses": 23,
+      "subst_clauses": 3,
+      "pre_eff": 0.3,
+      "quant": 0.8649,
+      "amb_ratio": 0.0,
+      "i4_pre": 0.12,
+      "i4": 0.6795
+    },
+    "L1": {
+      "groups": 3,
+      "eff_groups": 0,
+      "clauses": 8,
+      "subst_clauses": 0,
+      "pre_eff": 0.0,
+      "quant": 0.8095,
+      "amb_ratio": 0.0,
+      "i4_pre": 0.0,
+      "i4": 0.5428
+    },
+    "_meta": {
+      "generator": "MiniMax",
+      "condition": "no ban (current prompt)"
+    }
+  },
+  "B4": {
+    "L0": {
+      "groups": 28,
+      "eff_groups": 4,
+      "clauses": 28,
+      "subst_clauses": 4,
+      "pre_eff": 0.1429,
+      "quant": 0.9514,
+      "amb_ratio": 0.0,
+      "i4_pre": 0.0572,
+      "i4": 0.6426
+    },
+    "L1": {
+      "groups": 7,
+      "eff_groups": 0,
+      "clauses": 7,
+      "subst_clauses": 0,
+      "pre_eff": 0.0,
+      "quant": 0.8243,
+      "amb_ratio": 0.0,
+      "i4_pre": 0.0,
+      "i4": 0.5473
+    },
+    "_meta": {
+      "generator": "MiniMax",
+      "condition": "no ban (current prompt)"
+    }
+  },
+  "A1": {
+    "L0": {
+      "groups": 7,
+      "eff_groups": 1,
+      "clauses": 29,
+      "subst_clauses": 1,
+      "pre_eff": 0.1429,
+      "quant": 0.914,
+      "amb_ratio": 0.0,
+      "i4_pre": 0.0572,
+      "i4": 0.6314
+    },
+    "L1": {
+      "groups": 3,
+      "eff_groups": 0,
+      "clauses": 7,
+      "subst_clauses": 0,
+      "pre_eff": 0.0,
+      "quant": 0.617,
+      "amb_ratio": 0.0,
+      "i4_pre": 0.0,
+      "i4": 0.4851
+    },
+    "_meta": {
+      "generator": "MiniMax",
+      "condition": "single-idiom ban"
+    }
+  },
+  "A2": {
+    "L0": {
+      "groups": 29,
+      "eff_groups": 2,
+      "clauses": 34,
+      "subst_clauses": 3,
+      "pre_eff": 0.069,
+      "quant": 0.7976,
+      "amb_ratio": 0.0,
+      "i4_pre": 0.0276,
+      "i4": 0.5669
+    },
+    "L1": {
+      "groups": 10,
+      "eff_groups": 1,
+      "clauses": 10,
+      "subst_clauses": 1,
+      "pre_eff": 0.1,
+      "quant": 0.6596,
+      "amb_ratio": 0.0,
+      "i4_pre": 0.04,
+      "i4": 0.5379
+    },
+    "_meta": {
+      "generator": "MiniMax",
+      "condition": "single-idiom ban"
+    }
+  },
+  "D1": {
+    "L0": {
+      "groups": 15,
+      "eff_groups": 1,
+      "clauses": 32,
+      "subst_clauses": 1,
+      "pre_eff": 0.0667,
+      "quant": 0.9479,
+      "amb_ratio": 0.0,
+      "i4_pre": 0.0267,
+      "i4": 0.611
+    },
+    "L1": {
+      "groups": 3,
+      "eff_groups": 0,
+      "clauses": 7,
+      "subst_clauses": 0,
+      "pre_eff": 0.0,
+      "quant": 0.7805,
+      "amb_ratio": 0.0,
+      "i4_pre": 0.0,
+      "i4": 0.5341
+    },
+    "_meta": {
+      "generator": "MiniMax",
+      "condition": "family-wide ban"
+    }
+  },
+  "B1": {
+    "L0": {
+      "groups": 7,
+      "eff_groups": 0,
+      "clauses": 25,
+      "subst_clauses": 0,
+      "pre_eff": 0.0,
+      "quant": 0.6543,
+      "amb_ratio": 0.0,
+      "i4_pre": 0.0,
+      "i4": 0.4963
+    },
+    "L1": {
+      "groups": 3,
+      "eff_groups": 0,
+      "clauses": 9,
+      "subst_clauses": 0,
+      "pre_eff": 0.0,
+      "quant": 0.5405,
+      "amb_ratio": 0.0,
+      "i4_pre": 0.0,
+      "i4": 0.4621
+    },
+    "_meta": {
+      "generator": "Hunyuan",
+      "condition": "no ban"
+    }
+  },
+  "B2": {
+    "L0": {
+      "groups": 7,
+      "eff_groups": 0,
+      "clauses": 33,
+      "subst_clauses": 0,
+      "pre_eff": 0.0,
+      "quant": 0.9512,
+      "amb_ratio": 0.0,
+      "i4_pre": 0.0,
+      "i4": 0.5854
+    },
+    "L1": {
+      "groups": 3,
+      "eff_groups": 0,
+      "clauses": 9,
+      "subst_clauses": 0,
+      "pre_eff": 0.0,
+      "quant": 0.766,
+      "amb_ratio": 0.0,
+      "i4_pre": 0.0,
+      "i4": 0.5298
+    },
+    "_meta": {
+      "generator": "Hunyuan",
+      "condition": "no ban"
+    }
+  },
+  "C1": {
+    "L0": {
+      "groups": 7,
+      "eff_groups": 2,
+      "clauses": 30,
+      "subst_clauses": 2,
+      "pre_eff": 0.2857,
+      "quant": 0.9884,
+      "amb_ratio": 0.0,
+      "i4_pre": 0.1143,
+      "i4": 0.7108
+    },
+    "L1": {
+      "groups": 3,
+      "eff_groups": 1,
+      "clauses": 10,
+      "subst_clauses": 1,
+      "pre_eff": 0.3333,
+      "quant": 0.8261,
+      "amb_ratio": 0.0,
+      "i4_pre": 0.1333,
+      "i4": 0.6811
+    },
+    "_meta": {
+      "generator": "Hunyuan",
+      "condition": "single-idiom ban"
+    }
+  },
+  "D2": {
+    "L0": {
+      "groups": 7,
+      "eff_groups": 2,
+      "clauses": 25,
+      "subst_clauses": 2,
+      "pre_eff": 0.2857,
+      "quant": 0.988,
+      "amb_ratio": 0.0,
+      "i4_pre": 0.1143,
+      "i4": 0.7107
+    },
+    "L1": {
+      "groups": 3,
+      "eff_groups": 1,
+      "clauses": 7,
+      "subst_clauses": 1,
+      "pre_eff": 0.3333,
+      "quant": 0.814,
+      "amb_ratio": 0.0,
+      "i4_pre": 0.1333,
+      "i4": 0.6775
+    },
+    "_meta": {
+      "generator": "Hunyuan",
+      "condition": "family-wide ban"
+    }
+  }
+}

@@ -1,0 +1,170 @@
+{
+  "reviewer": "Tencent Hunyuan 4 Flash",
+  "round": 1,
+  "reviews": [
+    {
+      "model": "M1",
+      "level": "L0",
+      "findings": [
+        {
+          "type": "omission",
+          "location": "元素列表 / Safety_Shield；数据流 / E8",
+          "detail": "规格 §5 F7 与 R-L0-1 要求七个功能含 Safety_Shield，模型无该元素；亦无 checked_cmd/E8 输出流。追溯条目 F-Safety_Shield -> ['Safety_Shield'] 悬空。"
+        },
+        {
+          "type": "omission",
+          "location": "数据流 / E5、E6（HD_Map_DB、Traffic_Rules_DB）",
+          "detail": "规格 §3 要求 E1–E9 全部建模，D1 由 E5 刷新、D4 由 E6 刷新；模型只有 HD_Map_DB/Traffic_Rules_DB 到各功能的读流，无 E5→D1、E6→D4 写入流。"
+        },
+        {
+          "type": "contradiction",
+          "location": "Behavior_Planning post[predicted_trajectories.min_ttc<1.5]",
+          "detail": "min_ttc<1.5 属 critical，规格 F3.3 要求紧急制动减速度至少为 A_emergency，A-1=6.0 m/s²；模型写 maneuver.decel_req==2.0，低于阈值。"
+        },
+        {
+          "type": "condition",
+          "location": "Behavior_Planning post[predicted_trajectories.min_ttc<1.5]",
+          "detail": "告警条件写成 <1.5 且为开区间；规格 A-5 的 caution 带为 TTC≤3.0 s，F3.2 要求 caution 与 critical 均告警，N-2 要求告警不晚于 TTC=2.0 s。阈值与边界算子错误。"
+        },
+        {
+          "type": "condition",
+          "location": "Control post[true]、Perception_Localization post[true]",
+          "detail": "steer_cmd 用 >-1.0 且 <1.0、yaw_rate 用 >-3.5 且 <3.5，将 A-6(±1.0)、A-4(3.5 rad/s) 包络写成开区间，边界语义错误（应为包含端点）。"
+        },
+        {
+          "type": "flow",
+          "location": "Perception_Localization → Ego_State_DB",
+          "detail": "规格 F1 应写 D3（ego state）；模型只有两条重复的 ego_pose: Perception_Localization→ego_pose 流，无到 Ego_State_DB 的写入流。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "Perception_Localization 描述及 pre",
+          "detail": "「及时处理相关数据以提供合适输出」「输入应在适当时刻有效」用及时/合适/适当代替精确约束。"
+        }
+      ]
+    },
+    {
+      "model": "M3",
+      "level": "L0",
+      "findings": [
+        {
+          "type": "omission",
+          "location": "元素列表 / F4",
+          "detail": "规格 §5 F4 Route Planning 与 R-L0-1 要求七个功能，模型 6 个元素中无 F4。"
+        },
+        {
+          "type": "omission",
+          "location": "数据流 / E4、route",
+          "detail": "规格 E4 destination 必须建模，且 §5.1 要求 F4→F3、F4→F5 的 route 流；模型无 E4 输入流与任何 route 流，F3/F5 的 route 前置条件悬空。"
+        },
+        {
+          "type": "flow",
+          "location": "driver_intent: E3 → F3",
+          "detail": "F3 pre 引用 driver_intent.requested_speed，但数据流中无 E3 driver_intent→F3 流；规格 F3 输入含 driver intent (E3)。"
+        },
+        {
+          "type": "flow",
+          "location": "actuator_cmd: F6 → F7",
+          "detail": "F7 pre 引用 actuator_cmd，但 actuator_cmd 只有 F6→E9，无 F6→F7（或 E9→F7）流；违反 §5.1 与 R-E-2。"
+        },
+        {
+          "type": "condition",
+          "location": "F7 post[actuator_cmd.steering <= 1.0 and actuator_cmd.steering == -1.0]",
+          "detail": "规格 F7 应保留 F6 的转向命令除非其越界；模型仅在 steering==-1.0 时保留，把包络内其它取值错误排除，误用 == 作保留条件。"
+        },
+        {
+          "type": "omission",
+          "location": "F3 post[true]",
+          "detail": "F3 产出 warning(E7) 且有 warning: F3→E7 流，但 F3 后置条件未命名 warning/告警类型，违反 R-G-1。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "F1 描述及 pre",
+          "detail": "「及时处理相关数据以提供合适输出」「输入应在适当时刻有效」用及时/合适/适当代替精确约束。"
+        }
+      ]
+    },
+    {
+      "model": "M4",
+      "level": "L0",
+      "findings": [
+        {
+          "type": "omission",
+          "location": "元素列表 / F4",
+          "detail": "规格 §5 F4 Route Planning 与 R-L0-1 要求七个功能，模型 6 个元素中无 F4。"
+        },
+        {
+          "type": "omission",
+          "location": "数据流 / E4、route",
+          "detail": "规格 E4 destination 必须建模且 §5.1 要求 F4→F3、F4→F5 的 route 流；模型无 E4 输入流与任何 route 流，F3 pre 的 route<>null、F5 pre 的 route<>null 悬空。"
+        },
+        {
+          "type": "flow",
+          "location": "ego_state: D3 → F6",
+          "detail": "规格 §5 F6 输入含 ego state (D3 read)；F6 pre 引用 ego_state，但数据流只有 D3→F7，无 D3→F6 流。"
+        },
+        {
+          "type": "omission",
+          "location": "F7 post[true]",
+          "detail": "规格 F7 应保留 F6 的转向命令除非越界；F7 后置条件只约束 checked_accel_cmd 与 checked_brake_cmd，未命名/保留转向命令，违反 R-G-1。"
+        },
+        {
+          "type": "flow",
+          "location": "map_data: E5→D1、hd_map_refresh: E5→D1；traffic_rules: E6→D4、traffic_rules_refresh: E6→D4",
+          "detail": "同一生产者到 D1/D4 各存在两条重复刷新流，违反 R-G-4 的单一具名依赖要求。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "F1 描述及 pre",
+          "detail": "「及时处理相关数据以提供合适输出」「输入应在适当时刻有效」用及时/合适/适当代替精确约束。"
+        }
+      ]
+    },
+    {
+      "model": "M5",
+      "level": "L1",
+      "findings": [
+        {
+          "type": "contradiction",
+          "location": "EmergencyBrake 状态；T3、T13、T20、T27",
+          "detail": "状态描述写「at least 2.0 m/s2 ... (F3.3/A-1)」且多处 maneuver.deceleration==2.0；规格 A-1 紧急减速度为 6.0 m/s²，F3.3 要求至少 A_emergency，2.0 与阈值冲突。"
+        },
+        {
+          "type": "condition",
+          "location": "T3、T13、T20、T27",
+          "detail": "用 ==2.0 表示紧急减速度，规格为「至少 6.0 m/s²」（≥），比较算子错误（>= 写成 ==）。"
+        },
+        {
+          "type": "contradiction",
+          "location": "FaultDegraded、Standstill、Deactivated 状态及 T14–T26、E1/E2→FaultDegraded 等流",
+          "detail": "规格 §6 只要求 F3.1–F3.3，§11 open issue 1 对驾驶员监控/ODD 退出保持开放；模型自行引入传感器降级、驻车与去激活状态及行为，违反 R-G-3 与「规格未写明不得发明元素」。"
+        },
+        {
+          "type": "condition",
+          "location": "T17（及 T24）",
+          "detail": "pre 仅 driver_accel_request=true 即令 maneuver=driver_accelerate，未排除 critical；违反 F3.3「紧急机动不得被驾驶员加速请求覆盖」。"
+        },
+        {
+          "type": "condition",
+          "location": "T12",
+          "detail": "caution 且 driver_accel_request=true 时输出 deceleration；规格 F3.3 规定 critical 之外风险级别驾驶员加速请求优先（且与 T10 的 driver_accelerate 自相矛盾）。"
+        },
+        {
+          "type": "condition",
+          "location": "T3（Caution → EmergencyBrake）pre",
+          "detail": "仅凭 warning=caution 与 sensor_validity/odd_active 进入紧急制动，缺少 F3.2 的 critical 判据 min_ttc ≤ T_fcw(1.5 s)。"
+        },
+        {
+          "type": "flow",
+          "location": "数据流 / route、D1、risk level",
+          "detail": "规格 F3.3 输入含 route (from F4) 与 D1，模型无对应流；亦无 F3.2→F3.3 显式命名的 risk level 流。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "T1 描述及 pre",
+          "detail": "「及时处理相关数据以提供合适输出」「输入应在适当时刻有效」用及时/合适/适当代替精确约束。"
+        }
+      ]
+    }
+  ]
+}

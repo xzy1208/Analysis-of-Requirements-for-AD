@@ -1,0 +1,212 @@
+{
+  "reviewer_A": {
+    "name": "Tencent Hunyuan 4 Flash",
+    "source": "defect_injection_results.json",
+    "mean_detection_rate": 0.653,
+    "cohen_kappa": 0.389,
+    "overall_false_positive_rate": 0.26
+  },
+  "reviewer_B": {
+    "name": "DeepSeek-v4-pro",
+    "blind": {
+      "reviewer": "DeepSeek-v4-pro (blind)",
+      "by_model": {
+        "M1": {
+          "rounds": [
+            1.0,
+            0.667,
+            0.833
+          ],
+          "mean_detection_rate": 0.833,
+          "variance": 0.0277,
+          "mean_false_positive_rate": 0.0,
+          "union_detected": [
+            "DEF-1",
+            "DEF-2",
+            "DEF-3",
+            "DEF-4",
+            "DEF-5",
+            "DEF-6"
+          ],
+          "union_detection_rate": 1.0
+        },
+        "M3": {
+          "rounds": [
+            0.833,
+            0.667,
+            0.667
+          ],
+          "mean_detection_rate": 0.722,
+          "variance": 0.0092,
+          "mean_false_positive_rate": 0.0,
+          "union_detected": [
+            "DEF-1",
+            "DEF-3",
+            "DEF-4",
+            "DEF-5",
+            "DEF-6"
+          ],
+          "union_detection_rate": 0.833
+        },
+        "M4": {
+          "rounds": [
+            1.0,
+            0.667,
+            0.833
+          ],
+          "mean_detection_rate": 0.833,
+          "variance": 0.0277,
+          "mean_false_positive_rate": 0.0,
+          "union_detected": [
+            "DEF-1",
+            "DEF-2",
+            "DEF-3",
+            "DEF-4",
+            "DEF-5",
+            "DEF-6"
+          ],
+          "union_detection_rate": 1.0
+        },
+        "M5": {
+          "rounds": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "mean_detection_rate": 0.5,
+          "variance": 0.0,
+          "mean_false_positive_rate": 0.229,
+          "union_detected": [
+            "DEF-2",
+            "DEF-3",
+            "DEF-5"
+          ],
+          "union_detection_rate": 0.5
+        }
+      },
+      "overall": {
+        "mean_detection_rate": 0.722,
+        "total_false_positives": 4,
+        "total_findings": 61,
+        "overall_false_positive_rate": 0.066,
+        "cohen_kappa": 0.667,
+        "confusion": {
+          "TP": 52,
+          "FN": 20,
+          "FP": 4,
+          "TN": 68
+        }
+      }
+    },
+    "anchored_union_detection": {
+      "M1": 1.0,
+      "M3": 0.667,
+      "M4": 1.0,
+      "M5": 0.5
+    }
+  },
+  "jaccard": {
+    "M1": {
+      "A_vs_B_blind": 0.833,
+      "B_blind_vs_B_anchored": 1.0,
+      "A_union": [
+        "DEF-1",
+        "DEF-2",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5"
+      ],
+      "B_blind_union": [
+        "DEF-1",
+        "DEF-2",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5",
+        "DEF-6"
+      ],
+      "B_anchored_union": [
+        "DEF-1",
+        "DEF-2",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5",
+        "DEF-6"
+      ]
+    },
+    "M3": {
+      "A_vs_B_blind": 0.8,
+      "B_blind_vs_B_anchored": 0.8,
+      "A_union": [
+        "DEF-1",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5"
+      ],
+      "B_blind_union": [
+        "DEF-1",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5",
+        "DEF-6"
+      ],
+      "B_anchored_union": [
+        "DEF-1",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5"
+      ]
+    },
+    "M4": {
+      "A_vs_B_blind": 0.833,
+      "B_blind_vs_B_anchored": 1.0,
+      "A_union": [
+        "DEF-1",
+        "DEF-2",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5"
+      ],
+      "B_blind_union": [
+        "DEF-1",
+        "DEF-2",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5",
+        "DEF-6"
+      ],
+      "B_anchored_union": [
+        "DEF-1",
+        "DEF-2",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5",
+        "DEF-6"
+      ]
+    },
+    "M5": {
+      "A_vs_B_blind": 0.75,
+      "B_blind_vs_B_anchored": 1.0,
+      "A_union": [
+        "DEF-2",
+        "DEF-3",
+        "DEF-4",
+        "DEF-5"
+      ],
+      "B_blind_union": [
+        "DEF-2",
+        "DEF-3",
+        "DEF-5"
+      ],
+      "B_anchored_union": [
+        "DEF-2",
+        "DEF-3",
+        "DEF-5"
+      ]
+    }
+  },
+  "methodology_notes": [
+    "M5 DEF-4 (T10_guard 删除) 在严格口径下两模型均未真正命中；二者都报告了 M5 原生的 route/D1/risk level 流缺失（非注入缺陷），反映『流删除』类缺陷在状态机表示法下难以精确定位。",
+    "DEF-6 (追溯删除) 是两模型共同的高漏检项：Hy 三轮从未检出，DeepSeek 仅在 B1 盲评检出 M1/M3/M4 的追溯缺失。",
+    "盲评受限于同一会话上下文：评审者 B 在同一会话中已读到评审者 A 的结果，严格盲评无法完全净化；锚定轮显式引入 A 的 findings 以度量锚定效应。"
+  ]
+}

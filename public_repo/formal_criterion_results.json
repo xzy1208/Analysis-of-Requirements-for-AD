@@ -1,0 +1,1117 @@
+{
+  "generated_by": "formal_criterion_checker.py",
+  "classifier": "experiment_kit/prompt_rerun/precondition_tiers.py :: tier()（与 Table VII-c 同源）",
+  "note": "I4 三口径：legacy2=两型排除（旧实现，仅复核）；unified5=五族恒真式族（本文采用）；strictT4=要求至少一条实质子句（下界披露）",
+  "models": [
+    {
+      "model": "M1",
+      "level": "L0",
+      "elements": 7,
+      "pre_clauses": 20,
+      "post_clauses": 44,
+      "pre_tiers": {
+        "T2b": 2,
+        "T3": 18
+      },
+      "post_tiers": {
+        "T1": 8,
+        "T3": 13,
+        "T4": 23
+      },
+      "pre_families": {
+        "null": 20
+      },
+      "effective_pre_legacy2": 7,
+      "effective_pre_unified5": 7,
+      "substantive_pre_t4": 0,
+      "quantified_ratio": 0.7143,
+      "amb_ratio_legacy": 0.0,
+      "amb_ratio_unified": 0.0,
+      "source": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M1_manual_human\\MES_M1_L0.json",
+      "I4_legacy2": 0.914,
+      "I4_unified5": 0.914,
+      "I4_strictT4": 0.514
+    },
+    {
+      "model": "M1",
+      "level": "L1",
+      "elements": 3,
+      "pre_clauses": 9,
+      "post_clauses": 35,
+      "pre_tiers": {
+        "T3": 8,
+        "T4": 1
+      },
+      "post_tiers": {
+        "T1": 3,
+        "T3": 17,
+        "T4": 15
+      },
+      "pre_families": {
+        "null": 9
+      },
+      "effective_pre_legacy2": 3,
+      "effective_pre_unified5": 3,
+      "substantive_pre_t4": 1,
+      "quantified_ratio": 0.3333,
+      "amb_ratio_legacy": 0.0,
+      "amb_ratio_unified": 0.0,
+      "source": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M1_manual_human\\MES_M1_L1.json",
+      "I4_legacy2": 0.8,
+      "I4_unified5": 0.8,
+      "I4_strictT4": 0.533
+    },
+    {
+      "model": "M1.1",
+      "level": "L0",
+      "elements": 7,
+      "pre_clauses": 20,
+      "post_clauses": 63,
+      "pre_tiers": {
+        "T2b": 2,
+        "T3": 18
+      },
+      "post_tiers": {
+        "T1": 13,
+        "T3": 15,
+        "T4": 35
+      },
+      "pre_families": {
+        "null": 20
+      },
+      "effective_pre_legacy2": 7,
+      "effective_pre_unified5": 7,
+      "substantive_pre_t4": 0,
+      "quantified_ratio": 0.7143,
+      "amb_ratio_legacy": 0.0,
+      "amb_ratio_unified": 0.0,
+      "source": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M1_1_manual_plus_thresholds\\MES_M1.1_L0.json",
+      "I4_legacy2": 0.914,
+      "I4_unified5": 0.914,
+      "I4_strictT4": 0.514
+    },
+    {
+      "model": "M1.1",
+      "level": "L1",
+      "elements": 3,
+      "pre_clauses": 10,
+      "post_clauses": 35,
+      "pre_tiers": {
+        "T3": 8,
+        "T4": 2
+      },
+      "post_tiers": {
+        "T1": 3,
+        "T3": 17,
+        "T4": 15
+      },
+      "pre_families": {
+        "null": 10
+      },
+      "effective_pre_legacy2": 3,
+      "effective_pre_unified5": 3,
+      "substantive_pre_t4": 1,
+      "quantified_ratio": 0.3333,
+      "amb_ratio_legacy": 0.0,
+      "amb_ratio_unified": 0.0,
+      "source": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M1_1_manual_plus_thresholds\\MES_M1.1_L1.json",
+      "I4_legacy2": 0.8,
+      "I4_unified5": 0.8,
+      "I4_strictT4": 0.533
+    },
+    {
+      "model": "M2",
+      "level": "L0",
+      "elements": 7,
+      "pre_clauses": 28,
+      "post_clauses": 109,
+      "pre_tiers": {
+        "T1": 28
+      },
+      "post_tiers": {
+        "T1": 45,
+        "T3": 11,
+        "T4": 53
+      },
+      "pre_families": {
+        "null_guard": 28
+      },
+      "effective_pre_legacy2": 0,
+      "effective_pre_unified5": 0,
+      "substantive_pre_t4": 0,
+      "quantified_ratio": 0.8571,
+      "amb_ratio_legacy": 0.0,
+      "amb_ratio_unified": 0.0,
+      "source": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M2_AI_SOFL_single\\MES_M2_L0.json",
+      "I4_legacy2": 0.557,
+      "I4_unified5": 0.557,
+      "I4_strictT4": 0.557
+    },
+    {
+      "model": "M2",
+      "level": "L1",
+      "elements": 3,
+      "pre_clauses": 9,
+      "post_clauses": 55,
+      "pre_tiers": {
+        "T1": 9
+      },
+      "post_tiers": {
+        "T1": 10,
+        "T4": 20,
+        "T3": 25
+      },
+      "pre_families": {
+        "null_guard": 9
+      },
+      "effective_pre_legacy2": 0,
+      "effective_pre_unified5": 0,
+      "substantive_pre_t4": 0,
+      "quantified_ratio": 1.0,
+      "amb_ratio_legacy": 0.0,
+      "amb_ratio_unified": 0.0,
+      "source": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M2_AI_SOFL_single\\MES_M2_L1.json",
+      "I4_legacy2": 0.6,
+      "I4_unified5": 0.6,
+      "I4_strictT4": 0.6
+    },
+    {
+      "model": "M3",
+      "level": "L0",
+      "elements": 7,
+      "pre_clauses": 16,
+      "post_clauses": 31,
+      "pre_tiers": {
+        "T2b": 2,
+        "T3": 10,
+        "T4": 4
+      },
+      "post_tiers": {
+        "T1": 7,
+        "T3": 4,
+        "T4": 20
+      },
+      "pre_families": {
+        "null": 16
+      },
+      "effective_pre_legacy2": 7,
+      "effective_pre_unified5": 7,
+      "substantive_pre_t4": 4,
+      "quantified_ratio": 0.5714,
+      "amb_ratio_legacy": 0.0,
+      "amb_ratio_unified": 0.0,
+      "source": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M3_AI_DFD\\MES_M3_L0.json",
+      "I4_legacy2": 0.871,
+      "I4_unified5": 0.871,
+      "I4_strictT4": 0.7
+    },
+    {
+      "model": "M3",
+      "level": "L1",
+      "elements": 3,
+      "pre_clauses": 8,
+      "post_clauses": 37,
+      "pre_tiers": {
+        "T4": 2,
+        "T3": 5,
+        "T1": 1
+      },
+      "post_tiers": {
+        "T1": 1,
+        "T3": 21,
+        "T4": 15
+      },
+      "pre_families": {
+        "null": 7,
+        "nat_ge0_guard": 1
+      },
+      "effective_pre_legacy2": 3,
+      "effective_pre_unified5": 3,
+      "substantive_pre_t4": 2,
+      "quantified_ratio": 1.0,
+      "amb_ratio_legacy": 0.0,
+      "amb_ratio_unified": 0.0,
+      "source": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M3_AI_DFD\\MES_M3_L1.json",
+      "I4_legacy2": 1.0,
+      "I4_unified5": 1.0,
+      "I4_strictT4": 0.867
+    },
+    {
+      "model": "M4",
+      "level": "L0",
+      "elements": 7,
+      "pre_clauses": 24,
+      "post_clauses": 117,
+      "pre_tiers": {
+        "T1": 23,
+        "T3": 1
+      },
+      "post_tiers": {
+        "T1": 22,
+        "T4": 83,
+        "T3": 12
+      },
+      "pre_families": {
+        "null_guard": 23,
+        "null": 1
+      },
+      "effective_pre_legacy2": 1,
+      "effective_pre_unified5": 1,
+      "substantive_pre_t4": 0,
+      "quantified_ratio": 0.8571,
+      "amb_ratio_legacy": 0.0,
+      "amb_ratio_unified": 0.0,
+      "source": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M4_AI_UML\\MES_M4_L0.json",
+      "I4_legacy2": 0.614,
+      "I4_unified5": 0.614,
+      "I4_strictT4": 0.557
+    },
+    {
+      "model": "M4",
+      "level": "L1",
+      "elements": 7,
+      "pre_clauses": 9,
+      "post_clauses": 61,
+      "pre_tiers": {
+        "T1": 8,
+        "T4": 1
+      },
+      "post_tiers": {
+        "T1": 4,
+        "T3": 8,
+        "T4": 49
+      },
+      "pre_families": {
+        "null_guard": 8,
+        "null": 1
+      },
+      "effective_pre_legacy2": 1,
+      "effective_pre_unified5": 1,
+      "substantive_pre_t4": 1,
+      "quantified_ratio": 0.4286,
+      "amb_ratio_legacy": 0.0,
+      "amb_ratio_unified": 0.0,
+      "source": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M4_AI_UML\\MES_M4_L1.json",
+      "I4_legacy2": 0.486,
+      "I4_unified5": 0.486,
+      "I4_strictT4": 0.486
+    },
+    {
+      "model": "M5",
+      "level": "L1",
+      "elements": 35,
+      "pre_clauses": 46,
+      "post_clauses": 105,
+      "pre_tiers": {
+        "T2b": 6,
+        "T3": 19,
+        "T4": 21
+      },
+      "post_tiers": {
+        "T4": 85,
+        "T3": 15,
+        "T2b": 5
+      },
+      "pre_families": {
+        "null": 46
+      },
+      "effective_pre_legacy2": 27,
+      "effective_pre_unified5": 27,
+      "substantive_pre_t4": 18,
+      "quantified_ratio": 0.5429,
+      "amb_ratio_legacy": 0.0,
+      "amb_ratio_unified": 0.0,
+      "source": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M5_AI_StateMachine\\MES_M5_L1.json",
+      "I4_legacy2": 0.771,
+      "I4_unified5": 0.771,
+      "I4_strictT4": 0.669
+    }
+  ],
+  "weight_sensitivity": {
+    "legacy2": [
+      {
+        "weights": [
+          0.4,
+          0.3,
+          0.3
+        ],
+        "values": {
+          "M1_L0": 0.9143,
+          "M1_L1": 0.8,
+          "M1.1_L0": 0.9143,
+          "M1.1_L1": 0.8,
+          "M2_L0": 0.5571,
+          "M2_L1": 0.6,
+          "M3_L0": 0.8714,
+          "M3_L1": 1.0,
+          "M4_L0": 0.6143,
+          "M4_L1": 0.4857,
+          "M5_L1": 0.7714
+        }
+      },
+      {
+        "weights": [
+          0.2,
+          0.4,
+          0.4
+        ],
+        "values": {
+          "M1_L0": 0.8857,
+          "M1_L1": 0.7333,
+          "M1.1_L0": 0.8857,
+          "M1.1_L1": 0.7333,
+          "M2_L0": 0.7428,
+          "M2_L1": 0.8,
+          "M3_L0": 0.8286,
+          "M3_L1": 1.0,
+          "M4_L0": 0.7714,
+          "M4_L1": 0.6,
+          "M5_L1": 0.7714
+        }
+      },
+      {
+        "weights": [
+          0.6,
+          0.2,
+          0.2
+        ],
+        "values": {
+          "M1_L0": 0.9429,
+          "M1_L1": 0.8667,
+          "M1.1_L0": 0.9429,
+          "M1.1_L1": 0.8667,
+          "M2_L0": 0.3714,
+          "M2_L1": 0.4,
+          "M3_L0": 0.9143,
+          "M3_L1": 1.0,
+          "M4_L0": 0.4571,
+          "M4_L1": 0.3714,
+          "M5_L1": 0.7714
+        }
+      },
+      {
+        "weights": [
+          0.5,
+          0.25,
+          0.25
+        ],
+        "values": {
+          "M1_L0": 0.9286,
+          "M1_L1": 0.8333,
+          "M1.1_L0": 0.9286,
+          "M1.1_L1": 0.8333,
+          "M2_L0": 0.4643,
+          "M2_L1": 0.5,
+          "M3_L0": 0.8929,
+          "M3_L1": 1.0,
+          "M4_L0": 0.5357,
+          "M4_L1": 0.4286,
+          "M5_L1": 0.7714
+        }
+      },
+      {
+        "weights": [
+          0.33,
+          0.33,
+          0.34
+        ],
+        "values": {
+          "M1_L0": 0.9057,
+          "M1_L1": 0.78,
+          "M1.1_L0": 0.9057,
+          "M1.1_L1": 0.78,
+          "M2_L0": 0.6228,
+          "M2_L1": 0.67,
+          "M3_L0": 0.8586,
+          "M3_L1": 1.0,
+          "M4_L0": 0.67,
+          "M4_L1": 0.5286,
+          "M5_L1": 0.7737
+        }
+      },
+      {
+        "weights": [
+          0.25,
+          0.5,
+          0.25
+        ],
+        "values": {
+          "M1_L0": 0.8572,
+          "M1_L1": 0.6666,
+          "M1.1_L0": 0.8572,
+          "M1.1_L1": 0.6666,
+          "M2_L0": 0.6785,
+          "M2_L1": 0.75,
+          "M3_L0": 0.7857,
+          "M3_L1": 1.0,
+          "M4_L0": 0.7143,
+          "M4_L1": 0.5,
+          "M5_L1": 0.7143
+        }
+      },
+      {
+        "weights": [
+          0.5,
+          0.5,
+          0.0
+        ],
+        "values": {
+          "M1_L0": 0.8572,
+          "M1_L1": 0.6666,
+          "M1.1_L0": 0.8572,
+          "M1.1_L1": 0.6666,
+          "M2_L0": 0.4285,
+          "M2_L1": 0.5,
+          "M3_L0": 0.7857,
+          "M3_L1": 1.0,
+          "M4_L0": 0.5,
+          "M4_L1": 0.2857,
+          "M5_L1": 0.6572
+        }
+      },
+      {
+        "weights": [
+          0.34,
+          0.33,
+          0.33
+        ],
+        "values": {
+          "M1_L0": 0.9057,
+          "M1_L1": 0.78,
+          "M1.1_L0": 0.9057,
+          "M1.1_L1": 0.78,
+          "M2_L0": 0.6128,
+          "M2_L1": 0.66,
+          "M3_L0": 0.8586,
+          "M3_L1": 1.0,
+          "M4_L0": 0.6614,
+          "M4_L1": 0.52,
+          "M5_L1": 0.7714
+        }
+      }
+    ],
+    "unified5": [
+      {
+        "weights": [
+          0.4,
+          0.3,
+          0.3
+        ],
+        "values": {
+          "M1_L0": 0.9143,
+          "M1_L1": 0.8,
+          "M1.1_L0": 0.9143,
+          "M1.1_L1": 0.8,
+          "M2_L0": 0.5571,
+          "M2_L1": 0.6,
+          "M3_L0": 0.8714,
+          "M3_L1": 1.0,
+          "M4_L0": 0.6143,
+          "M4_L1": 0.4857,
+          "M5_L1": 0.7714
+        }
+      },
+      {
+        "weights": [
+          0.2,
+          0.4,
+          0.4
+        ],
+        "values": {
+          "M1_L0": 0.8857,
+          "M1_L1": 0.7333,
+          "M1.1_L0": 0.8857,
+          "M1.1_L1": 0.7333,
+          "M2_L0": 0.7428,
+          "M2_L1": 0.8,
+          "M3_L0": 0.8286,
+          "M3_L1": 1.0,
+          "M4_L0": 0.7714,
+          "M4_L1": 0.6,
+          "M5_L1": 0.7714
+        }
+      },
+      {
+        "weights": [
+          0.6,
+          0.2,
+          0.2
+        ],
+        "values": {
+          "M1_L0": 0.9429,
+          "M1_L1": 0.8667,
+          "M1.1_L0": 0.9429,
+          "M1.1_L1": 0.8667,
+          "M2_L0": 0.3714,
+          "M2_L1": 0.4,
+          "M3_L0": 0.9143,
+          "M3_L1": 1.0,
+          "M4_L0": 0.4571,
+          "M4_L1": 0.3714,
+          "M5_L1": 0.7714
+        }
+      },
+      {
+        "weights": [
+          0.5,
+          0.25,
+          0.25
+        ],
+        "values": {
+          "M1_L0": 0.9286,
+          "M1_L1": 0.8333,
+          "M1.1_L0": 0.9286,
+          "M1.1_L1": 0.8333,
+          "M2_L0": 0.4643,
+          "M2_L1": 0.5,
+          "M3_L0": 0.8929,
+          "M3_L1": 1.0,
+          "M4_L0": 0.5357,
+          "M4_L1": 0.4286,
+          "M5_L1": 0.7714
+        }
+      },
+      {
+        "weights": [
+          0.33,
+          0.33,
+          0.34
+        ],
+        "values": {
+          "M1_L0": 0.9057,
+          "M1_L1": 0.78,
+          "M1.1_L0": 0.9057,
+          "M1.1_L1": 0.78,
+          "M2_L0": 0.6228,
+          "M2_L1": 0.67,
+          "M3_L0": 0.8586,
+          "M3_L1": 1.0,
+          "M4_L0": 0.67,
+          "M4_L1": 0.5286,
+          "M5_L1": 0.7737
+        }
+      },
+      {
+        "weights": [
+          0.25,
+          0.5,
+          0.25
+        ],
+        "values": {
+          "M1_L0": 0.8572,
+          "M1_L1": 0.6666,
+          "M1.1_L0": 0.8572,
+          "M1.1_L1": 0.6666,
+          "M2_L0": 0.6785,
+          "M2_L1": 0.75,
+          "M3_L0": 0.7857,
+          "M3_L1": 1.0,
+          "M4_L0": 0.7143,
+          "M4_L1": 0.5,
+          "M5_L1": 0.7143
+        }
+      },
+      {
+        "weights": [
+          0.5,
+          0.5,
+          0.0
+        ],
+        "values": {
+          "M1_L0": 0.8572,
+          "M1_L1": 0.6666,
+          "M1.1_L0": 0.8572,
+          "M1.1_L1": 0.6666,
+          "M2_L0": 0.4285,
+          "M2_L1": 0.5,
+          "M3_L0": 0.7857,
+          "M3_L1": 1.0,
+          "M4_L0": 0.5,
+          "M4_L1": 0.2857,
+          "M5_L1": 0.6572
+        }
+      },
+      {
+        "weights": [
+          0.34,
+          0.33,
+          0.33
+        ],
+        "values": {
+          "M1_L0": 0.9057,
+          "M1_L1": 0.78,
+          "M1.1_L0": 0.9057,
+          "M1.1_L1": 0.78,
+          "M2_L0": 0.6128,
+          "M2_L1": 0.66,
+          "M3_L0": 0.8586,
+          "M3_L1": 1.0,
+          "M4_L0": 0.6614,
+          "M4_L1": 0.52,
+          "M5_L1": 0.7714
+        }
+      }
+    ],
+    "strictT4": [
+      {
+        "weights": [
+          0.4,
+          0.3,
+          0.3
+        ],
+        "values": {
+          "M1_L0": 0.5143,
+          "M1_L1": 0.5333,
+          "M1.1_L0": 0.5143,
+          "M1.1_L1": 0.5333,
+          "M2_L0": 0.5571,
+          "M2_L1": 0.6,
+          "M3_L0": 0.7,
+          "M3_L1": 0.8667,
+          "M4_L0": 0.5571,
+          "M4_L1": 0.4857,
+          "M5_L1": 0.6686
+        }
+      },
+      {
+        "weights": [
+          0.2,
+          0.4,
+          0.4
+        ],
+        "values": {
+          "M1_L0": 0.6857,
+          "M1_L1": 0.6,
+          "M1.1_L0": 0.6857,
+          "M1.1_L1": 0.6,
+          "M2_L0": 0.7428,
+          "M2_L1": 0.8,
+          "M3_L0": 0.7428,
+          "M3_L1": 0.9333,
+          "M4_L0": 0.7428,
+          "M4_L1": 0.6,
+          "M5_L1": 0.72
+        }
+      },
+      {
+        "weights": [
+          0.6,
+          0.2,
+          0.2
+        ],
+        "values": {
+          "M1_L0": 0.3429,
+          "M1_L1": 0.4667,
+          "M1.1_L0": 0.3429,
+          "M1.1_L1": 0.4667,
+          "M2_L0": 0.3714,
+          "M2_L1": 0.4,
+          "M3_L0": 0.6571,
+          "M3_L1": 0.8,
+          "M4_L0": 0.3714,
+          "M4_L1": 0.3714,
+          "M5_L1": 0.6172
+        }
+      },
+      {
+        "weights": [
+          0.5,
+          0.25,
+          0.25
+        ],
+        "values": {
+          "M1_L0": 0.4286,
+          "M1_L1": 0.5,
+          "M1.1_L0": 0.4286,
+          "M1.1_L1": 0.5,
+          "M2_L0": 0.4643,
+          "M2_L1": 0.5,
+          "M3_L0": 0.6786,
+          "M3_L1": 0.8333,
+          "M4_L0": 0.4643,
+          "M4_L1": 0.4286,
+          "M5_L1": 0.6429
+        }
+      },
+      {
+        "weights": [
+          0.33,
+          0.33,
+          0.34
+        ],
+        "values": {
+          "M1_L0": 0.5757,
+          "M1_L1": 0.56,
+          "M1.1_L0": 0.5757,
+          "M1.1_L1": 0.56,
+          "M2_L0": 0.6228,
+          "M2_L1": 0.67,
+          "M3_L0": 0.7171,
+          "M3_L1": 0.89,
+          "M4_L0": 0.6228,
+          "M4_L1": 0.5286,
+          "M5_L1": 0.6889
+        }
+      },
+      {
+        "weights": [
+          0.25,
+          0.5,
+          0.25
+        ],
+        "values": {
+          "M1_L0": 0.6072,
+          "M1_L1": 0.5,
+          "M1.1_L0": 0.6072,
+          "M1.1_L1": 0.5,
+          "M2_L0": 0.6785,
+          "M2_L1": 0.75,
+          "M3_L0": 0.6786,
+          "M3_L1": 0.9167,
+          "M4_L0": 0.6785,
+          "M4_L1": 0.5,
+          "M5_L1": 0.65
+        }
+      },
+      {
+        "weights": [
+          0.5,
+          0.5,
+          0.0
+        ],
+        "values": {
+          "M1_L0": 0.3572,
+          "M1_L1": 0.3333,
+          "M1.1_L0": 0.3572,
+          "M1.1_L1": 0.3333,
+          "M2_L0": 0.4285,
+          "M2_L1": 0.5,
+          "M3_L0": 0.5714,
+          "M3_L1": 0.8333,
+          "M4_L0": 0.4285,
+          "M4_L1": 0.2857,
+          "M5_L1": 0.5286
+        }
+      },
+      {
+        "weights": [
+          0.34,
+          0.33,
+          0.33
+        ],
+        "values": {
+          "M1_L0": 0.5657,
+          "M1_L1": 0.5533,
+          "M1.1_L0": 0.5657,
+          "M1.1_L1": 0.5533,
+          "M2_L0": 0.6128,
+          "M2_L1": 0.66,
+          "M3_L0": 0.7128,
+          "M3_L1": 0.8867,
+          "M4_L0": 0.6128,
+          "M4_L1": 0.52,
+          "M5_L1": 0.684
+        }
+      }
+    ]
+  },
+  "ordering_stability": {
+    "legacy2": {
+      "M2_L1_gt_M4_L1": true,
+      "M1_L0_gt_M3_L0": true,
+      "M1_L1_gt_M4_L1": true
+    },
+    "unified5": {
+      "M2_L1_gt_M4_L1": true,
+      "M1_L0_gt_M3_L0": true,
+      "M1_L1_gt_M4_L1": true
+    },
+    "strictT4": {
+      "M2_L1_gt_M4_L1": true,
+      "M1_L0_gt_M3_L0": true,
+      "M1_L1_gt_M4_L1": false
+    }
+  },
+  "source_conditions": [
+    {
+      "label": "M1 人工基准",
+      "processes": 10,
+      "pre": 29,
+      "post": 79,
+      "pre_tiers": {
+        "T1": 0,
+        "T2a": 0,
+        "T2b": 2,
+        "T3": 26,
+        "T4": 1
+      },
+      "post_tiers": {
+        "T1": 11,
+        "T2a": 0,
+        "T2b": 0,
+        "T3": 30,
+        "T4": 38
+      },
+      "families": {
+        "null": 29
+      },
+      "effective_pre": 10,
+      "substantive_pre": 1,
+      "vacuous_rate_pre": 0.0,
+      "vacuous_rate_all": 0.1019
+    },
+    {
+      "label": "M2 MiniMax 无禁令",
+      "processes": 10,
+      "pre": 37,
+      "post": 146,
+      "pre_tiers": {
+        "T1": 37,
+        "T2a": 0,
+        "T2b": 0,
+        "T3": 0,
+        "T4": 0
+      },
+      "post_tiers": {
+        "T1": 55,
+        "T2a": 0,
+        "T2b": 0,
+        "T3": 36,
+        "T4": 55
+      },
+      "families": {
+        "null_guard": 37
+      },
+      "effective_pre": 0,
+      "substantive_pre": 0,
+      "vacuous_rate_pre": 1.0,
+      "vacuous_rate_all": 0.5027
+    },
+    {
+      "label": "A1 MiniMax+单点禁令",
+      "processes": 10,
+      "pre": 36,
+      "post": 144,
+      "pre_tiers": {
+        "T3": 26,
+        "T2a": 5,
+        "T1": 4,
+        "T4": 1
+      },
+      "post_tiers": {
+        "T1": 14,
+        "T4": 90,
+        "T3": 40
+      },
+      "families": {
+        "null": 32,
+        "nat_ge0_guard": 4
+      },
+      "effective_pre": 10,
+      "substantive_pre": 1,
+      "vacuous_rate_pre": 0.1111,
+      "vacuous_rate_all": 0.1
+    },
+    {
+      "label": "A2 MiniMax+单点禁令",
+      "processes": 10,
+      "pre": 44,
+      "post": 127,
+      "pre_tiers": {
+        "T3": 29,
+        "T2a": 5,
+        "T1": 3,
+        "T4": 4,
+        "T2b": 3
+      },
+      "post_tiers": {
+        "T1": 1,
+        "T3": 33,
+        "T2b": 9,
+        "T4": 84
+      },
+      "families": {
+        "null": 41,
+        "nat_ge0_guard": 3
+      },
+      "effective_pre": 10,
+      "substantive_pre": 3,
+      "vacuous_rate_pre": 0.0682,
+      "vacuous_rate_all": 0.0234
+    },
+    {
+      "label": "B1 Hunyuan 无禁令",
+      "processes": 10,
+      "pre": 34,
+      "post": 156,
+      "pre_tiers": {
+        "T1": 34
+      },
+      "post_tiers": {
+        "T2a": 3,
+        "T3": 34,
+        "T4": 102,
+        "T1": 17
+      },
+      "families": {
+        "selfeq_guard": 34
+      },
+      "effective_pre": 0,
+      "substantive_pre": 0,
+      "vacuous_rate_pre": 1.0,
+      "vacuous_rate_all": 0.2684
+    },
+    {
+      "label": "B2 Hunyuan 无禁令",
+      "processes": 10,
+      "pre": 42,
+      "post": 115,
+      "pre_tiers": {
+        "T2b": 39,
+        "T1": 2,
+        "T3": 1
+      },
+      "post_tiers": {
+        "T2b": 35,
+        "T1": 8,
+        "T4": 51,
+        "T3": 21
+      },
+      "families": {
+        "null": 40,
+        "nat_ge0_guard": 1,
+        "empty_guard": 1
+      },
+      "effective_pre": 10,
+      "substantive_pre": 0,
+      "vacuous_rate_pre": 0.0476,
+      "vacuous_rate_all": 0.0637
+    },
+    {
+      "label": "C1 Hunyuan+单点禁令",
+      "processes": 10,
+      "pre": 40,
+      "post": 170,
+      "pre_tiers": {
+        "T2a": 5,
+        "T3": 23,
+        "T1": 9,
+        "T4": 3
+      },
+      "post_tiers": {
+        "T2a": 7,
+        "T1": 5,
+        "T3": 47,
+        "T4": 111
+      },
+      "families": {
+        "null": 31,
+        "nat_ge0_guard": 4,
+        "empty_guard": 5
+      },
+      "effective_pre": 10,
+      "substantive_pre": 3,
+      "vacuous_rate_pre": 0.225,
+      "vacuous_rate_all": 0.0667
+    },
+    {
+      "label": "D1 MiniMax+泛禁令",
+      "processes": 10,
+      "pre": 38,
+      "post": 130,
+      "pre_tiers": {
+        "T3": 5,
+        "T2a": 5,
+        "T2b": 28
+      },
+      "post_tiers": {
+        "T2b": 27,
+        "T2a": 1,
+        "T4": 79,
+        "T3": 23
+      },
+      "families": {
+        "null": 38
+      },
+      "effective_pre": 10,
+      "substantive_pre": 0,
+      "vacuous_rate_pre": 0.0,
+      "vacuous_rate_all": 0.0
+    },
+    {
+      "label": "D2 Hunyuan+泛禁令",
+      "processes": 10,
+      "pre": 32,
+      "post": 171,
+      "pre_tiers": {
+        "T2a": 5,
+        "T3": 24,
+        "T4": 3
+      },
+      "post_tiers": {
+        "T2a": 9,
+        "T4": 113,
+        "T3": 49
+      },
+      "families": {
+        "null": 32
+      },
+      "effective_pre": 10,
+      "substantive_pre": 3,
+      "vacuous_rate_pre": 0.0,
+      "vacuous_rate_all": 0.0
+    },
+    {
+      "label": "B3 MiniMax无禁令(当前)",
+      "processes": 10,
+      "pre": 98,
+      "post": 398,
+      "pre_tiers": {
+        "T2b": 1,
+        "T2a": 2,
+        "T1": 95
+      },
+      "post_tiers": {
+        "T1": 30,
+        "T4": 294,
+        "T3": 74
+      },
+      "families": {
+        "null": 3,
+        "null_guard": 95
+      },
+      "effective_pre": 1,
+      "substantive_pre": 0,
+      "vacuous_rate_pre": 0.9694,
+      "vacuous_rate_all": 0.252
+    },
+    {
+      "label": "B4 MiniMax无禁令(当前)",
+      "processes": 10,
+      "pre": 31,
+      "post": 246,
+      "pre_tiers": {
+        "T3": 30,
+        "T1": 1
+      },
+      "post_tiers": {
+        "T3": 105,
+        "T4": 135,
+        "T1": 6
+      },
+      "families": {
+        "null": 30,
+        "nat_ge0_guard": 1
+      },
+      "effective_pre": 10,
+      "substantive_pre": 0,
+      "vacuous_rate_pre": 0.0323,
+      "vacuous_rate_all": 0.0253
+    }
+  ],
+  "crosscheck_vs_table_vii_c": {
+    "compared": 11,
+    "diffs": [],
+    "identical": true
+  }
+}

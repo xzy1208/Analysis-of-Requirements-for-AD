@@ -1,0 +1,453 @@
+{
+  "model_id": "M1",
+  "model_title": "Human-modelled SOFL baseline",
+  "level": "L1",
+  "parent_module": "System",
+  "provenance": {
+    "producer": "human",
+    "llm_family": null,
+    "generation_date": "2026-11-17",
+    "passes": 1,
+    "prompt_summary": "manual modelling with SOFL supporting tool from NL-RQ-ADAS-v1",
+    "self_review_performed": false
+  },
+  "elements": [
+    {
+      "id": "ComputeTTC",
+      "kind": "function",
+      "name": "ComputeTTC",
+      "responsibility": "Compute TTC for each predicted object and report the minimum TTC with the number of objects; report count 0 when no object is considered.",
+      "inputs": [
+        {
+          "name": "predicted_trajectories",
+          "source": ""
+        },
+        {
+          "name": "ego_state",
+          "source": ""
+        }
+      ],
+      "outputs": [
+        {
+          "name": "ttc_values",
+          "consumers": []
+        }
+      ],
+      "stores_read": [],
+      "stores_written": [],
+      "preconditions": [
+        "predicted_trajectories.min_ttc>=0 and ego_state.speed>=0"
+      ],
+      "postconditions": [
+        {
+          "guard": "true",
+          "effect": "ttc_values.min_ttc>=0"
+        },
+        {
+          "guard": "predicted_trajectories.count=0",
+          "effect": "ttc_values.count=0"
+        },
+        {
+          "guard": "predicted_trajectories.count>0",
+          "effect": "ttc_values.count=predicted_trajectories.count and ttc_values.min_ttc<=predicted_trajectories.min_ttc"
+        }
+      ],
+      "quantified": false,
+      "invariants": [],
+      "notes": "extracted from validated SOFL artifacts",
+      "level": "L1",
+      "parent_module": "System"
+    },
+    {
+      "id": "ClassifyRisk",
+      "kind": "function",
+      "name": "ClassifyRisk",
+      "responsibility": "Classify risk by minimum TTC into no risk (>3.0 s), caution (1.5-3.0 s) and critical (<=1.5 s); raise warning for caution and critical.",
+      "inputs": [
+        {
+          "name": "ttc_values",
+          "source": ""
+        },
+        {
+          "name": "traffic_rules",
+          "source": ""
+        }
+      ],
+      "outputs": [
+        {
+          "name": "risk_level",
+          "consumers": []
+        },
+        {
+          "name": "warning",
+          "consumers": []
+        }
+      ],
+      "stores_read": [],
+      "stores_written": [],
+      "preconditions": [
+        "ttc_values.min_ttc>=0 and traffic_rules.speed_limit>0"
+      ],
+      "postconditions": [
+        {
+          "guard": "true",
+          "effect": "risk_level.risk_value>=0"
+        },
+        {
+          "guard": "ttc_values.min_ttc>3.0",
+          "effect": "risk_level.risk_type=0 and warning.warn_active=0"
+        },
+        {
+          "guard": "ttc_values.min_ttc<=3.0 and ttc_values.min_ttc>1.5",
+          "effect": "risk_level.risk_type=1 and warning.warn_active=1"
+        },
+        {
+          "guard": "ttc_values.min_ttc<=1.5",
+          "effect": "risk_level.risk_type=2 and warning.warn_active=1"
+        }
+      ],
+      "quantified": false,
+      "invariants": [],
+      "notes": "extracted from validated SOFL artifacts",
+      "level": "L1",
+      "parent_module": "System"
+    },
+    {
+      "id": "PlanManeuver",
+      "kind": "function",
+      "name": "PlanManeuver",
+      "responsibility": "Produce cruise for no risk, deceleration for caution, and emergency deceleration (>=6.0 m/s2, target speed 0) for critical; driver acceleration request cannot override emergency braking.",
+      "inputs": [
+        {
+          "name": "risk_level",
+          "source": ""
+        },
+        {
+          "name": "ego_state",
+          "source": ""
+        },
+        {
+          "name": "driver_intent",
+          "source": ""
+        },
+        {
+          "name": "route",
+          "source": ""
+        },
+        {
+          "name": "map_data",
+          "source": ""
+        }
+      ],
+      "outputs": [
+        {
+          "name": "maneuver",
+          "consumers": []
+        }
+      ],
+      "stores_read": [],
+      "stores_written": [],
+      "preconditions": [
+        "risk_level.risk_value>=0 and ego_state.speed>=0 and driver_intent.cruise_speed>=0 and route.path_length>0 and map_data.speed_limit>=0"
+      ],
+      "postconditions": [
+        {
+          "guard": "true",
+          "effect": "maneuver.target_speed>=0 and maneuver.decel_req>=0"
+        },
+        {
+          "guard": "risk_level.risk_type=0",
+          "effect": "maneuver.maneuver_type=1 and maneuver.target_speed<=map_data.speed_limit"
+        },
+        {
+          "guard": "risk_level.risk_type=1",
+          "effect": "maneuver.maneuver_type=2 and maneuver.decel_req>0"
+        },
+        {
+          "guard": "risk_level.risk_type=2",
+          "effect": "maneuver.maneuver_type=3 and maneuver.decel_req>=6.0 and maneuver.target_speed=0"
+        },
+        {
+          "guard": "driver_intent.intent_type=2 and risk_level.risk_type<2",
+          "effect": "maneuver.maneuver_type=1"
+        }
+      ],
+      "quantified": true,
+      "invariants": [],
+      "notes": "extracted from validated SOFL artifacts",
+      "level": "L1",
+      "parent_module": "System"
+    }
+  ],
+  "stores": [],
+  "externals": [
+    {
+      "id": "E_predicted_trajectories",
+      "name": "predicted_trajectories",
+      "direction": "in",
+      "content": [],
+      "consumers": [
+        "ComputeTTC"
+      ]
+    },
+    {
+      "id": "E_ego_state",
+      "name": "ego_state",
+      "direction": "in",
+      "content": [],
+      "consumers": [
+        "ComputeTTC",
+        "PlanManeuver"
+      ]
+    },
+    {
+      "id": "E_traffic_rules",
+      "name": "traffic_rules",
+      "direction": "in",
+      "content": [],
+      "consumers": [
+        "ClassifyRisk"
+      ]
+    },
+    {
+      "id": "E3",
+      "name": "driver_intent",
+      "direction": "in",
+      "content": [],
+      "consumers": [
+        "PlanManeuver"
+      ]
+    },
+    {
+      "id": "E_route",
+      "name": "route",
+      "direction": "in",
+      "content": [],
+      "consumers": [
+        "PlanManeuver"
+      ]
+    },
+    {
+      "id": "E_map_data",
+      "name": "map_data",
+      "direction": "in",
+      "content": [],
+      "consumers": [
+        "PlanManeuver"
+      ]
+    },
+    {
+      "id": "E_OUT_warning",
+      "name": "warning",
+      "direction": "out",
+      "content": [],
+      "consumers": []
+    },
+    {
+      "id": "E_OUT_maneuver",
+      "name": "maneuver",
+      "direction": "out",
+      "content": [],
+      "consumers": []
+    }
+  ],
+  "flows": [
+    {
+      "name": "predicted_trajectories",
+      "producer": "predicted_trajectories",
+      "consumer": "ComputeTTC",
+      "kind": "active",
+      "carries": [
+        "predicted_trajectories"
+      ]
+    },
+    {
+      "name": "ego_state",
+      "producer": "ego_state",
+      "consumer": "ComputeTTC",
+      "kind": "active",
+      "carries": [
+        "ego_state"
+      ]
+    },
+    {
+      "name": "ego_state",
+      "producer": "ego_state",
+      "consumer": "PlanManeuver",
+      "kind": "active",
+      "carries": [
+        "ego_state"
+      ]
+    },
+    {
+      "name": "driver_intent",
+      "producer": "driver_intent",
+      "consumer": "PlanManeuver",
+      "kind": "active",
+      "carries": [
+        "driver_intent"
+      ]
+    },
+    {
+      "name": "route",
+      "producer": "route",
+      "consumer": "PlanManeuver",
+      "kind": "active",
+      "carries": [
+        "route"
+      ]
+    },
+    {
+      "name": "map_data",
+      "producer": "map_data",
+      "consumer": "PlanManeuver",
+      "kind": "active",
+      "carries": [
+        "map_data"
+      ]
+    },
+    {
+      "name": "risk_level",
+      "producer": "risk_level",
+      "consumer": "PlanManeuver",
+      "kind": "active",
+      "carries": [
+        "risk_level"
+      ]
+    },
+    {
+      "name": "traffic_rules",
+      "producer": "traffic_rules",
+      "consumer": "ClassifyRisk",
+      "kind": "active",
+      "carries": [
+        "traffic_rules"
+      ]
+    },
+    {
+      "name": "ttc_values",
+      "producer": "ttc_values",
+      "consumer": "ClassifyRisk",
+      "kind": "active",
+      "carries": [
+        "ttc_values"
+      ]
+    },
+    {
+      "name": "ttc_values",
+      "producer": "ComputeTTC",
+      "consumer": "ttc_values",
+      "kind": "active",
+      "carries": [
+        "ttc_values"
+      ]
+    },
+    {
+      "name": "risk_level",
+      "producer": "ClassifyRisk",
+      "consumer": "risk_level",
+      "kind": "active",
+      "carries": [
+        "risk_level"
+      ]
+    },
+    {
+      "name": "warning",
+      "producer": "ClassifyRisk",
+      "consumer": "warning",
+      "kind": "active",
+      "carries": [
+        "warning"
+      ]
+    },
+    {
+      "name": "maneuver",
+      "producer": "PlanManeuver",
+      "consumer": "maneuver",
+      "kind": "active",
+      "carries": [
+        "maneuver"
+      ]
+    }
+  ],
+  "traceability": [
+    {
+      "requirement": "F-ComputeTTC",
+      "elements": [
+        "ComputeTTC"
+      ],
+      "realised_by": "process contract",
+      "note": "pre/post in fModule; clause realisation verified by validate_sofl_model.py"
+    },
+    {
+      "requirement": "F-ClassifyRisk",
+      "elements": [
+        "ClassifyRisk"
+      ],
+      "realised_by": "process contract",
+      "note": "pre/post in fModule; clause realisation verified by validate_sofl_model.py"
+    },
+    {
+      "requirement": "F-PlanManeuver",
+      "elements": [
+        "PlanManeuver"
+      ],
+      "realised_by": "process contract",
+      "note": "pre/post in fModule; clause realisation verified by validate_sofl_model.py"
+    },
+    {
+      "requirement": "N-2",
+      "elements": [],
+      "realised_by": "threshold in postconditions",
+      "note": "threshold 1.5 appears in the validated fModule"
+    },
+    {
+      "requirement": "A-1",
+      "elements": [],
+      "realised_by": "threshold in postconditions",
+      "note": "threshold 6.0 appears in the validated fModule"
+    },
+    {
+      "requirement": "A-5",
+      "elements": [],
+      "realised_by": "threshold in postconditions",
+      "note": "threshold 3.0 appears in the validated fModule"
+    },
+    {
+      "requirement": "A-3",
+      "elements": [],
+      "realised_by": "threshold in postconditions",
+      "note": "threshold 3.0 appears in the validated fModule"
+    }
+  ],
+  "open_issues": [
+    {
+      "id": "OI-1",
+      "issue": "Seven-function split sufficient for L2 handover",
+      "related_requirement": "R-SCOPE-1",
+      "impact": "medium",
+      "note": "no separate driver-monitoring function was introduced"
+    },
+    {
+      "id": "OI-2",
+      "issue": "D3 written by F1 but read by F6/F7",
+      "related_requirement": "R-D-1",
+      "impact": "low",
+      "note": "ownership accepted"
+    },
+    {
+      "id": "OI-3",
+      "issue": "No explicit cycle-time requirement in the spec",
+      "related_requirement": "N-2",
+      "impact": "medium",
+      "note": "timing left out of model"
+    },
+    {
+      "id": "OI-4",
+      "issue": "AEB branch chosen as Level-1 refinement",
+      "related_requirement": "R-L1-1",
+      "impact": "low",
+      "note": "alternative F6/F7 chain not modelled"
+    }
+  ]
+}

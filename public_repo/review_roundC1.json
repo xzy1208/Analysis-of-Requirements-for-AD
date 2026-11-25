@@ -1,0 +1,209 @@
+{
+  "reviewer": "DeepSeek-v4-pro",
+  "reviews": [
+    {
+      "model": "M1",
+      "level": "L0",
+      "findings": [
+        {
+          "type": "omission",
+          "location": "元素列表 / F7 Safety Shield",
+          "detail": "规格 R-L0-1 要求 Level 0 恰好包含 F1–F7 七个功能；模型仅有 6 个元素（Perception_Localization, Prediction, Behavior_Planning, Motion_Planning, Control, Route_Planning），缺 F7 Safety Shield（监控/仲裁，输出 E8）。"
+        },
+        {
+          "type": "traceability",
+          "location": "追溯条目 / F-Safety_Shield",
+          "detail": "追溯表含 'F-Safety_Shield -> [Safety_Shield]'，但模型中不存在 id 为 Safety_Shield 的元素，条目悬空（R-G-2/R-G-3）。"
+        },
+        {
+          "type": "flow",
+          "location": "数据流 / E8 checked_cmd",
+          "detail": "externals 定义了 E_OUT_checked_cmd（E8），但 flows 中没有任何流产出 E8（缺 F7→E8），E8 无生产者；同时 F6 的 actuator_cmd 输出无下游消费者（缺 F6→F7），违反 R-E-2 的仲裁链。"
+        },
+        {
+          "type": "contradiction",
+          "location": "Behavior_Planning / postcondition [min_ttc<1.5]",
+          "detail": "emergency 分支 maneuver.decel_req==2.0 与规格 §8 A-1（紧急减速度 6.0 m/s²）冲突；2.0 实为 A-2 的 a_max,accel 值，非 A-1 的 6.0。"
+        },
+        {
+          "type": "contradiction",
+          "location": "Motion_Planning / postcondition [maneuver.maneuver_type=3]",
+          "detail": "trajectory.max_accel<=-2.0 将紧急减速度上界写为 2.0，与 A-1 的 6.0 m/s² 冲突。"
+        },
+        {
+          "type": "omission",
+          "location": "Perception_Localization / stores_written",
+          "detail": "F1 的 stores_written 仅含 Object_Track_DB（D2），漏写 Ego_State_DB（D3）；规格 §5 F1 明确须写 D2 与 D3，§5.1 也要求 'F1 writes D2 and D3'。"
+        },
+        {
+          "type": "omission",
+          "location": "stores / D1–D4 owner/writers/readers",
+          "detail": "四个 store 的 owner 均为空字符串、writers 与 readers 均为空数组，未实现 §4 与 R-D-1/R-D-2 要求的 owner function 与读写职责。"
+        },
+        {
+          "type": "flow",
+          "location": "flows / 多条 active 流 producer/consumer 悬空",
+          "detail": "大量 active 流的 producer/consumer 是数据名而非元素 id（如 'ego_pose: Perception_Localization -> ego_pose'、'raw_sensor_data: raw_sensor_data -> Perception_Localization'），producer 未指向 E1/E2 等真实外部接口，流的起止节点不可解析，违反 R-G-4。"
+        },
+        {
+          "type": "contradiction",
+          "location": "externals / 两个 id=E2",
+          "detail": "externals 数组存在两个 id='E2'（一个 name='ego_state' 指向 Ego_State_DB，一个 name='gnss_imu' 指向 Perception_Localization），id 重复，违反 MES schema 校验规则 1（id 唯一），且语义与 §3 的 E2=gnss_imu 冲突。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "Perception_Localization / responsibility 与 preconditions",
+          "detail": "responsibility 写作 '及时处理相关数据以提供合适输出'，precondition 写作 '输入应在适当时刻有效'，用 '及时/合适/适当' 模糊词替代 §5 F1 的精确约束（融合对象表、计算 ego state、写 D2/D3），违反 R-G-1。"
+        },
+        {
+          "type": "omission",
+          "location": "元素 inputs[].source 全部为空",
+          "detail": "所有元素的 inputs[].source 均为空字符串，未按 MES schema 标注生产者 spec id（E1–E9 / D1–D4 / 其他元素），输入来源无法追溯。"
+        }
+      ]
+    },
+    {
+      "model": "M3",
+      "level": "L0",
+      "findings": [
+        {
+          "type": "omission",
+          "location": "元素列表 / F4 Route Planning",
+          "detail": "模型仅有 6 个元素（F1, F2, F3, F5, F6, F7），缺 F4 Route Planning；R-L0-1 要求恰好 F1–F7 七个功能。F3 与 F5 的 route 输入 source 均指向不存在的 'F4'。"
+        },
+        {
+          "type": "flow",
+          "location": "数据流 / route（F4→F3, F4→F5）",
+          "detail": "F3 与 F5 均声明 route 为必需输入（§5.1 要求 F4→F3 与 F4→F5 的 route 流），但 flows 中不存在任何 route 流，前置条件引用的输入无对应具名流。"
+        },
+        {
+          "type": "traceability",
+          "location": "追溯条目 / F4",
+          "detail": "追溯表含 'F4 -> [F4]'，但 F4 元素不存在，条目悬空。"
+        },
+        {
+          "type": "traceability",
+          "location": "追溯条目 / R-L1-1、R-SCOPE-4",
+          "detail": "R-L1-1 -> [F3.1,F3.2,F3.3] 与 R-SCOPE-4 -> [F3,F3.1,F3.2,F3.3] 引用了 F3.1/F3.2/F3.3，这些是 Level 1 子元素，在 L0 模型文件中不存在（MES schema 校验规则 2 要求 elements 引用可解析 id）。"
+        },
+        {
+          "type": "condition",
+          "location": "F6 / postcondition",
+          "detail": "'actuator_cmd.steering <= 1.0 and actuator_cmd.steering == -1.0' 用 == -1.0 强制转向恒为 -1.0，而非 A-6 的双边包络 -1.0 <= steering <= 1.0；'== -1.0' 应为 '>= -1.0'。"
+        },
+        {
+          "type": "condition",
+          "location": "F7 / postcondition guard 'steering <= 1.0 and steering == -1.0'",
+          "detail": "同一 'steering == -1.0' 算子错误：A-6 的转向包络为 ±1.0，模型把下界写成相等关系，导致包络约束失效。"
+        },
+        {
+          "type": "condition",
+          "location": "F1 / invariant yaw_rate",
+          "detail": "invariant 'yaw_rate <= 3.5' 仅约束上界，漏掉 A-4 的双边包络下界 -3.5 rad/s（应为 -3.5 <= yaw_rate <= 3.5）。"
+        },
+        {
+          "type": "flow",
+          "location": "数据流 / F7 输入 actuator_cmd（E9→F7）",
+          "detail": "F7 声明 input actuator_cmd source='E9'，但 flows 中 actuator_cmd 是 'F6 -> E9'（boundary_out），缺 E9→F7 的具名流；且 E9 按 §3 direction 为 'in'，模型却建模为 boundary_out，方向与规格冲突（R-E-2 的仲裁链不完整）。"
+        }
+      ]
+    },
+    {
+      "model": "M4",
+      "level": "L0",
+      "findings": [
+        {
+          "type": "omission",
+          "location": "元素列表 / F4 Route Planning",
+          "detail": "模型仅有 6 个元素（F1, F2, F3, F5, F6, F7），缺 F4 Route Planning；R-L0-1 要求恰好 F1–F7。F3 与 F5 的 route 输入 source 均指向不存在的 'F4'。"
+        },
+        {
+          "type": "flow",
+          "location": "数据流 / route（F4→F3, F4→F5）",
+          "detail": "F3 与 F5 均声明 route 输入（§5.1 要求 F4→F3、F4→F5），但 flows 中不存在任何 route 流。"
+        },
+        {
+          "type": "traceability",
+          "location": "追溯条目 / R-SCOPE-1、R-L0-1、R-G-1 等",
+          "detail": "R-SCOPE-1、R-SCOPE-3、R-L0-1、R-G-1、R-G-2、R-G-4、R-G-5、R-G-6 等条目均将 F4 列入 elements，但 F4 元素不存在，多处追溯悬空。"
+        },
+        {
+          "type": "contradiction",
+          "location": "F3 / postcondition [risk_level='critical'] required_decel_ms2==2.0",
+          "detail": "紧急减速度写为 2.0 m/s²，与 §8 A-1（6.0 m/s²）冲突。"
+        },
+        {
+          "type": "contradiction",
+          "location": "F5 / postcondition [manoeuvre.risk_level='critical'] trajectory_decel_capability_ms2==2.0",
+          "detail": "紧急减速度写为 2.0，与 A-1 的 6.0 m/s² 冲突。"
+        },
+        {
+          "type": "contradiction",
+          "location": "F6 / postcondition accel_cmd_ms2==-2.0",
+          "detail": "制动侧包络用 -2.0 m/s²，与 A-1 的 6.0 m/s² 冲突；且 'accel_cmd_ms2 <= 3.0 and accel_cmd_ms2 == -2.0' 两条件并存，强制加速度恒为 -2.0，逻辑自相矛盾。"
+        },
+        {
+          "type": "contradiction",
+          "location": "F7 / postcondition checked_accel_cmd_ms2==-2.0、checked_brake_cmd_ms2<=2.0",
+          "detail": "F7 将紧急减速度上界设为 2.0 m/s²（checked_accel_cmd_ms2==-2.0、checked_brake_cmd_ms2<=2.0），与 A-1 的 6.0 m/s² 冲突，导致紧急制动永远无法达到规格要求。"
+        },
+        {
+          "type": "condition",
+          "location": "F7 / postcondition [dangerous_situation='true'] checked_brake_cmd_ms2==4.0",
+          "detail": "N-6 要求危险情况下以 '至少 a_min,brake' 制动（a_min,brake=4.0，即 >= 4.0），模型写成 == 4.0，把下界约束变成相等约束。"
+        },
+        {
+          "type": "condition",
+          "location": "F1 / postcondition ego_yaw_rate_rad_s",
+          "detail": "'ego_yaw_rate_rad_s <= 3.5 and ego_yaw_rate_rad_s == -3.5' 用 == -3.5 强制横摆率恒为 -3.5，A-4 的双边包络 ±3.5 rad/s 被写错。"
+        },
+        {
+          "type": "contradiction",
+          "location": "stores / D1 owner=E5、D4 owner=E6",
+          "detail": "D1 的 owner 设为 'E5'、D4 的 owner 设为 'E6'（外部接口），writers 亦为 E5/E6；但 §4 明确 D1 owner 为 F5/F1、D4 owner 为 F5，R-D-1 要求 store 只能由其 owner function 写入，外部接口不能作为 owner。"
+        }
+      ]
+    },
+    {
+      "model": "M5",
+      "level": "L1",
+      "findings": [
+        {
+          "type": "contradiction",
+          "location": "EmergencyBrake 状态 / invariant maneuver.deceleration == 2.0",
+          "detail": "紧急减速度用 2.0 m/s²，与 §8 A-1（6.0 m/s²）冲突；2.0 是 A-2 的 a_max,accel，非 A-1 的紧急减速度。"
+        },
+        {
+          "type": "contradiction",
+          "location": "T3 / postcondition maneuver.deceleration == 2.0",
+          "detail": "Caution→EmergencyBrake 的紧急减速度写为 2.0，与 A-1 的 6.0 m/s² 冲突。"
+        },
+        {
+          "type": "contradiction",
+          "location": "T13 / postcondition maneuver.deceleration == 2.0",
+          "detail": "DriverOverride→EmergencyBrake 的紧急减速度写为 2.0，与 A-1 的 6.0 m/s² 冲突。"
+        },
+        {
+          "type": "contradiction",
+          "location": "T20 / postcondition maneuver.deceleration == 2.0",
+          "detail": "FaultDegraded→EmergencyBrake 的紧急减速度写为 2.0，与 A-1 的 6.0 m/s² 冲突。"
+        },
+        {
+          "type": "contradiction",
+          "location": "EmergencyBrake / responsibility 描述",
+          "detail": "状态职责描述写作 'emergency deceleration at least 2.0 m/s2'，与 §6 F3.3 及 A-1 的 'at least 6.0 m/s²' 冲突。"
+        },
+        {
+          "type": "condition",
+          "location": "T3/T13/T20 / postcondition 紧急减速度算子",
+          "detail": "§6 F3.3 要求 critical 情形 'required deceleration of at least $A_emergency'（即 >= 6.0），模型用 '==' 相等约束（maneuver.deceleration == 2.0），既错值又错算子（应为 >= 6.0）。"
+        },
+        {
+          "type": "condition",
+          "location": "T27 / postcondition checked_cmd.brake = active",
+          "detail": "T27（BrakeRamp→Standstill）后置条件 'checked_cmd.target_speed = 0 and checked_cmd.brake = active' 用单等号 '=' 作赋值/相等，语义模糊；且未量化制动强度，与 F3.3 的紧急减速度约束（>= 6.0）脱节。"
+        }
+      ]
+    }
+  ]
+}

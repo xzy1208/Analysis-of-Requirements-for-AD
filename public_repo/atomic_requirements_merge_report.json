@@ -1,0 +1,25 @@
+{
+  "human_count": 44,
+  "llm_count": 46,
+  "matched_semantic": 37,
+  "id_jaccard": 0.915,
+  "semantic_jaccard": 0.804,
+  "human_categories": {
+    "scope": 4,
+    "external": 9,
+    "store": 4,
+    "function": 14,
+    "aeb": 6,
+    "threshold": 7
+  },
+  "llm_categories": {
+    "scope": 4,
+    "ext": 9,
+    "store": 4,
+    "func": 13,
+    "aeb": 9,
+    "th": 7
+  },
+  "llm_only_count": 9,
+  "note": "semantic_jaccard is the reported inter-rater agreement; id_jaccard is not meaningful because the two splits use independent numbering"
+}

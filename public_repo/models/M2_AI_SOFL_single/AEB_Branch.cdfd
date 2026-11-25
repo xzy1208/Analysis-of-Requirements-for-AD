@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CDFD module="AEB_Branch">
+  <componentList>
+    <process name="TTC_Computation" inputPorts="2" outputPorts="1" x="120" y="240" width="150" height="100" shapeIndex="0" />
+    <process name="Risk_Classification" inputPorts="1" outputPorts="2" x="400" y="240" width="150" height="100" shapeIndex="1" />
+    <process name="Maneuver_Planning" inputPorts="4" outputPorts="1" x="680" y="240" width="150" height="100" shapeIndex="2" />
+  </componentList>
+  <connectionList>
+    <activeDataFlow name="predicted_trajectories" type="" fromX="-60" fromY="200" toX="120" toY="260">
+      <from belongToName="" no="" belongToType="outSide" belongToConnector="-1" shapeIndex="-1" />
+      <to belongToName="TTC_Computation" no="" belongToType="Process" belongToConnector="0" shapeIndex="0" />
+    </activeDataFlow>
+    <activeDataFlow name="ego_state" type="" fromX="-60" fromY="280" toX="120" toY="320">
+      <from belongToName="" no="" belongToType="outSide" belongToConnector="-1" shapeIndex="-1" />
+      <to belongToName="TTC_Computation" no="" belongToType="Process" belongToConnector="1" shapeIndex="0" />
+    </activeDataFlow>
+    <activeDataFlow name="ttc_set" type="" fromX="270" fromY="290" toX="400" toY="270">
+      <from belongToName="TTC_Computation" no="" belongToType="Process" belongToConnector="0" shapeIndex="0" />
+      <to belongToName="Risk_Classification" no="" belongToType="Process" belongToConnector="0" shapeIndex="1" />
+    </activeDataFlow>
+    <activeDataFlow name="risk_level" type="" fromX="550" fromY="290" toX="680" toY="270">
+      <from belongToName="Risk_Classification" no="" belongToType="Process" belongToConnector="0" shapeIndex="1" />
+      <to belongToName="Maneuver_Planning" no="" belongToType="Process" belongToConnector="0" shapeIndex="2" />
+    </activeDataFlow>
+    <activeDataFlow name="ego_state" type="" fromX="-60" fromY="380" toX="680" toY="305">
+      <from belongToName="" no="" belongToType="outSide" belongToConnector="-1" shapeIndex="-1" />
+      <to belongToName="Maneuver_Planning" no="" belongToType="Process" belongToConnector="1" shapeIndex="2" />
+    </activeDataFlow>
+    <activeDataFlow name="driver_intent" type="" fromX="-60" fromY="440" toX="680" toY="320">
+      <from belongToName="" no="" belongToType="outSide" belongToConnector="-1" shapeIndex="-1" />
+      <to belongToName="Maneuver_Planning" no="" belongToType="Process" belongToConnector="2" shapeIndex="2" />
+    </activeDataFlow>
+    <activeDataFlow name="route" type="" fromX="-60" fromY="500" toX="680" toY="335">
+      <from belongToName="" no="" belongToType="outSide" belongToConnector="-1" shapeIndex="-1" />
+      <to belongToName="Maneuver_Planning" no="" belongToType="Process" belongToConnector="3" shapeIndex="2" />
+    </activeDataFlow>
+    <activeDataFlow name="warning" type="" fromX="475" fromY="240" toX="475" toY="140">
+      <from belongToName="Risk_Classification" no="" belongToType="Process" belongToConnector="1" shapeIndex="1" />
+      <to belongToName="" no="" belongToType="outSide" belongToConnector="-1" shapeIndex="-1" />
+    </activeDataFlow>
+    <activeDataFlow name="manoeuvre" type="" fromX="830" fromY="290" toX="1000" toY="290">
+      <from belongToName="Maneuver_Planning" no="" belongToType="Process" belongToConnector="0" shapeIndex="2" />
+      <to belongToName="" no="" belongToType="outSide" belongToConnector="-1" shapeIndex="-1" />
+    </activeDataFlow>
+  </connectionList>
+</CDFD>

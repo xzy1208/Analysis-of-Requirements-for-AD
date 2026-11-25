@@ -1,0 +1,9 @@
+# 交付清单（发给标注者时整个目录一起发）
+
+- `annotator_form.json`  (8763 bytes)  sha256=5f37a286971a27de914b7f73726ebf5a0176b478b1e76b0ba2762617443f3640
+- `annotator_workbook.md`  (102824 bytes)  sha256=d4033af4d461597b2c8292113d576d6963ccad439f2746a8991fbb442d6acbca
+- `填写示例.json`  (8729 bytes)  sha256=be2d2ab707498fb6c2c235fd9fe7716db6ce04a19ed768c01793726a9709d1ca
+- `给标注者的说明.md`  (5308 bytes)  sha256=07309cfb8d14e91e36ae27012975ef76ae0baa1ea9128ebe33e2b33ae22e1720
+
+生成自 `experiment_kit/second_annotator_kit/build_handover.py`；
+泄露检查已通过（表单无预填答案）。

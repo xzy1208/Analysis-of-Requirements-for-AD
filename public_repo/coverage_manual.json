@@ -1,0 +1,1522 @@
+{
+  "M1": {
+    "L0": {
+      "coverage": 1.0,
+      "safety_coverage": 1.0,
+      "n": 31,
+      "full": 31,
+      "partial": 0,
+      "none": 0,
+      "rows": [
+        {
+          "id": "SCOPE-1",
+          "score": 1,
+          "evidence": "System 模块与 7 process 体现整车级 ADAS；fModule 无显式 L2 声明，但 ext rd/wr 隐含监督",
+          "criticality": "medium"
+        },
+        {
+          "id": "SCOPE-2",
+          "score": 1,
+          "evidence": "CDFD 用 outSide 表示传感器/驾驶员/执行器边界，E1-E9 具名流穿边界",
+          "criticality": "medium"
+        },
+        {
+          "id": "SCOPE-3",
+          "score": 1,
+          "evidence": "process 契约只约束输入输出关系，不含算法",
+          "criticality": "low"
+        },
+        {
+          "id": "SCOPE-4",
+          "score": 1,
+          "evidence": "BehaviorPlanning.cdfd 只细化 F3 的 AEB 分支",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-1",
+          "score": 1,
+          "evidence": "具名边界流 raw_sensor_data；E9 经 F7 仲裁",
+          "criticality": "medium"
+        },
+        {
+          "id": "EXT-2",
+          "score": 1,
+          "evidence": "具名边界流 gnss_imu；E9 经 F7 仲裁",
+          "criticality": "medium"
+        },
+        {
+          "id": "EXT-3",
+          "score": 1,
+          "evidence": "具名边界流 driver_intent；E9 经 F7 仲裁",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-4",
+          "score": 1,
+          "evidence": "具名边界流 destination；E9 经 F7 仲裁",
+          "criticality": "low"
+        },
+        {
+          "id": "EXT-5",
+          "score": 1,
+          "evidence": "具名边界流 map_data；E9 经 F7 仲裁",
+          "criticality": "medium"
+        },
+        {
+          "id": "EXT-6",
+          "score": 1,
+          "evidence": "具名边界流 traffic_rules；E9 经 F7 仲裁",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-7",
+          "score": 1,
+          "evidence": "具名边界流 warning；E9 经 F7 仲裁",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-8",
+          "score": 1,
+          "evidence": "具名边界流 checked_cmd；E9 经 F7 仲裁",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-9",
+          "score": 1,
+          "evidence": "具名边界流 actuator_cmd；E9 经 F7 仲裁",
+          "criticality": "high"
+        },
+        {
+          "id": "STORE-1",
+          "score": 1,
+          "evidence": "HD_Map_DB 声明于 variableDeclaration，F1/F2/F3/F4/F5 读",
+          "criticality": "low"
+        },
+        {
+          "id": "STORE-2",
+          "score": 1,
+          "evidence": "Object_Track_DB，F1 写、F2 读",
+          "criticality": "high"
+        },
+        {
+          "id": "STORE-3",
+          "score": 1,
+          "evidence": "Ego_State_DB，F1 写、F6/F7 读",
+          "criticality": "high"
+        },
+        {
+          "id": "STORE-4",
+          "score": 1,
+          "evidence": "Traffic_Rules_DB，F3/F5/F7 读",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-1",
+          "score": 1,
+          "evidence": "F1 契约表达目标表融合与前车识别",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-2",
+          "score": 1,
+          "evidence": "F1 契约表达自车状态计算",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-3",
+          "score": 1,
+          "evidence": "F1 契约表达写 D2/D3 且不读",
+          "criticality": "medium"
+        },
+        {
+          "id": "FUNC-4",
+          "score": 1,
+          "evidence": "F2 契约表达≥3s 预测",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-5",
+          "score": 1,
+          "evidence": "F2 契约表达唯一 TTC 产生者",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-6",
+          "score": 1,
+          "evidence": "F2 契约表达不写 store",
+          "criticality": "low"
+        },
+        {
+          "id": "FUNC-7",
+          "score": 1,
+          "evidence": "F3 契约表达机动决策与参数",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-8",
+          "score": 1,
+          "evidence": "F3 契约表达预警决策",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-9",
+          "score": 1,
+          "evidence": "F3 契约表达遵守规则与意图",
+          "criticality": "medium"
+        },
+        {
+          "id": "FUNC-10",
+          "score": 1,
+          "evidence": "F4 契约表达路径与车道几何",
+          "criticality": "medium"
+        },
+        {
+          "id": "FUNC-11",
+          "score": 1,
+          "evidence": "F5 契约表达可行轨迹与限速",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-12",
+          "score": 1,
+          "evidence": "F6 契约表达执行器指令与包络",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-13",
+          "score": 1,
+          "evidence": "F7 契约表达监控仲裁保安全",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-14",
+          "score": 1,
+          "evidence": "F7 契约表达保留转向+强制规则",
+          "criticality": "high"
+        }
+      ]
+    },
+    "L1": {
+      "coverage": 0.615,
+      "safety_coverage": 0.583,
+      "n": 13,
+      "full": 8,
+      "partial": 0,
+      "none": 5,
+      "rows": [
+        {
+          "id": "AEB-1",
+          "score": 1,
+          "evidence": "ComputeTTC post: count/min_ttc",
+          "criticality": "high"
+        },
+        {
+          "id": "AEB-2",
+          "score": 1,
+          "evidence": "ComputeTTC: count=0 when predicted.count=0",
+          "criticality": "medium"
+        },
+        {
+          "id": "AEB-3",
+          "score": 1,
+          "evidence": "ClassifyRisk 三档 3.0/1.5",
+          "criticality": "high"
+        },
+        {
+          "id": "AEB-4",
+          "score": 1,
+          "evidence": "ClassifyRisk warn_active 分档",
+          "criticality": "high"
+        },
+        {
+          "id": "AEB-5",
+          "score": 1,
+          "evidence": "PlanManeuver risk_type=0/1 分支",
+          "criticality": "high"
+        },
+        {
+          "id": "AEB-6",
+          "score": 1,
+          "evidence": "PlanManeuver: decel>=6.0, speed=0, 不被覆盖",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-1",
+          "score": 0,
+          "evidence": "fModule 中无 130 km/h 阈值（人工版确实未写入该契约）",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-2",
+          "score": 1,
+          "evidence": "ClassifyRisk TTC<=1.5 且 warning 激活",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-3",
+          "score": 0,
+          "evidence": "无 30 km/h 速度降低契约",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-4",
+          "score": 0,
+          "evidence": "无 CCRm/CCRb 场景参数",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-5",
+          "score": 0,
+          "evidence": "module 无 RSS d_min 公式",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-6",
+          "score": 0,
+          "evidence": "post 无 RSS 制动轮廓",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-7",
+          "score": 1,
+          "evidence": "3.0/1.5/6.0 已在 ClassifyRisk/PlanManeuver post 中",
+          "criticality": "high"
+        }
+      ]
+    }
+  },
+  "M3": {
+    "L0": {
+      "coverage": 1.0,
+      "safety_coverage": 1.0,
+      "n": 31,
+      "full": 31,
+      "partial": 0,
+      "none": 0,
+      "rows": [
+        {
+          "id": "SCOPE-1",
+          "score": 1,
+          "evidence": "M3_L0.dot label 写明 vehicle-level ADAS；README 说明 SAE L2",
+          "criticality": "medium"
+        },
+        {
+          "id": "SCOPE-2",
+          "score": 1,
+          "evidence": "9 个 external entity box，边界清晰",
+          "criticality": "medium"
+        },
+        {
+          "id": "SCOPE-3",
+          "score": 1,
+          "evidence": "过程字典描述职责非算法",
+          "criticality": "low"
+        },
+        {
+          "id": "SCOPE-4",
+          "score": 1,
+          "evidence": "M3_L1.dot 细化 F3.1/F3.2/F3.3",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-1",
+          "score": 1,
+          "evidence": "external entity/flow raw_sensor_data",
+          "criticality": "medium"
+        },
+        {
+          "id": "EXT-2",
+          "score": 1,
+          "evidence": "external entity/flow gnss_imu",
+          "criticality": "medium"
+        },
+        {
+          "id": "EXT-3",
+          "score": 1,
+          "evidence": "external entity/flow driver_intent",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-4",
+          "score": 1,
+          "evidence": "external entity/flow destination",
+          "criticality": "low"
+        },
+        {
+          "id": "EXT-5",
+          "score": 1,
+          "evidence": "external entity/flow map_data",
+          "criticality": "medium"
+        },
+        {
+          "id": "EXT-6",
+          "score": 1,
+          "evidence": "external entity/flow traffic_rules",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-7",
+          "score": 1,
+          "evidence": "external entity/flow warning",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-8",
+          "score": 1,
+          "evidence": "external entity/flow checked_cmd",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-9",
+          "score": 1,
+          "evidence": "external entity/flow actuator_cmd",
+          "criticality": "high"
+        },
+        {
+          "id": "STORE-1",
+          "score": 1,
+          "evidence": "D1 HD Map Store，5 条读流",
+          "criticality": "low"
+        },
+        {
+          "id": "STORE-2",
+          "score": 1,
+          "evidence": "D2 Object Track Store，F1 写 F2 读",
+          "criticality": "high"
+        },
+        {
+          "id": "STORE-3",
+          "score": 1,
+          "evidence": "D3 Ego State Store，读写流齐",
+          "criticality": "high"
+        },
+        {
+          "id": "STORE-4",
+          "score": 1,
+          "evidence": "D4 Traffic Rules Store，3 条读流",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-1",
+          "score": 1,
+          "evidence": "F1 过程字典表达目标表融合与前车识别",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-2",
+          "score": 1,
+          "evidence": "F1 过程字典表达自车状态计算",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-3",
+          "score": 1,
+          "evidence": "F1 过程字典表达写 D2/D3 且不读",
+          "criticality": "medium"
+        },
+        {
+          "id": "FUNC-4",
+          "score": 1,
+          "evidence": "F2 过程字典表达≥3s 预测",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-5",
+          "score": 1,
+          "evidence": "F2 过程字典表达唯一 TTC 产生者",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-6",
+          "score": 1,
+          "evidence": "F2 过程字典表达不写 store",
+          "criticality": "low"
+        },
+        {
+          "id": "FUNC-7",
+          "score": 1,
+          "evidence": "F3 过程字典表达机动决策与参数",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-8",
+          "score": 1,
+          "evidence": "F3 过程字典表达预警决策",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-9",
+          "score": 1,
+          "evidence": "F3 过程字典表达遵守规则与意图",
+          "criticality": "medium"
+        },
+        {
+          "id": "FUNC-10",
+          "score": 1,
+          "evidence": "F4 过程字典表达路径与车道几何",
+          "criticality": "medium"
+        },
+        {
+          "id": "FUNC-11",
+          "score": 1,
+          "evidence": "F5 过程字典表达可行轨迹与限速",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-12",
+          "score": 1,
+          "evidence": "F6 过程字典表达执行器指令与包络",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-13",
+          "score": 1,
+          "evidence": "F7 过程字典表达监控仲裁保安全",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-14",
+          "score": 1,
+          "evidence": "F7 过程字典表达保留转向+强制规则",
+          "criticality": "high"
+        }
+      ]
+    },
+    "L1": {
+      "coverage": 1.0,
+      "safety_coverage": 1.0,
+      "n": 13,
+      "full": 13,
+      "partial": 0,
+      "none": 0,
+      "rows": [
+        {
+          "id": "AEB-1",
+          "score": 1,
+          "evidence": "F3.1 过程字典 TTC 计算",
+          "criticality": "high"
+        },
+        {
+          "id": "AEB-2",
+          "score": 1,
+          "evidence": "F3.1 空集合处理",
+          "criticality": "medium"
+        },
+        {
+          "id": "AEB-3",
+          "score": 1,
+          "evidence": "F3.2 三级分类",
+          "criticality": "high"
+        },
+        {
+          "id": "AEB-4",
+          "score": 1,
+          "evidence": "F3.2 warning 输出",
+          "criticality": "high"
+        },
+        {
+          "id": "AEB-5",
+          "score": 1,
+          "evidence": "F3.3 机动分档",
+          "criticality": "high"
+        },
+        {
+          "id": "AEB-6",
+          "score": 1,
+          "evidence": "F3.3 紧急减速约束 + 非对称覆盖",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-1",
+          "score": 1,
+          "evidence": "F3.3 约束含 130 km/h",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-2",
+          "score": 1,
+          "evidence": "F3.2 TTC 2.0/1.5",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-3",
+          "score": 1,
+          "evidence": "F3.3 含 30 km/h 判据",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-4",
+          "score": 1,
+          "evidence": "过程字典含场景包络",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-5",
+          "score": 1,
+          "evidence": "F3.3 含 RSS 安全距离",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-6",
+          "score": 1,
+          "evidence": "过程字典含 RSS 制动",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-7",
+          "score": 1,
+          "evidence": "全部阈值齐",
+          "criticality": "high"
+        }
+      ]
+    }
+  },
+  "M4": {
+    "L0": {
+      "coverage": 1.0,
+      "safety_coverage": 1.0,
+      "n": 31,
+      "full": 31,
+      "partial": 0,
+      "none": 0,
+      "rows": [
+        {
+          "id": "SCOPE-1",
+          "score": 1,
+          "evidence": "M4_L0.puml 有 <<actor>> 驾驶员，README 说明 SAE L2",
+          "criticality": "medium"
+        },
+        {
+          "id": "SCOPE-2",
+          "score": 1,
+          "evidence": "9 个 actor/port，边界清晰",
+          "criticality": "medium"
+        },
+        {
+          "id": "SCOPE-3",
+          "score": 1,
+          "evidence": "类图方法签名 + OCL 约束，不含实现",
+          "criticality": "low"
+        },
+        {
+          "id": "SCOPE-4",
+          "score": 1,
+          "evidence": "M4_L1.puml 细化 F3，其余为 <<parent>> 上下文",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-1",
+          "score": 1,
+          "evidence": "actor/port raw_sensor_data",
+          "criticality": "medium"
+        },
+        {
+          "id": "EXT-2",
+          "score": 1,
+          "evidence": "actor/port gnss_imu",
+          "criticality": "medium"
+        },
+        {
+          "id": "EXT-3",
+          "score": 1,
+          "evidence": "actor/port driver_intent",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-4",
+          "score": 1,
+          "evidence": "actor/port destination",
+          "criticality": "low"
+        },
+        {
+          "id": "EXT-5",
+          "score": 1,
+          "evidence": "actor/port map_data",
+          "criticality": "medium"
+        },
+        {
+          "id": "EXT-6",
+          "score": 1,
+          "evidence": "actor/port traffic_rules",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-7",
+          "score": 1,
+          "evidence": "actor/port warning",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-8",
+          "score": 1,
+          "evidence": "actor/port checked_cmd",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-9",
+          "score": 1,
+          "evidence": "actor/port actuator_cmd",
+          "criticality": "high"
+        },
+        {
+          "id": "STORE-1",
+          "score": 1,
+          "evidence": "D1 <<entity>> 类，OCL 约束",
+          "criticality": "low"
+        },
+        {
+          "id": "STORE-2",
+          "score": 1,
+          "evidence": "D2 <<entity>>，writer F1",
+          "criticality": "high"
+        },
+        {
+          "id": "STORE-3",
+          "score": 1,
+          "evidence": "D3 <<entity>>，owner F1",
+          "criticality": "high"
+        },
+        {
+          "id": "STORE-4",
+          "score": 1,
+          "evidence": "D4 <<entity>>，OCL 限速约束",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-1",
+          "score": 1,
+          "evidence": "F1 类 + OCL 表达目标表融合与前车识别",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-2",
+          "score": 1,
+          "evidence": "F1 类 + OCL 表达自车状态计算",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-3",
+          "score": 1,
+          "evidence": "F1 类 + OCL 表达写 D2/D3 且不读",
+          "criticality": "medium"
+        },
+        {
+          "id": "FUNC-4",
+          "score": 1,
+          "evidence": "F2 类 + OCL 表达≥3s 预测",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-5",
+          "score": 1,
+          "evidence": "F2 类 + OCL 表达唯一 TTC 产生者",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-6",
+          "score": 1,
+          "evidence": "F2 类 + OCL 表达不写 store",
+          "criticality": "low"
+        },
+        {
+          "id": "FUNC-7",
+          "score": 1,
+          "evidence": "F3 类 + OCL 表达机动决策与参数",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-8",
+          "score": 1,
+          "evidence": "F3 类 + OCL 表达预警决策",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-9",
+          "score": 1,
+          "evidence": "F3 类 + OCL 表达遵守规则与意图",
+          "criticality": "medium"
+        },
+        {
+          "id": "FUNC-10",
+          "score": 1,
+          "evidence": "F4 类 + OCL 表达路径与车道几何",
+          "criticality": "medium"
+        },
+        {
+          "id": "FUNC-11",
+          "score": 1,
+          "evidence": "F5 类 + OCL 表达可行轨迹与限速",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-12",
+          "score": 1,
+          "evidence": "F6 类 + OCL 表达执行器指令与包络",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-13",
+          "score": 1,
+          "evidence": "F7 类 + OCL 表达监控仲裁保安全",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-14",
+          "score": 1,
+          "evidence": "F7 类 + OCL 表达保留转向+强制规则",
+          "criticality": "high"
+        }
+      ]
+    },
+    "L1": {
+      "coverage": 1.0,
+      "safety_coverage": 1.0,
+      "n": 13,
+      "full": 13,
+      "partial": 0,
+      "none": 0,
+      "rows": [
+        {
+          "id": "AEB-1",
+          "score": 1,
+          "evidence": "F3.1 类 + C-L1-1/2/19",
+          "criticality": "high"
+        },
+        {
+          "id": "AEB-2",
+          "score": 1,
+          "evidence": "C-L1-16 空集合处理",
+          "criticality": "medium"
+        },
+        {
+          "id": "AEB-3",
+          "score": 1,
+          "evidence": "C-L1-3/4/5 三级分类",
+          "criticality": "high"
+        },
+        {
+          "id": "AEB-4",
+          "score": 1,
+          "evidence": "C-L1-6 warning 不变式",
+          "criticality": "high"
+        },
+        {
+          "id": "AEB-5",
+          "score": 1,
+          "evidence": "C-L1-7/9 机动约束",
+          "criticality": "high"
+        },
+        {
+          "id": "AEB-6",
+          "score": 1,
+          "evidence": "C-L1-9/11/18",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-1",
+          "score": 1,
+          "evidence": "C-F3-5 不变式 130",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-2",
+          "score": 1,
+          "evidence": "C-F3-6 / C-L1-6",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-3",
+          "score": 1,
+          "evidence": "约束清单含 30 km/h",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-4",
+          "score": 1,
+          "evidence": "约束清单含场景参数",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-5",
+          "score": 1,
+          "evidence": "C-F3 含 RSS 不变式",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-6",
+          "score": 1,
+          "evidence": "约束清单含制动轮廓",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-7",
+          "score": 1,
+          "evidence": "A-1/A-5/A-7 均映射",
+          "criticality": "high"
+        }
+      ]
+    }
+  },
+  "M5": {
+    "L1": {
+      "coverage": 0.615,
+      "safety_coverage": 0.583,
+      "n": 13,
+      "full": 8,
+      "partial": 0,
+      "none": 5,
+      "rows": [
+        {
+          "id": "AEB-1",
+          "score": 1,
+          "evidence": "Normal→Caution 守卫 min_ttc",
+          "criticality": "high"
+        },
+        {
+          "id": "AEB-2",
+          "score": 1,
+          "evidence": "obj_count=0 显式回退迁移",
+          "criticality": "medium"
+        },
+        {
+          "id": "AEB-3",
+          "score": 1,
+          "evidence": "三状态对应三档 TTC",
+          "criticality": "high"
+        },
+        {
+          "id": "AEB-4",
+          "score": 1,
+          "evidence": "各迁移 warning 动作",
+          "criticality": "high"
+        },
+        {
+          "id": "AEB-5",
+          "score": 1,
+          "evidence": "Caution 状态机动动作",
+          "criticality": "high"
+        },
+        {
+          "id": "AEB-6",
+          "score": 1,
+          "evidence": "EmergencyBrake 组合状态 + 无→DriverOverride 迁移",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-1",
+          "score": 0,
+          "evidence": "状态机无速度上限约束",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-2",
+          "score": 1,
+          "evidence": "Caution 由 TTC<=3.0 触发，warning 已发",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-3",
+          "score": 0,
+          "evidence": "状态机无此数值约束",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-4",
+          "score": 0,
+          "evidence": "无场景参数",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-5",
+          "score": 0,
+          "evidence": "状态机无距离公式",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-6",
+          "score": 0,
+          "evidence": "无制动轮廓数值",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-7",
+          "score": 1,
+          "evidence": "3.0/1.5/6.0 用于守卫与动作",
+          "criticality": "high"
+        }
+      ]
+    }
+  },
+  "M2": {
+    "L0": {
+      "coverage": 1.0,
+      "safety_coverage": 1.0,
+      "n": 31,
+      "full": 31,
+      "partial": 0,
+      "none": 0,
+      "rows": [
+        {
+          "id": "SCOPE-1",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "medium"
+        },
+        {
+          "id": "SCOPE-2",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "medium"
+        },
+        {
+          "id": "SCOPE-3",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "low"
+        },
+        {
+          "id": "SCOPE-4",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-1",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "medium"
+        },
+        {
+          "id": "EXT-2",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "medium"
+        },
+        {
+          "id": "EXT-3",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-4",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "low"
+        },
+        {
+          "id": "EXT-5",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "medium"
+        },
+        {
+          "id": "EXT-6",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-7",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-8",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-9",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "high"
+        },
+        {
+          "id": "STORE-1",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "low"
+        },
+        {
+          "id": "STORE-2",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "high"
+        },
+        {
+          "id": "STORE-3",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "high"
+        },
+        {
+          "id": "STORE-4",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-1",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-2",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-3",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "medium"
+        },
+        {
+          "id": "FUNC-4",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-5",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-6",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "low"
+        },
+        {
+          "id": "FUNC-7",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-8",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-9",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "medium"
+        },
+        {
+          "id": "FUNC-10",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "medium"
+        },
+        {
+          "id": "FUNC-11",
+          "score": 1,
+          "evidence": "traceability clause id 直接命中",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-12",
+          "score": 1,
+          "evidence": "F6 契约：actuator_cmd 包络 ±3.0/±1.0、max_accel",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-13",
+          "score": 1,
+          "evidence": "F7 契约：checked_cmd 复检限幅与仲裁",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-14",
+          "score": 1,
+          "evidence": "F7 契约：steer_cmd 保留与限幅",
+          "criticality": "high"
+        }
+      ]
+    },
+    "L1": {
+      "coverage": 0.808,
+      "safety_coverage": 0.792,
+      "n": 13,
+      "full": 9,
+      "partial": 3,
+      "none": 1,
+      "rows": [
+        {
+          "id": "AEB-1",
+          "score": 1,
+          "evidence": "F3.1 职责+post min_ttc/obj_count",
+          "criticality": "high"
+        },
+        {
+          "id": "AEB-2",
+          "score": 1,
+          "evidence": "F3.2 obj_count=0 分支",
+          "criticality": "medium"
+        },
+        {
+          "id": "AEB-3",
+          "score": 1,
+          "evidence": "F3.2 四分支完整三级 3.0/1.5",
+          "criticality": "high"
+        },
+        {
+          "id": "AEB-4",
+          "score": 1,
+          "evidence": "F3.2 warning_type/active 分档",
+          "criticality": "high"
+        },
+        {
+          "id": "AEB-5",
+          "score": 1,
+          "evidence": "F3.3 type 0 / type 3 + required_decel>0",
+          "criticality": "high"
+        },
+        {
+          "id": "AEB-6",
+          "score": 1,
+          "evidence": "F3.3 >=6.0、target_speed=0、accel_request 覆盖后仍 type4",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-1",
+          "score": 1,
+          "evidence": "F3.1 guard ego_state.speed <= 130.0",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-2",
+          "score": 1,
+          "evidence": "F3.2 min_ttc<=1.5 → warning + 额外 <=2.0 保险",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-3",
+          "score": 0,
+          "evidence": "无 30 km/h 部分介入判据（type 3 仅 required_decel>0）",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-4",
+          "score": 0.5,
+          "evidence": "note 声明 N-4 属评估参数（60-130/20 km/h），CCRb −4 由父模块 RSS 4.0 实现",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-5",
+          "score": 0.5,
+          "evidence": "RSS 定性 post + OI 声明 d_min 无闭式",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-6",
+          "score": 0.5,
+          "evidence": "note: A-1 ≥ a_min,brake=4.0 已覆盖，rho=0.1s 未形式化",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-7",
+          "score": 1,
+          "evidence": "6.0 + 3.0/1.5 + 视界 3.0s（父模块实现，L1 注明）",
+          "criticality": "high"
+        }
+      ]
+    }
+  },
+  "M1.1": {
+    "L0": {
+      "coverage": 1.0,
+      "safety_coverage": 1.0,
+      "n": 31,
+      "full": 31,
+      "partial": 0,
+      "none": 0,
+      "rows": [
+        {
+          "id": "SCOPE-1",
+          "score": 1,
+          "evidence": "System 模块与 7 process 体现整车级 ADAS；fModule 无显式 L2 声明，但 ext rd/wr 隐含监督",
+          "criticality": "medium"
+        },
+        {
+          "id": "SCOPE-2",
+          "score": 1,
+          "evidence": "CDFD 用 outSide 表示传感器/驾驶员/执行器边界，E1-E9 具名流穿边界",
+          "criticality": "medium"
+        },
+        {
+          "id": "SCOPE-3",
+          "score": 1,
+          "evidence": "process 契约只约束输入输出关系，不含算法",
+          "criticality": "low"
+        },
+        {
+          "id": "SCOPE-4",
+          "score": 1,
+          "evidence": "BehaviorPlanning.cdfd 只细化 F3 的 AEB 分支",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-1",
+          "score": 1,
+          "evidence": "具名边界流 raw_sensor_data；E9 经 F7 仲裁",
+          "criticality": "medium"
+        },
+        {
+          "id": "EXT-2",
+          "score": 1,
+          "evidence": "具名边界流 gnss_imu；E9 经 F7 仲裁",
+          "criticality": "medium"
+        },
+        {
+          "id": "EXT-3",
+          "score": 1,
+          "evidence": "具名边界流 driver_intent；E9 经 F7 仲裁",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-4",
+          "score": 1,
+          "evidence": "具名边界流 destination；E9 经 F7 仲裁",
+          "criticality": "low"
+        },
+        {
+          "id": "EXT-5",
+          "score": 1,
+          "evidence": "具名边界流 map_data；E9 经 F7 仲裁",
+          "criticality": "medium"
+        },
+        {
+          "id": "EXT-6",
+          "score": 1,
+          "evidence": "具名边界流 traffic_rules；E9 经 F7 仲裁",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-7",
+          "score": 1,
+          "evidence": "具名边界流 warning；E9 经 F7 仲裁",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-8",
+          "score": 1,
+          "evidence": "具名边界流 checked_cmd；E9 经 F7 仲裁",
+          "criticality": "high"
+        },
+        {
+          "id": "EXT-9",
+          "score": 1,
+          "evidence": "具名边界流 actuator_cmd；E9 经 F7 仲裁",
+          "criticality": "high"
+        },
+        {
+          "id": "STORE-1",
+          "score": 1,
+          "evidence": "HD_Map_DB 声明于 variableDeclaration，F1/F2/F3/F4/F5 读",
+          "criticality": "low"
+        },
+        {
+          "id": "STORE-2",
+          "score": 1,
+          "evidence": "Object_Track_DB，F1 写、F2 读（M1.1 在同一架构上补入阈值契约，结构与端口不变）",
+          "criticality": "high"
+        },
+        {
+          "id": "STORE-3",
+          "score": 1,
+          "evidence": "Ego_State_DB，F1 写、F6/F7 读（M1.1 在同一架构上补入阈值契约，结构与端口不变）",
+          "criticality": "high"
+        },
+        {
+          "id": "STORE-4",
+          "score": 1,
+          "evidence": "Traffic_Rules_DB，F3/F5/F7 读（M1.1 在同一架构上补入阈值契约，结构与端口不变）",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-1",
+          "score": 1,
+          "evidence": "F1 契约表达目标表融合与前车识别（M1.1 在同一架构上补入阈值契约，结构与端口不变）",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-2",
+          "score": 1,
+          "evidence": "F1 契约表达自车状态计算",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-3",
+          "score": 1,
+          "evidence": "F1 契约表达写 D2/D3 且不读",
+          "criticality": "medium"
+        },
+        {
+          "id": "FUNC-4",
+          "score": 1,
+          "evidence": "F2 契约表达≥3s 预测",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-5",
+          "score": 1,
+          "evidence": "F2 契约表达唯一 TTC 产生者（M1.1 在同一架构上补入阈值契约，结构与端口不变）",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-6",
+          "score": 1,
+          "evidence": "F2 契约表达不写 store（M1.1 在同一架构上补入阈值契约，结构与端口不变）",
+          "criticality": "low"
+        },
+        {
+          "id": "FUNC-7",
+          "score": 1,
+          "evidence": "F3 契约表达机动决策与参数（M1.1 在同一架构上补入阈值契约，结构与端口不变）",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-8",
+          "score": 1,
+          "evidence": "F3 契约表达预警决策",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-9",
+          "score": 1,
+          "evidence": "F3 契约表达遵守规则与意图",
+          "criticality": "medium"
+        },
+        {
+          "id": "FUNC-10",
+          "score": 1,
+          "evidence": "F4 契约表达路径与车道几何",
+          "criticality": "medium"
+        },
+        {
+          "id": "FUNC-11",
+          "score": 1,
+          "evidence": "F5 契约表达可行轨迹与限速",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-12",
+          "score": 1,
+          "evidence": "F6 契约表达执行器指令与包络",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-13",
+          "score": 1,
+          "evidence": "F7 契约表达监控仲裁保安全",
+          "criticality": "high"
+        },
+        {
+          "id": "FUNC-14",
+          "score": 1,
+          "evidence": "F7 契约表达保留转向+强制规则",
+          "criticality": "high"
+        }
+      ]
+    },
+    "L1": {
+      "coverage": 1.0,
+      "safety_coverage": 1.0,
+      "n": 13,
+      "full": 13,
+      "partial": 0,
+      "none": 0,
+      "rows": [
+        {
+          "id": "AEB-1",
+          "score": 1,
+          "evidence": "ComputeTTC post: ttc_values.min_ttc>=0，且 count 与 min_ttc 逐对象计算",
+          "criticality": "high"
+        },
+        {
+          "id": "AEB-2",
+          "score": 1,
+          "evidence": "ComputeTTC post: predicted_trajectories.count=0 => ttc_values.count=0",
+          "criticality": "medium"
+        },
+        {
+          "id": "AEB-3",
+          "score": 1,
+          "evidence": "ClassifyRisk post 三档：min_ttc>3.0 / <=3.0 and >1.5 / <=1.5 → risk_type=0/1/2",
+          "criticality": "high"
+        },
+        {
+          "id": "AEB-4",
+          "score": 1,
+          "evidence": "ClassifyRisk post: warn_active=0（no risk）、warn_active=1（caution 与 critical）",
+          "criticality": "high"
+        },
+        {
+          "id": "AEB-5",
+          "score": 1,
+          "evidence": "PlanManeuver post: risk_type=0 → maneuver_type=1（cruise）、risk_type=1 → maneuver_type=2（减速）",
+          "criticality": "high"
+        },
+        {
+          "id": "AEB-6",
+          "score": 1,
+          "evidence": "PlanManeuver post: risk_type=2 → decel_req>=6.0 且 target_speed=0；driver_intent.intent_type=2 且 risk_type<2 时才转 cruise，紧急减速不可被驾驶员加速请求覆盖",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-1",
+          "score": 1,
+          "evidence": "PlanManeuver pre 新增 ego_state.speed<=130.0（N-1：AEB 能力可用至 130 km/h）",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-2",
+          "score": 1,
+          "evidence": "ClassifyRisk post: min_ttc<=1.5 → warning.warn_active=1；caution 档（1.5<min_ttc<=3.0）亦置位，故 TTC=2.0 s 时预警已发出（N-2）",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-3",
+          "score": 1,
+          "evidence": "经 A-1 体现：PlanManeuver post decel_req>=6.0；M1.1 追溯表 N-3 行记录 >30 km/h 冲击速度降低，§7 推导中间量不写入约束值（与 M3、M4 同口径）",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-4",
+          "score": 1,
+          "evidence": "经 A-1 体现：PlanManeuver post decel_req>=6.0；M1.1 追溯表 N-4 行记录 CCRm 包络为 A-1 的推导前提，不作为约束值（与 M3、M4 同口径）",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-5",
+          "score": 1,
+          "evidence": "Motion_Planning post: trajectory.min_gap<=predicted_trajectories.lead_gap；Prediction post 产出 predicted_trajectories.lead_gap>=0（N-5：RSS 纵向安全距离 d_min，A-2 参数）",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-6",
+          "score": 1,
+          "evidence": "Motion_Planning post: trajectory.decel_limit>=4.0；Control post: brake_cmd>=decel_limit 且 accel_cmd<=2.0；Safety_Shield post: brake_cmd>=4.0、accel_cmd<=2.0（N-6：RSS 制动轮廓 a_min,brake=4.0、a_max,accel=2.0）",
+          "criticality": "high"
+        },
+        {
+          "id": "TH-7",
+          "score": 1,
+          "evidence": "A-1: PlanManeuver post decel_req>=6.0；A-5: ClassifyRisk post 阈值 3.0/1.5；A-7: Prediction/Motion_Planning 的 3.0 s 预测视界",
+          "criticality": "high"
+        }
+      ]
+    }
+  }
+}

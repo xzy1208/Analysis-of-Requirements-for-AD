@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<module name="ADAS_System">
+  <constantDeclaration>
+  </constantDeclaration>
+  <typeDeclaration>
+SensorFrameSet = composed of
+        camera_valid: nat
+        radar_valid: nat
+        lidar_valid: nat
+        frame_timestamp: real
+      end
+EgoSample = composed of
+        gnss_valid: nat
+        imu_valid: nat
+        heading: real
+        yaw_rate: real
+        accel: real
+        sample_timestamp: real
+      end
+MapSegment = composed of
+        road_id: String
+        lane_id: String
+        posted_speed_limit: real
+        curvature: real
+      end
+NavigationTarget = composed of
+        longitude: real
+        latitude: real
+        route_preference: String
+      end
+DriverIntent = composed of
+        requested_speed: real
+        accel_request: nat
+        brake_request: nat
+        steer_request: nat
+        attention_state: nat
+        odd_status: nat
+      end
+TrafficRuleState = composed of
+        posted_speed_limit: real
+        signal_state: nat
+      end
+ObjectTable = composed of
+        obj_count: nat
+        lead_obj_id: nat
+        lead_pos_x: real
+        lead_pos_y: real
+        lead_speed: real
+        lead_velocity_x: real
+        lead_velocity_y: real
+        lead_class: String
+      end
+EgoState = composed of
+        pose_x: real
+        pose_y: real
+        speed: real
+        yaw_rate: real
+        accel: real
+        last_update: real
+      end
+PredictedTrajectories = composed of
+        horizon: real
+        obj_count: nat
+        min_ttc: real
+        lead_gap: real
+        lead_speed: real
+      end
+RouteInfo = composed of
+        path_length: real
+        eta: real
+        lane_count: nat
+        lane_curvature: real
+        target_lane_id: String
+      end
+Manoeuvre = composed of
+        manoeuvre_type: nat
+        target_speed: real
+        target_lane: String
+        required_decel: real
+      end
+Trajectory = composed of
+        max_speed: real
+        max_accel: real
+        decel_limit: real
+        horizon: real
+        min_gap: real
+        lateral_accel: real
+      end
+ActuatorCommand = composed of
+        long_accel_cmd: real
+        brake_cmd: real
+        steer_cmd: real
+      end
+WarningSignal = composed of
+        warning_type: nat
+        active: nat
+      end
+  </typeDeclaration>
+  <variableDeclaration>
+    HD_Map_DB: MapSegment
+    Object_Track_DB: ObjectTable
+    Ego_State_DB: EgoState
+    Traffic_Rules_DB: TrafficRuleState
+  </variableDeclaration>
+  <typeAndStateInvariants>
+  </typeAndStateInvariants>
+  <moduleDecom>
+  </moduleDecom>
+  <processList>
+    <process name="Perception_Localisation" head="(raw_sensor_data:  | gnss_imu:  | map_data:  )ego_pose:  | object_table:  | ego_pose_for_route:  | ego_state:  | ego_state_for_motion:  ">
+ext rd HD_Map_DB
+ext wr HD_Map_DB
+ext wr Object_Track_DB
+ext wr Ego_State_DB
+pre raw_sensor_data&lt;&gt;null and gnss_imu&lt;&gt;null and map_data&lt;&gt;null and HD_Map_DB&lt;&gt;null
+post
+if true then ego_pose&lt;&gt;null and object_table&lt;&gt;null and ego_state&lt;&gt;null
+if true then object_table.obj_count&gt;=0
+if true then ego_state.speed&gt;=0
+if true then ego_state.yaw_rate&lt;=3.5 and ego_state.yaw_rate&gt;=-3.5
+if true then HD_Map_DB&lt;&gt;null and Object_Track_DB&lt;&gt;null and Ego_State_DB&lt;&gt;null
+</process>
+    <process name="Prediction" head="(ego_pose:  | object_table:  )predicted_trajectories:  | predicted_trajectories_for_motion:  ">
+ext rd HD_Map_DB
+pre ego_pose&lt;&gt;null and object_table&lt;&gt;null and HD_Map_DB&lt;&gt;null
+post
+if true then predicted_trajectories&lt;&gt;null and predicted_trajectories_for_motion&lt;&gt;null
+if true then predicted_trajectories.horizon&gt;=3.0
+if true then predicted_trajectories.lead_gap&gt;=0
+if predicted_trajectories.obj_count&gt;0 then predicted_trajectories.min_ttc&gt;=0
+</process>
+    <process name="Behaviour_Planning" head="(ego_state:  | predicted_trajectories:  | driver_intent:  | route:  )manoeuvre:  | warning:  ">
+ext rd HD_Map_DB
+ext rd Traffic_Rules_DB
+pre ego_state&lt;&gt;null and predicted_trajectories&lt;&gt;null and driver_intent&lt;&gt;null and route&lt;&gt;null and HD_Map_DB&lt;&gt;null and Traffic_Rules_DB&lt;&gt;null
+post
+if true then manoeuvre&lt;&gt;null and warning&lt;&gt;null
+if true then manoeuvre.target_speed&lt;=Traffic_Rules_DB.posted_speed_limit
+if true then manoeuvre.target_speed&gt;=0
+if warning.warning_type=1 then manoeuvre.required_decel&gt;0
+if warning.warning_type=2 then manoeuvre.required_decel&gt;=6.0
+if warning.warning_type=0 then manoeuvre.required_decel&gt;=0
+</process>
+    <process name="Route_Planning" head="(destination:  | ego_pose_for_route:  )route:  | route_for_motion:  ">
+ext rd HD_Map_DB
+pre destination&lt;&gt;null and ego_pose_for_route&lt;&gt;null and HD_Map_DB&lt;&gt;null
+post
+if true then route&lt;&gt;null and route_for_motion&lt;&gt;null
+if true then route.path_length&gt;=0 and route.eta&gt;=0
+if true then route.lane_count&gt;=1
+</process>
+    <process name="Motion_Planning" head="(manoeuvre:  | route_for_motion:  | ego_state_for_motion:  | predicted_trajectories_for_motion:  | traffic_rules:  )trajectory:  ">
+ext rd HD_Map_DB
+ext rd Traffic_Rules_DB
+ext wr Traffic_Rules_DB
+pre manoeuvre&lt;&gt;null and route_for_motion&lt;&gt;null and ego_state_for_motion&lt;&gt;null and predicted_trajectories_for_motion&lt;&gt;null and traffic_rules&lt;&gt;null and HD_Map_DB&lt;&gt;null and Traffic_Rules_DB&lt;&gt;null
+post
+if true then trajectory&lt;&gt;null
+if true then trajectory.max_speed&lt;=Traffic_Rules_DB.posted_speed_limit
+if true then trajectory.max_accel&lt;=2.0
+if true then trajectory.decel_limit&gt;=4.0
+if true then trajectory.horizon&gt;=0
+if true then trajectory.min_gap&gt;=0
+if manoeuvre.required_decl&gt;0 then trajectory.decel_limit&gt;=manoeuvre.required_decel
+</process>
+    <process name="Control" head="(trajectory:  )actuator_cmd:  ">
+ext rd Ego_State_DB
+pre trajectory&lt;&gt;null and Ego_State_DB&lt;&gt;null
+post
+if true then actuator_cmd&lt;&gt;null
+if true then actuator_cmd.long_accel_cmd&lt;=3.0 and actuator_cmd.long_accel_cmd&gt;=-3.0
+if true then actuator_cmd.brake_cmd&gt;=0
+if true then actuator_cmd.steer_cmd&lt;=1.0 and actuator_cmd.steer_cmd&gt;=-1.0
+if true then actuator_cmd.long_accel_cmd&lt;=trajectory.max_accel
+</process>
+    <process name="Safety_Shield" head="(actuator_cmd:  )checked_cmd:  ">
+ext rd Ego_State_DB
+ext rd Traffic_Rules_DB
+pre actuator_cmd&lt;&gt;null and Ego_State_DB&lt;&gt;null and Traffic_Rules_DB&lt;&gt;null
+post
+if true then checked_cmd&lt;&gt;null
+if true then checked_cmd.long_accel_cmd&lt;=3.0 and checked_cmd.long_accel_cmd&gt;=-3.0
+if true then checked_cmd.brake_cmd&gt;=0
+if true then checked_cmd.steer_cmd&lt;=1.0 and checked_cmd.steer_cmd&gt;=-1.0
+if actuator_cmd.steer_cmd&lt;=1.0 and actuator_cmd.steer_cmd&gt;=-1.0 then checked_cmd.steer_cmd=actuator_cmd.steer_cmd
+if actuator_cmd.steer_cmd&gt;1.0 then checked_cmd.steer_cmd&lt;=1.0
+if actuator_cmd.steer_cmd&lt;-1.0 then checked_cmd.steer_cmd&gt;=-1.0
+if actuator_cmd.long_accel_cmd&gt;3.0 then checked_cmd.long_accel_cmd&lt;=3.0
+if actuator_cmd.long_accel_cmd&lt;-3.0 then checked_cmd.long_accel_cmd&gt;=-3.0
+if Ego_State_DB.speed&gt;=Traffic_Rules_DB.posted_speed_limit and actuator_cmd.long_accel_cmd&gt;0 then checked_cmd.long_accel_cmd&lt;=0
+</process>
+  </processList>
+  <functions>
+  </functions>
+</module>

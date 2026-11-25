@@ -1,0 +1,218 @@
+[
+  {
+    "model": "M1",
+    "level": "L0",
+    "id": "DEF-1",
+    "type": "omission",
+    "description": "删除功能/状态 Safety_Shield 及其相关流",
+    "expected": "评审者应报告该需求未被覆盖",
+    "file": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M1_manual_human\\MES_M1_L0_defective.json"
+  },
+  {
+    "model": "M1",
+    "level": "L0",
+    "id": "DEF-2",
+    "type": "contradiction",
+    "description": "紧急减速度 6.0 改为 2.0（违反 A-1）；风险阈值 3.0s 改为 0.5s",
+    "expected": "评审者应报告与需求规格冲突",
+    "file": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M1_manual_human\\MES_M1_L0_defective.json"
+  },
+  {
+    "model": "M1",
+    "level": "L0",
+    "id": "DEF-3",
+    "type": "condition",
+    "description": "把 14 处 >= 条件改成 ==（边界语义错误）",
+    "expected": "评审者应报告条件错误",
+    "file": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M1_manual_human\\MES_M1_L0_defective.json"
+  },
+  {
+    "model": "M1",
+    "level": "L0",
+    "id": "DEF-4",
+    "type": "flow",
+    "description": "删除数据流 route（producer=route consumer=Motion_Planning）",
+    "expected": "评审者应报告接口/数据流缺失",
+    "file": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M1_manual_human\\MES_M1_L0_defective.json"
+  },
+  {
+    "model": "M1",
+    "level": "L0",
+    "id": "DEF-5",
+    "type": "ambiguous",
+    "description": "把一处精确前置条件改成模糊词（适当/及时/合适）",
+    "expected": "评审者应报告歧义描述",
+    "file": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M1_manual_human\\MES_M1_L0_defective.json"
+  },
+  {
+    "model": "M1",
+    "level": "L0",
+    "id": "DEF-6",
+    "type": "omission",
+    "description": "删除 7 条追溯记录",
+    "expected": "评审者应报告可追溯性缺失",
+    "file": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M1_manual_human\\MES_M1_L0_defective.json"
+  },
+  {
+    "model": "M3",
+    "level": "L0",
+    "id": "DEF-1",
+    "type": "omission",
+    "description": "删除功能/状态 F4 及其相关流",
+    "expected": "评审者应报告该需求未被覆盖",
+    "file": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M3_AI_DFD\\MES_M3_L0_defective.json"
+  },
+  {
+    "model": "M3",
+    "level": "L0",
+    "id": "DEF-2",
+    "type": "contradiction",
+    "description": "紧急减速度 6.0 改为 2.0（违反 A-1）；风险阈值 3.0s 改为 0.5s",
+    "expected": "评审者应报告与需求规格冲突",
+    "file": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M3_AI_DFD\\MES_M3_L0_defective.json"
+  },
+  {
+    "model": "M3",
+    "level": "L0",
+    "id": "DEF-3",
+    "type": "condition",
+    "description": "把 16 处 >= 条件改成 ==（边界语义错误）",
+    "expected": "评审者应报告条件错误",
+    "file": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M3_AI_DFD\\MES_M3_L0_defective.json"
+  },
+  {
+    "model": "M3",
+    "level": "L0",
+    "id": "DEF-4",
+    "type": "flow",
+    "description": "删除数据流 actuator_cmd（producer=E9 consumer=F7）",
+    "expected": "评审者应报告接口/数据流缺失",
+    "file": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M3_AI_DFD\\MES_M3_L0_defective.json"
+  },
+  {
+    "model": "M3",
+    "level": "L0",
+    "id": "DEF-5",
+    "type": "ambiguous",
+    "description": "把一处精确前置条件改成模糊词（适当/及时/合适）",
+    "expected": "评审者应报告歧义描述",
+    "file": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M3_AI_DFD\\MES_M3_L0_defective.json"
+  },
+  {
+    "model": "M3",
+    "level": "L0",
+    "id": "DEF-6",
+    "type": "omission",
+    "description": "删除 21 条追溯记录",
+    "expected": "评审者应报告可追溯性缺失",
+    "file": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M3_AI_DFD\\MES_M3_L0_defective.json"
+  },
+  {
+    "model": "M4",
+    "level": "L0",
+    "id": "DEF-1",
+    "type": "omission",
+    "description": "删除功能/状态 F4 及其相关流",
+    "expected": "评审者应报告该需求未被覆盖",
+    "file": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M4_AI_UML\\MES_M4_L0_defective.json"
+  },
+  {
+    "model": "M4",
+    "level": "L0",
+    "id": "DEF-2",
+    "type": "contradiction",
+    "description": "紧急减速度 6.0 改为 2.0（违反 A-1）；风险阈值 3.0s 改为 0.5s",
+    "expected": "评审者应报告与需求规格冲突",
+    "file": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M4_AI_UML\\MES_M4_L0_defective.json"
+  },
+  {
+    "model": "M4",
+    "level": "L0",
+    "id": "DEF-3",
+    "type": "condition",
+    "description": "把 36 处 >= 条件改成 ==（边界语义错误）",
+    "expected": "评审者应报告条件错误",
+    "file": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M4_AI_UML\\MES_M4_L0_defective.json"
+  },
+  {
+    "model": "M4",
+    "level": "L0",
+    "id": "DEF-4",
+    "type": "flow",
+    "description": "删除数据流 ego_state（producer=D3 consumer=F6）",
+    "expected": "评审者应报告接口/数据流缺失",
+    "file": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M4_AI_UML\\MES_M4_L0_defective.json"
+  },
+  {
+    "model": "M4",
+    "level": "L0",
+    "id": "DEF-5",
+    "type": "ambiguous",
+    "description": "把一处精确前置条件改成模糊词（适当/及时/合适）",
+    "expected": "评审者应报告歧义描述",
+    "file": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M4_AI_UML\\MES_M4_L0_defective.json"
+  },
+  {
+    "model": "M4",
+    "level": "L0",
+    "id": "DEF-6",
+    "type": "omission",
+    "description": "删除 18 条追溯记录",
+    "expected": "评审者应报告可追溯性缺失",
+    "file": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M4_AI_UML\\MES_M4_L0_defective.json"
+  },
+  {
+    "model": "M5",
+    "level": "L1",
+    "id": "DEF-1",
+    "type": "omission",
+    "description": "删除功能/状态 BrakeRamp 及其相关流",
+    "expected": "评审者应报告该需求未被覆盖",
+    "file": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M5_AI_StateMachine\\MES_M5_L1_defective.json"
+  },
+  {
+    "model": "M5",
+    "level": "L1",
+    "id": "DEF-2",
+    "type": "contradiction",
+    "description": "紧急减速度 6.0 改为 2.0（违反 A-1）；风险阈值 3.0s 改为 0.5s",
+    "expected": "评审者应报告与需求规格冲突",
+    "file": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M5_AI_StateMachine\\MES_M5_L1_defective.json"
+  },
+  {
+    "model": "M5",
+    "level": "L1",
+    "id": "DEF-3",
+    "type": "condition",
+    "description": "把 15 处 >= 条件改成 ==（边界语义错误）",
+    "expected": "评审者应报告条件错误",
+    "file": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M5_AI_StateMachine\\MES_M5_L1_defective.json"
+  },
+  {
+    "model": "M5",
+    "level": "L1",
+    "id": "DEF-4",
+    "type": "flow",
+    "description": "删除数据流 T10_guard（producer=Caution consumer=DriverOverride）",
+    "expected": "评审者应报告接口/数据流缺失",
+    "file": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M5_AI_StateMachine\\MES_M5_L1_defective.json"
+  },
+  {
+    "model": "M5",
+    "level": "L1",
+    "id": "DEF-5",
+    "type": "ambiguous",
+    "description": "把一处精确前置条件改成模糊词（适当/及时/合适）",
+    "expected": "评审者应报告歧义描述",
+    "file": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M5_AI_StateMachine\\MES_M5_L1_defective.json"
+  },
+  {
+    "model": "M5",
+    "level": "L1",
+    "id": "DEF-6",
+    "type": "omission",
+    "description": "删除 10 条追溯记录",
+    "expected": "评审者应报告可追溯性缺失",
+    "file": "C:\\Users\\zct11\\WorkBuddy\\2026-11-11-20-16-46\\models\\M5_AI_StateMachine\\MES_M5_L1_defective.json"
+  }
+]

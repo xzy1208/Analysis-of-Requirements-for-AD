@@ -1,0 +1,155 @@
+{
+  "reviewer": "Tencent Hunyuan 4 Flash",
+  "round": 3,
+  "reviews": [
+    {
+      "model": "M1",
+      "level": "L0",
+      "findings": [
+        {
+          "type": "omission",
+          "location": "F7 Safety_Shield / 元素集合",
+          "detail": "元素仅6个（Perception_Localization, Prediction, Behavior_Planning, Motion_Planning, Control, Route_Planning），缺失 F7 Safety Shield；追溯条目虽列 F-Safety_Shield->['Safety_Shield'] 但无对应元素。违反 R-L0-1 与 §5 F7。"
+        },
+        {
+          "type": "omission",
+          "location": "E8 checked_cmd / R-E-2 仲裁",
+          "detail": "无 checked_cmd/E8 输出，无监控仲裁环节；Control 直接产生 actuator_cmd 到裸节点，E9 未经 F7 仲裁即成为最终命令。违反 R-E-1/R-E-2 与 §5.1 'F7->outside: E8'。"
+        },
+        {
+          "type": "flow",
+          "location": "F1->F2 object table 依赖",
+          "detail": "Prediction 读取 'objects: Object_Track_DB -> Prediction'（D2），而 D2 由 F1 拥有；§5.1 要求 F1->F2 直接传递 object table，R-D-2 禁止 F2 读非自有 store。"
+        },
+        {
+          "type": "contradiction",
+          "location": "Behavior_Planning post[min_ttc<1.5]",
+          "detail": "maneuver.decel_req==2.0 与 A-1 紧急制动 6.0 m/s²（由 N-3/N-4 推导）冲突。"
+        },
+        {
+          "type": "contradiction",
+          "location": "Behavior_Planning warning 条件",
+          "detail": "仅在 min_ttc<1.5 时 warn_active=1，告警出现晚于 N-2 规定的 'warning no later than TTC=2.0 s'，且遗漏 A-5 的 caution 段（1.5~3.0 s）。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "Perception_Localization",
+          "detail": "描述 '及时处理相关数据以提供合适输出'、pre '输入应在适当时刻有效' 含'及时/合适/适当'等模糊词。"
+        },
+        {
+          "type": "omission",
+          "location": "E5 map_data / E6 traffic_rules 外部输入",
+          "detail": "D1/D4 只有 store 到函数的读流，无 E5->D1、E6->D4 刷新流；E5/E6 外部接口未作为输入建模。违反 §3 与 R-L0-1。"
+        }
+      ]
+    },
+    {
+      "model": "M3",
+      "level": "L0",
+      "findings": [
+        {
+          "type": "omission",
+          "location": "F4 Route Planning / 元素集合",
+          "detail": "元素仅 F1,F2,F3,F5,F6,F7 六个，缺失 F4 Route Planning；追溯含 F4 但无元素。违反 R-L0-1。"
+        },
+        {
+          "type": "flow",
+          "location": "route 数据流 / E4 destination",
+          "detail": "无 F4->F3、F4->F5 的 route 流；F3/F5 前置引用 route.path_length 却无生产者；E4 destination 外部输入未建模。违反 §5.1 与 R-G-4。"
+        },
+        {
+          "type": "flow",
+          "location": "E3 driver_intent -> F3",
+          "detail": "F3 pre 引用 driver_intent.requested_speed，但数据流中无 E3->F3 的命名输入流；E3 仅出现在追溯条目。违反 §3 与 R-G-4。"
+        },
+        {
+          "type": "condition",
+          "location": "F6/F7 steering 后置与守卫条件",
+          "detail": "F6 post 'steering<=1.0 and steering==-1.0'、F7 守卫同式，把 A-6 的 ±1.0 信封错误固化为恒等 -1.0；F7 应在整个信封区间内保留 F6 转向指令。属比较算子/边界语义错误。"
+        },
+        {
+          "type": "omission",
+          "location": "F3 告警触发条件",
+          "detail": "F3 有 warning->E7 流，但 post 仅 target_speed/required_decel，无基于 TTC 的 warning 逻辑；N-2（warning 不晚于 2.0 s）与 A-5 阈值未落实。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "F1 描述与 pre",
+          "detail": "'及时处理相关数据以提供合适输出'、'输入应在适当时刻有效' 含'及时/合适/适当'模糊词。"
+        }
+      ]
+    },
+    {
+      "model": "M4",
+      "level": "L0",
+      "findings": [
+        {
+          "type": "omission",
+          "location": "F4 Route Planning / 元素集合",
+          "detail": "元素仅 F1,F2,F3,F5,F6,F7 六个，缺失 F4 Route Planning；违反 R-L0-1。"
+        },
+        {
+          "type": "flow",
+          "location": "route 数据流 / E4 destination",
+          "detail": "无 F4->F3、F4->F5 的 route 流；F3/F5 pre 引用 route<>null 但无生产者；E4 destination 未建模。违反 §5.1 与 R-G-4。"
+        },
+        {
+          "type": "contradiction",
+          "location": "F5 post[true]",
+          "detail": "horizon_duration_s==0.0 与 A-7 规划时域 3.0 s 冲突；F5 应生成覆盖 planning horizon 的可行轨迹。"
+        },
+        {
+          "type": "condition",
+          "location": "F6/F7 后置条件",
+          "detail": "F6 'accel_cmd_ms2<=3.0 and accel_cmd_ms2==-2.0'、'steering_cmd<=1.0 and steering_cmd==-1.0'，F7 'checked_accel_cmd_ms2<=3.0 and == -2.0'：把 A-3(=3.0)/A-6(±1.0) 上限信封错误写成固定值，比较/边界语义错误。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "F1 描述与 pre",
+          "detail": "'及时处理相关数据以提供合适输出'、'输入应在适当时刻有效' 含'及时/合适/适当'模糊词。"
+        },
+        {
+          "type": "flow",
+          "location": "E5->D1 / E6->D4",
+          "detail": "同一外部接口对同一 store 出现重复依赖：map_data 与 hd_map_refresh 均 E5->D1，traffic_rules 与 traffic_rules_refresh 均 E6->D4，违反 R-G-4 的单一命名依赖。"
+        }
+      ]
+    },
+    {
+      "model": "M5",
+      "level": "L1",
+      "findings": [
+        {
+          "type": "contradiction",
+          "location": "EmergencyBrake / T3,T13,T16,T20,T27",
+          "detail": "紧急减速统一取 2.0 m/s²（maneuver.deceleration==2.0），与 A-1 = 6.0 m/s²（N-3/N-4 推导）冲突。"
+        },
+        {
+          "type": "condition",
+          "location": "T9/T11, T10/T12, T17/T24 驾驶员加速覆盖",
+          "detail": "F3.3 规定 no-risk/caution 下驾驶员加速请求优先、critical 下不得覆盖。但 T11（no_risk->cruise）、T12（caution->deceleration）未产出 driver_accelerate；T17/T24 对 driver_accel_request 无条件产出 driver_accelerate/cruise，critical 时 T17 会用驾驶员请求覆盖紧急制动。T9↔T11、T10↔T12、T17↔T24 并列冲突。"
+        },
+        {
+          "type": "flow",
+          "location": "min_ttc / obj_count / risk_level",
+          "detail": "多个 transition 前置引用 min_ttc、obj_count、risk_level，但无生产者流：F3.1 的最小 TTC 与对象数计算、F3.2 的风险等级输出均未建模，属悬空输入，违反 §6 与 R-G-4。"
+        },
+        {
+          "type": "omission",
+          "location": "FaultDegraded / Deactivated / Standstill",
+          "detail": "三个状态标注为 synthetic / substate，未在 open-issues 声明且无需求追溯（R-SCOPE-4 仅覆盖 Normal/Caution/EmergencyBrake/DriverOverride），违反 R-G-3。"
+        },
+        {
+          "type": "ambiguous",
+          "location": "T1 描述与 pre",
+          "detail": "'及时处理相关数据以提供合适输出'、'输入应在适当时刻有效' 含'及时/合适/适当'模糊词。"
+        },
+        {
+          "type": "contradiction",
+          "location": "E8 checked_cmd / E9",
+          "detail": "E9 未作为输入建模，而 T3/T13/T20/T27 直接输出 checked_cmd/E8；违反 R-E-2（E8 须为 F7 对 E9 的仲裁结果）与 F3.3 仅输出 manoeuvre 的职责。"
+        }
+      ]
+    }
+  ]
+}

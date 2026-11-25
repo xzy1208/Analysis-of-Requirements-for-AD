@@ -1,0 +1,1097 @@
+{
+  "model_id": "M3",
+  "model_title": "LLM-generated structured DFD (Yourdon/DeMarco) - Level 0",
+  "level": "L0",
+  "parent_module": null,
+  "provenance": {
+    "producer": "llm",
+    "llm_family": "Tencent Hunyuan 4 Flash",
+    "generation_date": "2026-11-18",
+    "passes": 1,
+    "prompt_summary": "Generate a structured Yourdon/DeMarco DFD for the vehicle-level ADAS from NL-RQ-ADAS-v1 as a single pass; thresholds only from spec sections 7 and 8.",
+    "self_review_performed": false
+  },
+  "elements": [
+    {
+      "id": "F1",
+      "kind": "function",
+      "name": "Perception_Localization",
+      "responsibility": "及时处理相关数据以提供合适输出",
+      "inputs": [
+        {
+          "name": "raw_sensor_data",
+          "source": "E1"
+        },
+        {
+          "name": "gnss_imu",
+          "source": "E2"
+        },
+        {
+          "name": "hd_map_segment",
+          "source": "D1"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "object_table",
+          "consumers": [
+            "D2",
+            "F2"
+          ]
+        },
+        {
+          "name": "ego_state",
+          "consumers": [
+            "D3",
+            "F2",
+            "F3",
+            "F5"
+          ]
+        }
+      ],
+      "stores_read": [
+        "D1"
+      ],
+      "stores_written": [
+        "D2",
+        "D3"
+      ],
+      "preconditions": [
+        "输入应在适当时刻有效"
+      ],
+      "postconditions": [
+        {
+          "guard": "true",
+          "effect": "ego_state.speed == 0 and object_table.lead_velocity == 0"
+        }
+      ],
+      "quantified": false,
+      "invariants": [
+        "yaw_rate <= 3.5"
+      ],
+      "notes": "DFD semantics externalised in M3_process_dictionary.md."
+    },
+    {
+      "id": "F2",
+      "kind": "function",
+      "name": "Prediction",
+      "responsibility": "Predict relevant object trajectories over at least 3 s and derive the minimum TTC; the only TTC-computing function.",
+      "inputs": [
+        {
+          "name": "object_table",
+          "source": "F1"
+        },
+        {
+          "name": "ego_state",
+          "source": "F1"
+        },
+        {
+          "name": "hd_map_segment",
+          "source": "D1"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "predicted_trajectories",
+          "consumers": [
+            "F3",
+            "F5"
+          ]
+        }
+      ],
+      "stores_read": [
+        "D1"
+      ],
+      "stores_written": [],
+      "preconditions": [
+        "ego_state.speed == 0",
+        "object_table.lead_velocity == 0"
+      ],
+      "postconditions": [
+        {
+          "guard": "true",
+          "effect": "predicted_trajectories.horizon == 3.0 and min_ttc == 0"
+        }
+      ],
+      "quantified": true,
+      "invariants": [],
+      "notes": ""
+    },
+    {
+      "id": "F3",
+      "kind": "function",
+      "name": "Behaviour_Planning",
+      "responsibility": "Decide the target manoeuvre and driver warning each planning cycle, respecting traffic rules and driver intent.",
+      "inputs": [
+        {
+          "name": "ego_state",
+          "source": "F1"
+        },
+        {
+          "name": "traffic_rules",
+          "source": "D4"
+        },
+        {
+          "name": "predicted_trajectories",
+          "source": "F2"
+        },
+        {
+          "name": "driver_intent",
+          "source": "E3"
+        },
+        {
+          "name": "route",
+          "source": "F4"
+        },
+        {
+          "name": "hd_map_segment",
+          "source": "D1"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "manoeuvre",
+          "consumers": [
+            "F5"
+          ]
+        },
+        {
+          "name": "warning",
+          "consumers": [
+            "E7"
+          ]
+        }
+      ],
+      "stores_read": [
+        "D1",
+        "D4"
+      ],
+      "stores_written": [],
+      "preconditions": [
+        "traffic_rules.speed_limit == 0",
+        "driver_intent.requested_speed == 0",
+        "route.path_length > 0"
+      ],
+      "postconditions": [
+        {
+          "guard": "true",
+          "effect": "manoeuvre.target_speed == 0 and manoeuvre.required_decel == 0"
+        }
+      ],
+      "quantified": false,
+      "invariants": [],
+      "notes": "Numeric thresholds realised in child model MES_M3_L1.json (F3.2/F3.3)."
+    },
+    {
+      "id": "F5",
+      "kind": "function",
+      "name": "Motion_Planning",
+      "responsibility": "Convert the manoeuvre into a kinematically feasible trajectory that never exceeds the speed limit.",
+      "inputs": [
+        {
+          "name": "manoeuvre",
+          "source": "F3"
+        },
+        {
+          "name": "route",
+          "source": "F4"
+        },
+        {
+          "name": "ego_state",
+          "source": "F1"
+        },
+        {
+          "name": "predicted_trajectories",
+          "source": "F2"
+        },
+        {
+          "name": "hd_map_segment",
+          "source": "D1"
+        },
+        {
+          "name": "traffic_rules",
+          "source": "D4"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "trajectory",
+          "consumers": [
+            "F6"
+          ]
+        }
+      ],
+      "stores_read": [
+        "D1",
+        "D4"
+      ],
+      "stores_written": [],
+      "preconditions": [
+        "traffic_rules.speed_limit == 0",
+        "manoeuvre.target_speed == 0",
+        "route.path_length > 0"
+      ],
+      "postconditions": [
+        {
+          "guard": "true",
+          "effect": "trajectory.max_speed <= traffic_rules.speed_limit and trajectory.max_accel <= 3.0 and trajectory.required_decel == manoeuvre.required_decel"
+        }
+      ],
+      "quantified": true,
+      "invariants": [],
+      "notes": "RSS safe distance N-5 with A-2 parameters; lateral envelope N-7."
+    },
+    {
+      "id": "F6",
+      "kind": "function",
+      "name": "Control",
+      "responsibility": "Convert the trajectory into an actuation command inside the actuator envelope.",
+      "inputs": [
+        {
+          "name": "trajectory",
+          "source": "F5"
+        },
+        {
+          "name": "ego_state",
+          "source": "D3"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "actuator_cmd",
+          "consumers": [
+            "E9"
+          ]
+        }
+      ],
+      "stores_read": [
+        "D3"
+      ],
+      "stores_written": [],
+      "preconditions": [
+        "trajectory.max_accel <= 3.0",
+        "ego_state.speed == 0"
+      ],
+      "postconditions": [
+        {
+          "guard": "true",
+          "effect": "actuator_cmd.longitudinal_accel <= 3.0 and actuator_cmd.steering <= 1.0 and actuator_cmd.steering == -1.0"
+        }
+      ],
+      "quantified": true,
+      "invariants": [],
+      "notes": "Envelope A-3 (3.0), A-6 (+/-1.0), A-4 (3.5 rad/s)."
+    },
+    {
+      "id": "F7",
+      "kind": "function",
+      "name": "Safety_Shield",
+      "responsibility": "Monitor and arbitrate F6's command into E8 so the safety envelope and traffic rules are satisfied.",
+      "inputs": [
+        {
+          "name": "actuator_cmd",
+          "source": "E9"
+        },
+        {
+          "name": "ego_state",
+          "source": "D3"
+        },
+        {
+          "name": "traffic_rules",
+          "source": "D4"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "checked_cmd",
+          "consumers": [
+            "E8"
+          ]
+        }
+      ],
+      "stores_read": [
+        "D3",
+        "D4"
+      ],
+      "stores_written": [],
+      "preconditions": [
+        "traffic_rules.speed_limit == 0",
+        "ego_state.speed == 0",
+        "actuator_cmd.steering <= 1.0"
+      ],
+      "postconditions": [
+        {
+          "guard": "true",
+          "effect": "checked_cmd.longitudinal_accel <= 3.0 and checked_cmd.brake == 0"
+        },
+        {
+          "guard": "actuator_cmd.steering <= 1.0 and actuator_cmd.steering == -1.0",
+          "effect": "checked_cmd.steering = actuator_cmd.steering"
+        },
+        {
+          "guard": "actuator_cmd.steering > 1.0",
+          "effect": "checked_cmd.steering = 1.0"
+        },
+        {
+          "guard": "actuator_cmd.steering < -1.0",
+          "effect": "checked_cmd.steering = -1.0"
+        }
+      ],
+      "quantified": true,
+      "invariants": [],
+      "notes": "E8 is always monitor(E9) per R-E-2; RSS braking N-6 with A-2 parameters."
+    }
+  ],
+  "stores": [
+    {
+      "id": "D1",
+      "name": "HD_Map_Store",
+      "content": [
+        "road_id",
+        "lane_id",
+        "speed_limit",
+        "curvature",
+        "lane_topology"
+      ],
+      "owner": "F5/F1",
+      "writers": [
+        "E5"
+      ],
+      "readers": [
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5"
+      ],
+      "persistent": true
+    },
+    {
+      "id": "D2",
+      "name": "Object_Track_Store",
+      "content": [
+        "obj_count",
+        "obj_id",
+        "position_x",
+        "position_y",
+        "velocity",
+        "class",
+        "lead_id",
+        "lead_kinematics"
+      ],
+      "owner": "F1",
+      "writers": [
+        "F1"
+      ],
+      "readers": [
+        "F2"
+      ],
+      "persistent": true
+    },
+    {
+      "id": "D3",
+      "name": "Ego_State_Store",
+      "content": [
+        "pose_x",
+        "pose_y",
+        "speed",
+        "yaw_rate",
+        "acceleration",
+        "update_timestamp"
+      ],
+      "owner": "F1",
+      "writers": [
+        "F1"
+      ],
+      "readers": [
+        "F6",
+        "F7"
+      ],
+      "persistent": true
+    },
+    {
+      "id": "D4",
+      "name": "Traffic_Rules_Store",
+      "content": [
+        "speed_limit",
+        "signal_state"
+      ],
+      "owner": "F5",
+      "writers": [
+        "E6"
+      ],
+      "readers": [
+        "F3",
+        "F5",
+        "F7"
+      ],
+      "persistent": true
+    }
+  ],
+  "externals": [
+    {
+      "id": "E1",
+      "name": "raw_sensor_data",
+      "direction": "in",
+      "content": [
+        "camera_frames",
+        "radar_frames",
+        "lidar_frames",
+        "validity_flags",
+        "timestamps"
+      ],
+      "consumers": [
+        "F1"
+      ]
+    },
+    {
+      "id": "E2",
+      "name": "gnss_imu",
+      "direction": "in",
+      "content": [
+        "position",
+        "heading",
+        "angular_rate",
+        "acceleration",
+        "validity_flags"
+      ],
+      "consumers": [
+        "F1"
+      ]
+    },
+    {
+      "id": "E3",
+      "name": "driver_intent",
+      "direction": "in",
+      "content": [
+        "requested_speed",
+        "override",
+        "driver_attention"
+      ],
+      "consumers": [
+        "F3"
+      ]
+    },
+    {
+      "id": "E4",
+      "name": "destination",
+      "direction": "in",
+      "content": [
+        "longitude",
+        "latitude",
+        "route_preferences"
+      ],
+      "consumers": [
+        "F4"
+      ]
+    },
+    {
+      "id": "E5",
+      "name": "map_data",
+      "direction": "in",
+      "content": [
+        "road_id",
+        "lane_id",
+        "speed_limit",
+        "curvature",
+        "lane_topology"
+      ],
+      "consumers": [
+        "D1"
+      ]
+    },
+    {
+      "id": "E6",
+      "name": "traffic_rules",
+      "direction": "in",
+      "content": [
+        "speed_limit",
+        "signal_state"
+      ],
+      "consumers": [
+        "D4"
+      ]
+    },
+    {
+      "id": "E7",
+      "name": "warning",
+      "direction": "out",
+      "content": [
+        "warning_type",
+        "active_flag"
+      ],
+      "consumers": []
+    },
+    {
+      "id": "E8",
+      "name": "checked_cmd",
+      "direction": "out",
+      "content": [
+        "longitudinal_accel_cmd",
+        "brake_cmd",
+        "steering_cmd"
+      ],
+      "consumers": []
+    },
+    {
+      "id": "E9",
+      "name": "actuator_cmd",
+      "direction": "in",
+      "content": [
+        "longitudinal_accel_cmd",
+        "brake_cmd",
+        "steering_cmd"
+      ],
+      "consumers": [
+        "F7"
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "name": "raw_sensor_data",
+      "producer": "E1",
+      "consumer": "F1",
+      "kind": "boundary_in",
+      "carries": [
+        "raw_sensor_data"
+      ]
+    },
+    {
+      "name": "gnss_imu",
+      "producer": "E2",
+      "consumer": "F1",
+      "kind": "boundary_in",
+      "carries": [
+        "gnss_imu"
+      ]
+    },
+    {
+      "name": "hd_map_segment",
+      "producer": "D1",
+      "consumer": "F1",
+      "kind": "store_read",
+      "carries": [
+        "hd_map_segment"
+      ]
+    },
+    {
+      "name": "ego_state",
+      "producer": "F1",
+      "consumer": "F2",
+      "kind": "active",
+      "carries": [
+        "ego_state"
+      ]
+    },
+    {
+      "name": "object_table",
+      "producer": "F1",
+      "consumer": "F2",
+      "kind": "active",
+      "carries": [
+        "object_table"
+      ]
+    },
+    {
+      "name": "ego_state",
+      "producer": "F1",
+      "consumer": "F3",
+      "kind": "active",
+      "carries": [
+        "ego_state"
+      ]
+    },
+    {
+      "name": "ego_state",
+      "producer": "F1",
+      "consumer": "F5",
+      "kind": "active",
+      "carries": [
+        "ego_state"
+      ]
+    },
+    {
+      "name": "predicted_trajectories",
+      "producer": "F2",
+      "consumer": "F3",
+      "kind": "active",
+      "carries": [
+        "predicted_trajectories"
+      ]
+    },
+    {
+      "name": "predicted_trajectories",
+      "producer": "F2",
+      "consumer": "F5",
+      "kind": "active",
+      "carries": [
+        "predicted_trajectories"
+      ]
+    },
+    {
+      "name": "manoeuvre",
+      "producer": "F3",
+      "consumer": "F5",
+      "kind": "active",
+      "carries": [
+        "manoeuvre"
+      ]
+    },
+    {
+      "name": "warning",
+      "producer": "F3",
+      "consumer": "E7",
+      "kind": "boundary_out",
+      "carries": [
+        "warning"
+      ]
+    },
+    {
+      "name": "trajectory",
+      "producer": "F5",
+      "consumer": "F6",
+      "kind": "active",
+      "carries": [
+        "trajectory"
+      ]
+    },
+    {
+      "name": "actuator_cmd",
+      "producer": "F6",
+      "consumer": "E9",
+      "kind": "boundary_out",
+      "carries": [
+        "actuator_cmd"
+      ]
+    },
+    {
+      "name": "checked_cmd",
+      "producer": "F7",
+      "consumer": "E8",
+      "kind": "boundary_out",
+      "carries": [
+        "checked_cmd"
+      ]
+    },
+    {
+      "name": "object_table",
+      "producer": "F1",
+      "consumer": "D2",
+      "kind": "store_write",
+      "carries": [
+        "object_table"
+      ]
+    },
+    {
+      "name": "ego_state",
+      "producer": "F1",
+      "consumer": "D3",
+      "kind": "store_write",
+      "carries": [
+        "ego_state"
+      ]
+    },
+    {
+      "name": "map_data",
+      "producer": "E5",
+      "consumer": "D1",
+      "kind": "store_write",
+      "carries": [
+        "map_data"
+      ]
+    },
+    {
+      "name": "traffic_rules",
+      "producer": "E6",
+      "consumer": "D4",
+      "kind": "store_write",
+      "carries": [
+        "traffic_rules"
+      ]
+    },
+    {
+      "name": "hd_map_segment",
+      "producer": "D1",
+      "consumer": "F2",
+      "kind": "store_read",
+      "carries": [
+        "hd_map_segment"
+      ]
+    },
+    {
+      "name": "hd_map_segment",
+      "producer": "D1",
+      "consumer": "F3",
+      "kind": "store_read",
+      "carries": [
+        "hd_map_segment"
+      ]
+    },
+    {
+      "name": "hd_map_segment",
+      "producer": "D1",
+      "consumer": "F5",
+      "kind": "store_read",
+      "carries": [
+        "hd_map_segment"
+      ]
+    },
+    {
+      "name": "traffic_rules",
+      "producer": "D4",
+      "consumer": "F3",
+      "kind": "store_read",
+      "carries": [
+        "traffic_rules"
+      ]
+    },
+    {
+      "name": "traffic_rules",
+      "producer": "D4",
+      "consumer": "F5",
+      "kind": "store_read",
+      "carries": [
+        "traffic_rules"
+      ]
+    },
+    {
+      "name": "traffic_rules",
+      "producer": "D4",
+      "consumer": "F7",
+      "kind": "store_read",
+      "carries": [
+        "traffic_rules"
+      ]
+    },
+    {
+      "name": "ego_state",
+      "producer": "D3",
+      "consumer": "F6",
+      "kind": "store_read",
+      "carries": [
+        "ego_state"
+      ]
+    },
+    {
+      "name": "ego_state",
+      "producer": "D3",
+      "consumer": "F7",
+      "kind": "store_read",
+      "carries": [
+        "ego_state"
+      ]
+    }
+  ],
+  "traceability": [
+    {
+      "requirement": "R-SCOPE-1",
+      "elements": [
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6",
+        "F7"
+      ],
+      "realised_by": "whole model",
+      "note": "Onboard ADAS at SAE L2 within the vehicle boundary."
+    },
+    {
+      "requirement": "R-SCOPE-2",
+      "elements": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6",
+        "E7",
+        "E8",
+        "E9"
+      ],
+      "realised_by": "external entities",
+      "note": "Everything outside the vehicle is an external interface."
+    },
+    {
+      "requirement": "R-SCOPE-3",
+      "elements": [
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6",
+        "F7"
+      ],
+      "realised_by": "functional allocation",
+      "note": "Only functional allocation and data dependencies are modelled."
+    },
+    {
+      "requirement": "R-SCOPE-4",
+      "elements": [
+        "F3",
+        "F3.1",
+        "F3.2",
+        "F3.3"
+      ],
+      "realised_by": "level split",
+      "note": "Two levels; only F3 refined."
+    },
+    {
+      "requirement": "R-E-1",
+      "elements": [
+        "E7",
+        "E8",
+        "F3",
+        "F7"
+      ],
+      "realised_by": "boundary_out flows",
+      "note": "E7 and E8 are the only outputs."
+    },
+    {
+      "requirement": "R-E-2",
+      "elements": [
+        "E9",
+        "E8",
+        "F6",
+        "F7"
+      ],
+      "realised_by": "monitoring flow",
+      "note": "E8 = monitor(E9); E9 never reaches actuators directly."
+    },
+    {
+      "requirement": "R-D-1",
+      "elements": [
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "F1",
+        "F5"
+      ],
+      "realised_by": "store ownership",
+      "note": "Writers recorded per store; D1/D4 refresh tension noted as open issue."
+    },
+    {
+      "requirement": "R-D-2",
+      "elements": [
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6",
+        "F7"
+      ],
+      "realised_by": "store_read flows",
+      "note": "Only explicitly assigned reads."
+    },
+    {
+      "requirement": "R-L0-1",
+      "elements": [
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6",
+        "F7",
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6",
+        "E7",
+        "E8",
+        "E9"
+      ],
+      "realised_by": "element counts",
+      "note": "Exactly 7 processes, 4 stores, 9 externals."
+    },
+    {
+      "requirement": "R-L1-1",
+      "elements": [
+        "F3.1",
+        "F3.2",
+        "F3.3"
+      ],
+      "realised_by": "child model",
+      "note": "Realised in MES_M3_L1.json."
+    },
+    {
+      "requirement": "R-G-1",
+      "elements": [
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6",
+        "F7"
+      ],
+      "realised_by": "preconditions and postconditions",
+      "note": "Externalised in M3_process_dictionary.md."
+    },
+    {
+      "requirement": "R-G-2",
+      "elements": [
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6",
+        "F7"
+      ],
+      "realised_by": "traceability matrix",
+      "note": "README.md traceability matrix."
+    },
+    {
+      "requirement": "R-G-3",
+      "elements": [
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6",
+        "F7"
+      ],
+      "realised_by": "open issues",
+      "note": "No synthetic elements introduced at L0."
+    },
+    {
+      "requirement": "R-G-4",
+      "elements": [
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6",
+        "F7"
+      ],
+      "realised_by": "flows",
+      "note": "Every dependency is an explicit named directed flow; shared flows declared twice."
+    },
+    {
+      "requirement": "R-G-5",
+      "elements": [
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6",
+        "F7"
+      ],
+      "realised_by": "consumers lists",
+      "note": "No producer emits an unrequested datum."
+    },
+    {
+      "requirement": "R-G-6",
+      "elements": [
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6",
+        "F7"
+      ],
+      "realised_by": "field-level guards",
+      "note": "Field-level guards only; vacuous null-value checks excluded."
+    },
+    {
+      "requirement": "F1",
+      "elements": [
+        "F1"
+      ],
+      "realised_by": "process",
+      "note": ""
+    },
+    {
+      "requirement": "F2",
+      "elements": [
+        "F2"
+      ],
+      "realised_by": "process",
+      "note": ""
+    },
+    {
+      "requirement": "F3",
+      "elements": [
+        "F3"
+      ],
+      "realised_by": "process",
+      "note": ""
+    },
+    {
+      "requirement": "F4",
+      "elements": [
+        "F4"
+      ],
+      "realised_by": "process",
+      "note": ""
+    },
+    {
+      "requirement": "F5",
+      "elements": [
+        "F5"
+      ],
+      "realised_by": "process",
+      "note": ""
+    }
+  ],
+  "open_issues": [
+    {
+      "id": "OI-1",
+      "issue": "Whether seven functions suffice for the L2 ODD; a separate driver-monitoring function may be needed.",
+      "related_requirement": "R-SCOPE-1",
+      "impact": "medium"
+    },
+    {
+      "id": "OI-2",
+      "issue": "D3 is written by F1 but read by F6/F7; ownership under R-D-1 is questionable.",
+      "related_requirement": "R-D-1",
+      "impact": "medium"
+    },
+    {
+      "id": "OI-3",
+      "issue": "The specification fixes thresholds yet gives no timing; a cycle-time requirement is needed for the emergency branch to be meaningful.",
+      "related_requirement": "F3.3",
+      "impact": "high"
+    },
+    {
+      "id": "OI-4",
+      "issue": "Whether the AEB branch of F3 is the right Level-1 refinement instead of the F6/F7 actuation chain.",
+      "related_requirement": "R-SCOPE-4",
+      "impact": "medium"
+    },
+    {
+      "id": "OI-5",
+      "issue": "E5/E6 refresh D1/D4 directly although R-D-1 says only owner functions write stores and section 5.1 assigns no in-function writer for D1/D4.",
+      "related_requirement": "R-D-1",
+      "impact": "medium"
+    },
+    {
+      "id": "OI-6",
+      "issue": "E9 is modelled as an external entity between F6 and F7 to satisfy the section-3 mandate, although it is semantically an internal interface.",
+      "related_requirement": "R-E-2",
+      "impact": "low"
+    },
+    {
+      "id": "OI-7",
+      "issue": "F3's ego_state input is modelled as an F1->F3 flow to satisfy R-G-4, although section 5.1 omits it from mandatory dependencies.",
+      "related_requirement": "R-G-4",
+      "impact": "low"
+    }
+  ]
+}

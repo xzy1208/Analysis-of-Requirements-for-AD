@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<module name="AEB_Branch">
+  <constantDeclaration>
+  </constantDeclaration>
+  <typeDeclaration>
+AEB_TTCSet = composed of
+        obj_count: nat
+        min_ttc: real
+      end
+AEB_RiskLevel = composed of
+        risk_code: nat
+      end
+AEB_Manoeuvre = composed of
+        manoeuvre_type: nat
+        target_speed: real
+        target_lane: String
+        required_decel: real
+      end
+AEB_Warning = composed of
+        warning_type: nat
+        active: nat
+      end
+  </typeDeclaration>
+  <variableDeclaration>
+  </variableDeclaration>
+  <typeAndStateInvariants>
+  </typeAndStateInvariants>
+  <moduleDecom>
+    ADAS_System
+  </moduleDecom>
+  <processList>
+    <process name="TTC_Computation" head="(predicted_trajectories:  | ego_state:  )ttc_set:  ">
+pre predicted_trajectories&lt;&gt;null and ego_state&lt;&gt;null
+post
+if true then ttc_set&lt;&gt;null
+if true then ttc_set.obj_count&gt;=0
+if ego_state.speed&lt;=130.0 then ttc_set&lt;&gt;null
+if ttc_set.obj_count&gt;0 then ttc_set.min_ttc&gt;=0
+</process>
+    <process name="Risk_Classification" head="(ttc_set:  )risk_level:  | warning:  ">
+ext rd Traffic_Rules_DB
+pre ttc_set&lt;&gt;null and Traffic_Rules_DB&lt;&gt;null
+post
+if true then risk_level&lt;&gt;null and warning&lt;&gt;null
+if ttc_set.obj_count=0 then risk_level.risk_code=0 and warning.warning_type=0 and warning.active=0
+if ttc_set.obj_count&gt;0 and ttc_set.min_ttc&lt;=1.5 then risk_level.risk_code=2 and warning.warning_type=2 and warning.active=1
+if ttc_set.obj_count&gt;0 and ttc_set.min_ttc&gt;1.5 and ttc_set.min_ttc&lt;=3.0 then risk_level.risk_code=1 and warning.warning_type=1 and warning.active=1
+if ttc_set.obj_count&gt;0 and ttc_set.min_ttc&gt;3.0 then risk_level.risk_code=0 and warning.warning_type=0 and warning.active=0
+if ttc_set.obj_count&gt;0 and ttc_set.min_ttc&lt;=2.0 then warning.active=1
+</process>
+    <process name="Maneuver_Planning" head="(risk_level:  | ego_state:  | driver_intent:  | route:  )manoeuvre:  ">
+ext rd HD_Map_DB
+pre risk_level&lt;&gt;null and ego_state&lt;&gt;null and driver_intent&lt;&gt;null and route&lt;&gt;null and HD_Map_DB&lt;&gt;null
+post
+if true then manoeuvre&lt;&gt;null
+if risk_level.risk_code=0 then manoeuvre.manoeuvre_type=0
+if risk_level.risk_code=1 then manoeuvre.manoeuvre_type=3 and manoeuvre.required_decel&gt;0
+if risk_level.risk_code=2 then manoeuvre.manoeuvre_type=4 and manoeuvre.required_decel&gt;=6.0 and manoeuvre.target_speed=0
+if risk_level.risk_code=0 and driver_intent.accel_request=1 then manoeuvre.required_decel&lt;=0
+if risk_level.risk_code=2 and driver_intent.accel_request=1 then manoeuvre.manoeuvre_type=4
+</process>
+  </processList>
+  <functions>
+  </functions>
+</module>

@@ -1,0 +1,254 @@
+{
+  "model_id": "M4",
+  "model_title": "LLM-generated object-oriented model (UML) - vehicle-level ADAS onboard system, Level 1 refinement of the F3 AEB branch (single pass)",
+  "level": "L1",
+  "parent_module": "M4_L0",
+  "provenance": {
+    "producer": "llm",
+    "llm_family": "MiniMax-M3.1-Flash",
+    "generation_date": "2026-11-17",
+    "passes": 1,
+    "prompt_summary": "Refine the single Level-0 function F3 of the vehicle-level ADAS model into exactly three sub-functions (TTC computation, risk classification, maneuver planning) according to spec section 6, emit the matching UML class diagram, interaction sequence and MES-schema JSON; thresholds only from spec sections 7 and 8; OCL operator set restricted to = <> > >= < <= and; single pass, no self-review.",
+    "self_review_performed": false
+  },
+  "elements": [
+    {
+      "id": "F3.1",
+      "kind": "function",
+      "name": "TTC_Computation",
+      "responsibility": "Computes the TTC of every predicted object to the ego vehicle and reports the minimum TTC over the object set together with the number of objects considered.",
+      "inputs": [
+        {"name": "predicted_trajectories", "source": "F2"},
+        {"name": "min_ttc", "source": "F2"},
+        {"name": "ego_state", "source": "F1"}
+      ],
+      "outputs": [
+        {"name": "ttc_set", "consumers": ["F3.2"]}
+      ],
+      "stores_read": [],
+      "stores_written": [],
+      "preconditions": [
+        "predicted_trajectories <> null and ego_state <> null"
+      ],
+      "postconditions": [
+        {"guard": "true", "effect": "considered_object_count >= 0 and ttc_min_s >= 0.0"},
+        {"guard": "true", "effect": "horizon_s >= 3.0"},
+        {"guard": "considered_object_count = 0", "effect": "considered_object_count = 0"}
+      ],
+      "quantified": true,
+      "invariants": [
+        "horizon_s >= 3.0",
+        "considered_object_count >= 0 and ttc_min_s >= 0.0"
+      ],
+      "notes": "The empty-object case is reported with a count of 0; the specification defines no sentinel value for 'no minimum TTC' (OI-12). The specification also gives F2 the exclusive right to compute TTC while this sub-function must compute it again (OI-6)."
+    },
+    {
+      "id": "F3.2",
+      "kind": "function",
+      "name": "Risk_Classification",
+      "responsibility": "Classifies the situation into a risk level as a function of the minimum TTC and raises the driver warning for caution and critical but not for no risk.",
+      "inputs": [
+        {"name": "ttc_set", "source": "F3.1"},
+        {"name": "traffic_rules", "source": "D4"}
+      ],
+      "outputs": [
+        {"name": "risk_level", "consumers": ["F3.3"]},
+        {"name": "warning", "consumers": ["E7"]}
+      ],
+      "stores_read": ["D4"],
+      "stores_written": [],
+      "preconditions": [
+        "ttc_set <> null and traffic_rules <> null"
+      ],
+      "postconditions": [
+        {"guard": "risk_level = 'no_risk'", "effect": "ttc_min_s > 3.0"},
+        {"guard": "risk_level = 'caution'", "effect": "ttc_min_s <= 3.0 and ttc_min_s > 1.5"},
+        {"guard": "risk_level = 'critical'", "effect": "ttc_min_s <= 1.5"},
+        {"guard": "risk_level = 'caution'", "effect": "warning_type = 'caution' and warning_active = 'true'"},
+        {"guard": "risk_level = 'critical'", "effect": "warning_type = 'imminent collision' and warning_active = 'true'"},
+        {"guard": "risk_level = 'no_risk'", "effect": "warning_type = 'none' and warning_active = 'false'"},
+        {"guard": "ttc_min_s <= 2.0", "effect": "warning_type <> 'none'"}
+      ],
+      "quantified": true,
+      "invariants": [
+        "risk_level = 'no_risk' | ttc_min_s > 3.0",
+        "risk_level = 'caution' | ttc_min_s <= 3.0 and ttc_min_s > 1.5",
+        "risk_level = 'critical' | ttc_min_s <= 1.5",
+        "ttc_min_s <= 2.0 | warning_type <> 'none'"
+      ],
+      "notes": "Band thresholds A-5 (T_risk_high = 3.0 s, T_fcw = 1.5 s); the warning deadline N-2 (2.0 s) is expressed as 'a warning must be present no later than TTC = 2.0 s'. Warning types come from E7: none / caution / imminent collision."
+    },
+    {
+      "id": "F3.3",
+      "kind": "function",
+      "name": "Maneuver_Planning",
+      "responsibility": "Produces the cruise/keep-lane manoeuvre for no risk, a deceleration manoeuvre with a non-zero required deceleration for caution, and an emergency deceleration manoeuvre with a required deceleration of at least 6.0 m/s2 and a target speed of 0 for critical, and does not override the emergency manoeuvre with a driver request to accelerate.",
+      "inputs": [
+        {"name": "risk_level", "source": "F3.2"},
+        {"name": "ego_state", "source": "F1"},
+        {"name": "driver_intent", "source": "E3"},
+        {"name": "route", "source": "F4"},
+        {"name": "hd_map_segment", "source": "D1"}
+      ],
+      "outputs": [
+        {"name": "manoeuvre", "consumers": ["F5"]}
+      ],
+      "stores_read": ["D1"],
+      "stores_written": [],
+      "preconditions": [
+        "risk_level <> '' and ego_state <> null and driver_intent <> null and route <> null and hd_map_segment <> null"
+      ],
+      "postconditions": [
+        {"guard": "risk_level = 'no_risk'", "effect": "manoeuvre_type = 'cruise'"},
+        {"guard": "risk_level = 'no_risk'", "effect": "manoeuvre_type = 'keep_lane'"},
+        {"guard": "risk_level = 'caution'", "effect": "required_decel_ms2 > 0.0"},
+        {"guard": "risk_level = 'critical'", "effect": "required_decel_ms2 >= 6.0 and target_speed_kmh = 0.0"},
+        {"guard": "risk_level = 'critical'", "effect": "ego_speed_kmh <= 130.0"},
+        {"guard": "driver_accel_request = 'true' and risk_level = 'critical'", "effect": "required_decel_ms2 >= 6.0 and target_speed_kmh = 0.0"},
+        {"guard": "driver_accel_request = 'true' and risk_level <> 'critical'", "effect": "manoeuvre_type <> 'emergency_deceleration' and required_decel_ms2 >= 0.0"}
+      ],
+      "quantified": true,
+      "invariants": [
+        "risk_level = 'critical' | required_decel_ms2 >= 6.0 and target_speed_kmh = 0.0",
+        "risk_level = 'critical' | ego_speed_kmh <= 130.0",
+        "driver_accel_request = 'true' and risk_level = 'critical' | required_decel_ms2 >= 6.0 and target_speed_kmh = 0.0",
+        "driver_accel_request = 'true' and risk_level <> 'critical' | manoeuvre_type <> 'emergency_deceleration' and required_decel_ms2 >= 0.0"
+      ],
+      "notes": "A-1 (6.0 m/s2) and N-1 (130 km/h). The disjunction {cruise, keep_lane} is expressed as two guarded postconditions because 'or' is not in the permitted operator set."
+    },
+    {
+      "id": "F1",
+      "kind": "function",
+      "name": "Perception_Localisation",
+      "responsibility": "Parent element of the Level-0 model; producer of ego_state. Not refined at Level 1.",
+      "inputs": [],
+      "outputs": [{"name": "ego_state", "consumers": ["F3.1", "F3.3"]}],
+      "stores_read": ["D1"],
+      "stores_written": ["D2", "D3"],
+      "preconditions": [],
+      "postconditions": [],
+      "quantified": false,
+      "invariants": [],
+      "level": "parent",
+      "notes": "Level-0 element, unchanged by the Level-1 refinement."
+    },
+    {
+      "id": "F2",
+      "kind": "function",
+      "name": "Prediction",
+      "responsibility": "Parent element of the Level-0 model; producer of predicted_trajectories and min_ttc. Not refined at Level 1.",
+      "inputs": [],
+      "outputs": [{"name": "predicted_trajectories", "consumers": ["F3.1"]}, {"name": "min_ttc", "consumers": ["F3.1"]}],
+      "stores_read": ["D1"],
+      "stores_written": [],
+      "preconditions": [],
+      "postconditions": [],
+      "quantified": false,
+      "invariants": [],
+      "level": "parent",
+      "notes": "Level-0 element, unchanged by the Level-1 refinement."
+    },
+    {
+      "id": "F4",
+      "kind": "function",
+      "name": "Route_Planning",
+      "responsibility": "Parent element of the Level-0 model; producer of the route. Not refined at Level 1.",
+      "inputs": [],
+      "outputs": [{"name": "route", "consumers": ["F3.3"]}],
+      "stores_read": ["D1"],
+      "stores_written": [],
+      "preconditions": [],
+      "postconditions": [],
+      "quantified": false,
+      "invariants": [],
+      "level": "parent",
+      "notes": "Level-0 element, unchanged by the Level-1 refinement."
+    },
+    {
+      "id": "F5",
+      "kind": "function",
+      "name": "Motion_Planning",
+      "responsibility": "Parent element of the Level-0 model; consumer of the manoeuvre produced by the refinement. Not refined at Level 1.",
+      "inputs": [{"name": "manoeuvre", "source": "F3.3"}],
+      "outputs": [],
+      "stores_read": ["D1", "D4"],
+      "stores_written": [],
+      "preconditions": [],
+      "postconditions": [],
+      "quantified": false,
+      "invariants": [],
+      "level": "parent",
+      "notes": "Level-0 element, unchanged by the Level-1 refinement."
+    }
+  ],
+  "stores": [
+    {
+      "id": "D1",
+      "name": "HD_Map_Store",
+      "content": ["road_id", "lane_id", "posted_speed_limit_kmh", "curvature_inv_m", "lane_topology"],
+      "owner": "E5",
+      "writers": ["E5"],
+      "readers": ["F3.3"],
+      "persistent": true,
+      "level": "parent",
+      "notes": "Parent store of the Level-0 model; the readers listed here are the ones relevant for the Level-1 refinement (the full reader set is in MES_M4_L0.json). The refresh write by E5 belongs to the Level-0 flow set."
+    },
+    {
+      "id": "D4",
+      "name": "Traffic_Rules_Store",
+      "content": ["posted_speed_limit_kmh", "traffic_signal_state"],
+      "owner": "E6",
+      "writers": ["E6"],
+      "readers": ["F3.2"],
+      "persistent": true,
+      "level": "parent",
+      "notes": "Parent store of the Level-0 model; the readers listed here are the ones relevant for the Level-1 refinement (the full reader set is in MES_M4_L0.json). The refresh write by E6 belongs to the Level-0 flow set."
+    }
+  ],
+  "externals": [
+    {"id": "E3", "name": "driver_intent", "direction": "in", "content": ["requested cruise speed", "requested manual override", "driver-attention state", "ODD status"], "consumers": ["F3.3"], "level": "parent"},
+    {"id": "E7", "name": "warning", "direction": "out", "content": ["warning type (none / caution / imminent collision)", "active flag"], "consumers": [], "level": "parent"}
+  ],
+  "flows": [
+    {"name": "predicted_trajectories", "producer": "F2", "consumer": "F3.1", "kind": "active", "carries": ["predicted_trajectories"]},
+    {"name": "min_ttc", "producer": "F2", "consumer": "F3.1", "kind": "active", "carries": ["min_ttc"]},
+    {"name": "ego_state", "producer": "F1", "consumer": "F3.1", "kind": "active", "carries": ["ego_state"]},
+    {"name": "ego_state", "producer": "F1", "consumer": "F3.3", "kind": "active", "carries": ["ego_state"]},
+    {"name": "traffic_rules", "producer": "D4", "consumer": "F3.2", "kind": "store_read", "carries": ["traffic_rules"]},
+    {"name": "hd_map_segment", "producer": "D1", "consumer": "F3.3", "kind": "store_read", "carries": ["hd_map_segment"]},
+    {"name": "driver_intent", "producer": "E3", "consumer": "F3.3", "kind": "boundary_in", "carries": ["driver_intent"]},
+    {"name": "route", "producer": "F4", "consumer": "F3.3", "kind": "active", "carries": ["route"]},
+    {"name": "ttc_set", "producer": "F3.1", "consumer": "F3.2", "kind": "active", "carries": ["ttc_set"]},
+    {"name": "risk_level", "producer": "F3.2", "consumer": "F3.3", "kind": "active", "carries": ["risk_level"]},
+    {"name": "warning", "producer": "F3.2", "consumer": "E7", "kind": "boundary_out", "carries": ["warning_type", "warning_active"]},
+    {"name": "manoeuvre", "producer": "F3.3", "consumer": "F5", "kind": "active", "carries": ["manoeuvre"]}
+  ],
+  "traceability": [
+    {"requirement": "R-SCOPE-4", "elements": ["F3.1", "F3.2", "F3.3"], "realised_by": "package in M4_L1.puml", "note": "Exactly one Level-0 function is refined; the remaining Level-0 elements are carried over unchanged."},
+    {"requirement": "R-L1-1", "elements": ["F3.1", "F3.2", "F3.3"], "realised_by": "classes", "note": "Exactly three sub-functions, which together realise the emergency-braking capability."},
+    {"requirement": "F3", "elements": ["F3.1", "F3.2", "F3.3"], "realised_by": "refinement", "note": "The manoeuvre decision, the warning decision, the traffic-rule and driver-intent handling of F3 are distributed over the three sub-functions."},
+    {"requirement": "F3.1", "elements": ["F3.1"], "realised_by": "class + constraints C-L1-1, C-L1-2, C-L1-16, C-L1-19", "note": "Minimum TTC over the object set plus the number of objects considered; count 0 for the empty set."},
+    {"requirement": "F3.2", "elements": ["F3.2"], "realised_by": "class + constraints C-L1-3 .. C-L1-6, C-L1-13 .. C-L1-17", "note": "Risk level as a function of the minimum TTC; warning raised for caution and critical only."},
+    {"requirement": "F3.3", "elements": ["F3.3"], "realised_by": "class + constraints C-L1-7 .. C-L1-12, C-L1-18", "note": "Manoeuvre per risk level; the emergency manoeuvre is not overridden by a driver acceleration request."},
+    {"requirement": "R-G-1", "elements": ["F3.1", "F3.2", "F3.3"], "realised_by": "preconditions / postconditions", "note": "Each sub-function carries named pre- and postconditions and at least one quantified constraint."},
+    {"requirement": "R-G-2", "elements": ["F3.1", "F3.2", "F3.3"], "realised_by": "traceability", "note": "Traceability matrix in README.md."},
+    {"requirement": "R-G-3", "elements": ["F3.1", "F3.2", "F3.3"], "realised_by": "open_issues", "note": "No element was introduced beyond the three sub-functions; every assumption is declared in open_issues."},
+    {"requirement": "R-G-4", "elements": [], "realised_by": "flows", "note": "Twelve named directed flows with a single producer and a single consumer each."},
+    {"requirement": "R-G-5", "elements": ["F3.1", "F3.2", "F3.3"], "realised_by": "outputs[].consumers", "note": "F3.1 -> F3.2 -> F3.3 -> F5 and F3.2 -> E7 only; no datum is produced without a consumer."},
+    {"requirement": "R-G-6", "elements": ["F3.1", "F3.2", "F3.3"], "realised_by": "preconditions", "note": "Required data is named explicitly; the warning and manoeuvre postconditions are guarded on the risk level."},
+    {"requirement": "A-1", "elements": ["F3.3"], "realised_by": "invariants C-L1-9 and C-L1-11", "note": "Emergency deceleration of 6.0 m/s2 with a target speed of 0."},
+    {"requirement": "A-5", "elements": ["F3.2"], "realised_by": "invariants C-L1-3, C-L1-4, C-L1-5", "note": "T_risk_high = 3.0 s and T_fcw = 1.5 s."},
+    {"requirement": "A-7", "elements": ["F3.1"], "realised_by": "invariant C-L1-19", "note": "The TTC is evaluated over the 3.0 s prediction horizon of F2."},
+    {"requirement": "N-1", "elements": ["F3.3"], "realised_by": "invariant C-L1-10", "note": "The emergency manoeuvre is limited to a vehicle speed of 130 km/h."},
+    {"requirement": "N-2", "elements": ["F3.2"], "realised_by": "invariant C-L1-6", "note": "A warning must be present no later than TTC = 2.0 s."}
+  ],
+  "open_issues": [
+    {"id": "OI-1", "issue": "Spec question 11.1: is the seven-function split of section 5 sufficient for the stated ODD, or is a separate driver-monitoring function for the L2 handover needed?", "related_requirement": "R-SCOPE-1", "impact": "high"},
+    {"id": "OI-2", "issue": "Spec question 11.2: D3 is written by F1 but read by F6 and F7 - is that ownership acceptable, or should a dedicated function write it?", "related_requirement": "R-D-1", "impact": "medium"},
+    {"id": "OI-3", "issue": "Spec question 11.3: the specification fixes thresholds but no timing - is a cycle-time requirement needed for the emergency branch to be meaningful?", "related_requirement": "R-G-1", "impact": "medium"},
+    {"id": "OI-4", "issue": "Spec question 11.4: is the AEB branch of F3 the right Level-1 refinement, or should Level 1 refine the F6/F7 actuation chain?", "related_requirement": "R-SCOPE-4", "impact": "medium"},
+    {"id": "OI-6", "issue": "F2 is declared the only function that computes TTC, but the Level-1 clause F3.1 must compute the TTC of every predicted object; the model keeps both (F2 delivers min_ttc, F3.1 recomputes), which is a redundancy of the specification.", "related_requirement": "F3.1", "impact": "medium"},
+    {"id": "OI-7", "issue": "A-3 describes 3.0 m/s2 as the upper bound of the longitudinal actuation envelope used by F6/F7, which is incompatible with the 6.0 m/s2 emergency deceleration of A-1 if read symmetrically; the model applies the envelope asymmetrically (acceleration side <= 3.0, braking side <= 6.0).", "related_requirement": "A-1", "impact": "high"},
+    {"id": "OI-12", "issue": "F3.1 must report a count of 0 when no object is considered, but the specification defines no representation of 'no minimum TTC'; the model reports the count only and leaves the sentinel open.", "related_requirement": "F3.1", "impact": "low"}
+  ]
+}
